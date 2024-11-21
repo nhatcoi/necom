@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.services.services_impl;
 
+import com.example.ecommerceweb.dtos.PaginatedResponse;
 import com.example.ecommerceweb.dtos.ProductDTO;
 import com.example.ecommerceweb.entities.Category;
 import com.example.ecommerceweb.entities.Product;
@@ -7,11 +8,8 @@ import com.example.ecommerceweb.repository.CategoryRepository;
 import com.example.ecommerceweb.repository.ProductRatingRepository;
 import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.services.ProductService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.storage.Blob;
-import com.google.firebase.cloud.StorageClient;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,14 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -36,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRatingRepository productRatingRepository;
+    private final ModelMapper modelMapper;
 
     @Value("${image.base.url}")
     private String imageBaseurl;
@@ -121,19 +113,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getAllProducts(PageRequest pageRequest) {
-        // Retrieve all products with pagination
-        return productRepository.findAll(pageRequest);
+        return productRepository.findAllProductsByPage(pageRequest);
     }
 
     @Override
     public boolean isProductExist(Long id) {
         return false;
-    }
-
-    @Override
-    public Page<Product> getProductsByPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return productRepository.findAll(pageable);
     }
 
     @Override
@@ -150,6 +135,31 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> getProductByPriceRange(int minAmount, int maxAmount) {
         return productRepository.findByPriceBetween(minAmount, maxAmount);
+    }
+
+
+
+    @Override
+    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+        return productRepository.findAllProducts(pageable)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+    @Override
+    public Page<ProductDTO> getProductsByCategory(Pageable pageable, Long categoryId) {
+        return productRepository.findAllByCategoryId(pageable, categoryId)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+    @Override
+    public PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs) {
+        return new PaginatedResponse<>(
+                productDTOs.getContent(),
+                productDTOs.getTotalPages(),
+                productDTOs.getTotalElements(),
+                productDTOs.getNumber(),
+                productDTOs.getSize()
+        );
     }
 
 }

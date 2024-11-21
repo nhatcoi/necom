@@ -1,0 +1,38 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  devtools:
+    livereload:
+      enabled: true
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 8
+      driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# env
+image:
+  base:
+    url: ${IMAGE_BASE_URL:https://firebasestorage.googleapis.com/v0/b/ecommerce-web-18f77.appspot.com/o/}
+
+firebase:
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:ecommerce-web-key.json}
+  storage-bucket: ${FIREBASE_STORAGE_BUCKET:ecommerce-web-18f77.appspot.com}
+
+jwt:
+  signer-key: ${JWT_SIGNER_KEY}

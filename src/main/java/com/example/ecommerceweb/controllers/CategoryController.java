@@ -3,9 +3,12 @@ package com.example.ecommerceweb.controllers;
 import com.example.ecommerceweb.dtos.CategoryDTO;
 import com.example.ecommerceweb.services.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("categories")
@@ -20,10 +23,12 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    public String getAllCategories(Model model) {
-        model.addAttribute("categories", categoryService.getAllCategories());
-        return "index";
+    @ResponseBody
+    public ResponseEntity<List<?>> getCategories() {
+        List<?> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok().body(categories);
     }
+
 
     @PutMapping("/{id}")
     public String updateCategory(@PathVariable Long id, @ModelAttribute CategoryDTO categoryDTO) {

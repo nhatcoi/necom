@@ -6,6 +6,8 @@ import com.example.ecommerceweb.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductImageService {
@@ -17,5 +19,9 @@ public class ProductImageService {
                 .imageUrl(imageUrl)
                 .build();
         productImageRepository.save(newProductImage);
+    }
+
+    public List<ProductImage> getProductImagesByProductId(Long productId) {
+        return productImageRepository.findByProductId(productId);
     }
 }

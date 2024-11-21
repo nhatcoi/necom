@@ -1,32 +1,39 @@
+create sequence products_ratings_id_seq;
+
+alter sequence products_ratings_id_seq owner to postgres;
+
 create table categories
 (
-    id   serial
+    id        serial
         primary key,
-    name varchar(255) not null
+    name      varchar(255) not null,
+    image_url varchar
 );
 
 alter table categories
-    owner to coinhat;
+    owner to postgres;
 
 create table products
 (
-    id          serial
+    id                serial
         primary key,
-    name        varchar(255) default ''::character varying not null,
-    price       double precision                           not null
+    name              varchar(255) default ''::character varying not null,
+    price             double precision                           not null
         constraint products_price_check
             check (price >= (0)::double precision),
-    thumbnail   varchar(255) default NULL::character varying,
-    description varchar(255),
-    created_at  timestamp    default CURRENT_TIMESTAMP,
-    updated_at  timestamp    default CURRENT_TIMESTAMP,
-    category_id integer
+    thumbnail         varchar(255) default NULL::character varying,
+    description       text                                       not null,
+    created_at        timestamp    default CURRENT_TIMESTAMP,
+    updated_at        timestamp    default CURRENT_TIMESTAMP,
+    category_id       integer
         constraint products_category_fk
-            references categories
+            references categories,
+    quantity_in_stock integer,
+    weight            double precision
 );
 
 alter table products
-    owner to coinhat;
+    owner to postgres;
 
 create index idx_category_id
     on products (category_id);
@@ -43,7 +50,7 @@ create table product_images
 );
 
 alter table product_images
-    owner to coinhat;
+    owner to postgres;
 
 create table roles
 (
@@ -53,7 +60,7 @@ create table roles
 );
 
 alter table roles
-    owner to coinhat;
+    owner to postgres;
 
 create table users
 (
@@ -75,7 +82,7 @@ create table users
 );
 
 alter table users
-    owner to coinhat;
+    owner to postgres;
 
 create index idx_password
     on users (password);
@@ -110,7 +117,7 @@ create table orders
 );
 
 alter table orders
-    owner to coinhat;
+    owner to postgres;
 
 create index idx_user_id
     on orders (user_id);
@@ -138,7 +145,7 @@ create table order_details
 );
 
 alter table order_details
-    owner to coinhat;
+    owner to postgres;
 
 create index idx_order_id
     on order_details (order_id);
@@ -160,7 +167,7 @@ create table social_accounts
 );
 
 alter table social_accounts
-    owner to coinhat;
+    owner to postgres;
 
 create table tokens
 (
@@ -178,7 +185,7 @@ create table tokens
 );
 
 alter table tokens
-    owner to coinhat;
+    owner to postgres;
 
 create table product_ratings
 (
@@ -201,5 +208,68 @@ create table product_ratings
 );
 
 alter table product_ratings
-    owner to coinhat;
+    owner to postgres;
+
+alter sequence products_ratings_id_seq owned by product_ratings.id;
+
+create table flash_sales
+(
+    id         serial
+        primary key,
+    name       varchar(255) not null,
+    start_time timestamp    not null,
+    end_time   timestamp    not null,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp
+);
+
+alter table flash_sales
+    owner to postgres;
+
+create table flash_sale_items
+(
+    id             serial
+        primary key,
+    flash_sale_id  integer
+        references flash_sales,
+    product_id     integer
+        references products,
+    sale_price     numeric(10, 2) not null,
+    quantity_limit integer,
+    created_at     timestamp default CURRENT_TIMESTAMP,
+    updated_at     timestamp
+);
+
+alter table flash_sale_items
+    owner to postgres;
+
+create table blog_categories
+(
+    id   serial
+        primary key,
+    name varchar(255) not null
+);
+
+alter table blog_categories
+    owner to postgres;
+
+create table blogs
+(
+    id          serial
+        primary key,
+    title       varchar(255) not null,
+    content     text         not null,
+    thumbnail   varchar,
+    user_id     integer
+        constraint fk_user
+            references users,
+    category_id integer
+        constraint fk_category
+            references blog_categories,
+    created_at  timestamp default CURRENT_TIMESTAMP,
+    updated_at  timestamp default CURRENT_TIMESTAMP
+);
+
+alter table blogs
+    owner to postgres;
 

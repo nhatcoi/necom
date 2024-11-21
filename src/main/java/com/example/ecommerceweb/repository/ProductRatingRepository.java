@@ -12,5 +12,8 @@ public interface ProductRatingRepository extends JpaRepository<ProductRating, Lo
 
     @Query("SELECT pr.product FROM ProductRating pr GROUP BY pr.product ORDER BY AVG(pr.rating) DESC")
     List<Product> fetchTopRatedProducts(Pageable pageable);
+
+    @Query("SELECT AVG(pr.rating) FROM ProductRating pr WHERE pr.product.id = :productId")
+    Float avgRating(Long productId);
 }
 

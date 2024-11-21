@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>CSS Fragments</title>
+    <th:block th:fragment="cssStyles">
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+        <!-- Bootstrap 5   -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/elegant-icons.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/nice-select.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/jquery-ui.min.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/owl.carousel.min.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/slicknav.min.css}" rel="stylesheet" type="text/css">
+        <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    </th:block>
+</head>
+</html>
