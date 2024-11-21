@@ -8,22 +8,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>JackieShop</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-
     <!-- Css Styles thymeleaf -->
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/elegant-icons.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/nice-select.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/jquery-ui.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/owl.carousel.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/slicknav.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}" type="text/css">
+    <th:block th:replace="~{common/css-fragment :: cssStyles}"></th:block>
 </head>
 <body>
     <!-- Header Section End -->
@@ -105,7 +91,7 @@
                 <div class="col-lg-3 col-md-5">
                     <div class="sidebar">
                         <div class="sidebar__item">
-                            <h4>Categories</h4>
+                            <h4>All Categories</h4>
                             <ul>
                                 <li th:each="category : ${categories}">
                                     <a th:href="@{'/categories/' + ${category.id}}"
@@ -257,7 +243,7 @@
                                         </div>
                                         <div class="product__discount__item__text">
                                             <span th:text="${flashSaleItem.product.categoryId.name}">category</span>
-                                            <h5><a th:href="@{'/product/' + ${flashSaleItem.product.id}}" th:text="${flashSaleItem.product.name}">product 1</a></h5>
+                                            <h5><a th:href="@{'/products/' + ${flashSaleItem.product.id}}" th:text="${flashSaleItem.product.name}">product 1</a></h5>
                                             <div class="product__item__price">
                                                 <span class="original-price" th:data-original-price="${flashSaleItem.product.price}" style="text-decoration: line-through;"></span>
                                                 <span class="sale-price" th:data-sale-price="${flashSaleItem.salePrice}" style="text-decoration: none; font-weight: bold;"></span>
@@ -321,6 +307,8 @@
     <script th:src="@{/js/vendor/mixitup.min.js}"></script>
     <script th:src="@{/js/vendor/owl.carousel.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/pages/header.js}"></script>
+    <script th:src="@{/js/pages/shop-grid.js}"></script>
 
 </body>
 

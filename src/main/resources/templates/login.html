@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="NhatPre">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JackieShop</title>
+
+  <!-- Css Styles thymeleaf -->
+  <th:block th:replace="~{common/css-fragment :: cssStyles}"></th:block>
+</head>
+
+<body>
+<!-- Header Section End -->
+<div th:replace="~{common/header :: header}"></div>
+<!-- Header Section End -->
+
+<div id="loginForm" class="login">
+  <h2>Log in</h2>
+  <form method="post">
+    <label>
+      <input type="text" placeholder="Phone Number" name="phoneNumber">
+    </label>
+    <label>
+      <input type="password" placeholder="Password" name="password">
+    </label>
+    <div></div>
+    <button type="submit">Log in</button>
+  </form>
+  <p>Don't have an account? <a href="register.html">Register here</a></p>
+</div>
+
+<!-- Header Section End -->
+<div th:replace="~{common/footer :: footer}"></div>
+<!-- Header Section End -->
+
+<!-- Js Plugins -->
+<script th:src="@{/js/vendor/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/js/vendor/jquery.nice-select.min.js}"></script>
+<script th:src="@{/js/vendor/jquery-ui.min.js}"></script>
+<script th:src="@{/js/vendor/jquery.slicknav.js}"></script>
+<script th:src="@{/js/vendor/mixitup.min.js}"></script>
+<script th:src="@{/js/vendor/owl.carousel.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/pages/login.js}"></script>
+
+
+</body>
+</html>

@@ -31,6 +31,12 @@ public class Product extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "quantity_in_stock")
+    private Integer quantityInStock;
+
+    @Column(name = "weight")
+    private Float weight;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category categoryId;
