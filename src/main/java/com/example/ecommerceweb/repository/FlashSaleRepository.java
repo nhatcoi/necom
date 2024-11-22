@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.repository;
 
-import com.example.ecommerceweb.entities.FlashSale;
+import com.example.ecommerceweb.entity.FlashSale;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
