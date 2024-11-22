@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
                     .id(user.getId())
                     .fullName(user.getFullName())
                     .phoneNumber(user.getPhoneNumber())
-                    .password(user.getPassword())
                     .address(user.getAddress())
                     .build();
         }
@@ -47,16 +46,17 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .phoneNumber(userRequest.getPhoneNumber())
                 .password(userRequest.getPassword())
-                .role(Role.builder().id(Long.valueOf(userRequest.getRoleId())).build())
+                .role(Role.builder().id(com.example.ecommerceweb.enums.Role.USER.getValue()).build())
                 .build();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
         userRepository.save(user);
 
         return UserResponse.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
-                .password(user.getPassword())
+                .roleId(Math.toIntExact(user.getRole().getId()))
                 .build();
     }
 
@@ -68,8 +68,8 @@ public class UserServiceImpl implements UserService {
                         .id(user.getId())
                         .fullName(user.getFullName())
                         .phoneNumber(user.getPhoneNumber())
-                        .password(user.getPassword())
                         .address(user.getAddress())
+                        .roleId(Math.toIntExact(user.getRole().getId()))
                         .build())
                 .toList();
     }
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .phoneNumber(user.getPhoneNumber())
-                .password(user.getPassword())
                 .address(user.getAddress())
+                .roleId(Math.toIntExact(user.getRole().getId()))
                 .build();
     }
 }
