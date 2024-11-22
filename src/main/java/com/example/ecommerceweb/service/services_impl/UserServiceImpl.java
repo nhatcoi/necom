@@ -4,12 +4,12 @@ import com.example.ecommerceweb.dto.request.UserRequest;
 import com.example.ecommerceweb.dto.response.UserResponse;
 import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;
+import com.example.ecommerceweb.enums.RoleEnum;
 import com.example.ecommerceweb.exception.ResourceNotFoundException;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse getUserByPhoneNumberAndPassword(String phoneNumber, String password) {
@@ -46,9 +47,8 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .phoneNumber(userRequest.getPhoneNumber())
                 .password(userRequest.getPassword())
-                .role(Role.builder().id(com.example.ecommerceweb.enums.Role.USER.getValue()).build())
+                .role(Role.builder().id(RoleEnum.USER.getValue()).build())
                 .build();
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         userRepository.save(user);
