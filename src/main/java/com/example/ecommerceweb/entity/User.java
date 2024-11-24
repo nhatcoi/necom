@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,6 +22,9 @@ public class User extends BaseEntity {
 
     @Column(name = "full_name")
     private String fullName;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -42,7 +47,11 @@ public class User extends BaseEntity {
     @Column(name = "google_id")
     private Integer googleId;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 }
