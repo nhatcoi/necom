@@ -9,6 +9,6 @@ import lombok.*;
 @Data
 @Builder
 public class AuthenticationRequest {
-    private String phoneNumber;
+    private String userIdentifier;
     private String password;
 }
