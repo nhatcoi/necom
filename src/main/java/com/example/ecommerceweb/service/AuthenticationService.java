@@ -5,6 +5,7 @@ import com.example.ecommerceweb.dto.request.IntrospectRequest;
 import com.example.ecommerceweb.dto.response.AuthenticationResponse;
 import com.example.ecommerceweb.dto.response.IntrospectResponse;
 import com.example.ecommerceweb.entity.User;
+import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceNotFoundException;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -19,11 +20,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -54,15 +57,24 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        User user;
+        if (isNumeric(request.getUserIdentifier())) {
+            user = userRepository.findByPhoneNumber(request.getUserIdentifier())
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.PHONE_NUMBER_NOT_EXISTED.getMessage()));
+        } else {
+            user = userRepository.findByUsername(request.getUserIdentifier())
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTED.getMessage()));
+        }
+
+
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated)
-            throw new ResourceNotFoundException("Unauthenticated");
+            throw new ResourceNotFoundException(ErrorCode.UNAUTHENTICATED.getMessage());
 
-        var token = generateToken(user.getPhoneNumber());
+        var token = generateToken(user);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -71,18 +83,22 @@ public class AuthenticationService {
 
     }
 
+    private boolean isNumeric(String str) {
+        return str != null && str.matches("\\d+");
+    }
 
-    private String generateToken(String phoneNumber) {
+
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
-                .subject(phoneNumber)
+                .subject(user.getUsername())
                 .issuer("jackieshop.dev")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("customClaim", "customValue")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(claimSet.toJSONObject());
@@ -96,5 +112,15 @@ public class AuthenticationService {
             log.error("Error signing token", e);
             throw new RuntimeException(e);
         }
+    }
+
+
+    private String buildScope(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            user.getRoles().forEach(role -> stringJoiner.add(role.getName()));
+        }
+
+        return stringJoiner.toString();
     }
 }
