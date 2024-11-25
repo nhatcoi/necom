@@ -6,6 +6,7 @@ import com.example.ecommerceweb.dto.request.UserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,11 @@ public class UserController {
     @GetMapping("users")
     @ResponseBody
     public ResponseEntity<?> getUsers() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("User: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("Role: {}", grantedAuthority.getAuthority()));
+
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
@@ -34,14 +40,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserById(userId));
     }
 
-    @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<?> login(@RequestBody UserRequest userRequest) {
-        UserResponse userResponse = userService.getUserByPhoneNumberAndPassword(
-                userRequest.getPhoneNumber(),
-                userRequest.getPassword());
-        return ResponseEntity.ok().body(userResponse);
-    }
 
     @PostMapping("/users")
     @ResponseBody
