@@ -5,6 +5,7 @@ import com.example.ecommerceweb.dto.response.UserResponse;
 import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.RoleEnum;
+import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceNotFoundException;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserService;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,23 +43,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserRequest userRequest) {
-        if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
-            throw new ResourceNotFoundException("Phone number already exists");
+        if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())
+                || userRepository.existsByUsername(userRequest.getUsername())) {
+            throw new ResourceNotFoundException(ErrorCode.USER_EXISTED.getMessage());
         }
 
+        Set<Role> roles = Set.of(Role.builder().id(RoleEnum.USER.getValue()).build());
         User user = User.builder()
-                .phoneNumber(userRequest.getPhoneNumber())
+                .username(userRequest.getUsername())
                 .password(userRequest.getPassword())
-                .role(Role.builder().id(RoleEnum.USER.getValue()).build())
+                .phoneNumber(userRequest.getPhoneNumber())
+                .fullName(userRequest.getFullName())
+                .address(userRequest.getAddress())
+                .dateOfBirth(userRequest.getDateOfBirth())
+                .isActive(true)
+                .roles(roles)
                 .build();
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
         userRepository.save(user);
 
         return UserResponse.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
-                .roleId(Math.toIntExact(user.getRole().getId()))
+                .roleNames(user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 
@@ -67,9 +78,12 @@ public class UserServiceImpl implements UserService {
                 .map(user -> UserResponse.builder()
                         .id(user.getId())
                         .fullName(user.getFullName())
+                        .username(user.getUsername())
                         .phoneNumber(user.getPhoneNumber())
                         .address(user.getAddress())
-                        .roleId(Math.toIntExact(user.getRole().getId()))
+                        .roleNames(user.getRoles().stream()
+                                .map(Role::getName)
+                                .collect(Collectors.toSet()))
                         .build())
                 .toList();
     }
@@ -77,13 +91,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTED.getMessage()));
         return UserResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
+                .username(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
                 .address(user.getAddress())
-                .roleId(Math.toIntExact(user.getRole().getId()))
+                .roleNames(user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }
