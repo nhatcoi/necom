@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Set;
+
 @Configuration
 @Slf4j // annotation to enable logging
 public class ApplicationInitConfig {
@@ -27,11 +29,12 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByPhoneNumber(adminUsername).isEmpty()) {
+            if (userRepository.findByUsername(adminUsername).isEmpty()) {
                 var admin = new com.example.ecommerceweb.entity.User();
+                admin.setUsername(adminUsername);
                 admin.setPhoneNumber(adminUsername);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
-                admin.setRole(Role.builder().id(RoleEnum.ADMIN.getValue()).build());
+                admin.setRoles(Set.of(Role.builder().id(RoleEnum.ADMIN.getValue()).build()));
                 userRepository.save(admin);
                 log.warn("Admin user created");
             }
