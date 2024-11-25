@@ -40,6 +40,13 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserById(userId));
     }
 
+    @GetMapping("/my-info")
+    @ResponseBody
+    public ResponseEntity<?> getMyInfo() {
+        // only reference token can access this API
+        return ResponseEntity.ok().body(userService.getMyInfo());
+    }
+
 
     @PostMapping("/users")
     @ResponseBody

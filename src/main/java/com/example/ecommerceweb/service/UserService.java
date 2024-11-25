@@ -12,5 +12,5 @@ public interface UserService {
     UserResponse createUser(UserRequest userRequest);
     List<UserResponse> getUsers();
     UserResponse getUserById(Long userId);
-
+    UserResponse getMyInfo();
 }

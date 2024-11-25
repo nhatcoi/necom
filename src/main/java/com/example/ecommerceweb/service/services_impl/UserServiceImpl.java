@@ -48,17 +48,23 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException(ErrorCode.USER_EXISTED.getMessage());
         }
 
-        Set<Role> roles = Set.of(Role.builder()
-                .id(RoleEnum.USER.getValue())
-                .name(RoleEnum.USER.name()).build());
+        Set<Role> roles = Set.of(
+                Role.builder()
+                        .id(RoleEnum.USER.getValue())
+                        .name(RoleEnum.USER.name())
+                        .build()
+        );
+
         User user = userMapper.toUser(userRequest);
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
     }
 
+    @Override
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         context.getAuthentication().getName();
