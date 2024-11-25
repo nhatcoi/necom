@@ -2,6 +2,7 @@ package com.example.ecommerceweb.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -17,6 +18,6 @@ public class UserResponse {
     private String username;
     private String phoneNumber;
     private String address;
-    private LocalDateTime DateOfBirth;
+    private LocalDate dateOfBirth;
     private Set<String> roleNames;
 }

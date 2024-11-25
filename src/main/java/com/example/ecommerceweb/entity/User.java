@@ -3,6 +3,7 @@ package com.example.ecommerceweb.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class User extends BaseEntity {
     private Boolean isActive;
 
     @Column(name = "date_of_birth")
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "facebook_id")
     private Integer facebookId;

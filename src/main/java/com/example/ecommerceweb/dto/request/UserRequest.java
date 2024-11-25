@@ -17,5 +17,5 @@ public class UserRequest {
     private String phoneNumber;
     private String fullName;
     private String address;
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 }
