@@ -2,6 +2,9 @@ package com.example.ecommerceweb.dto.request;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @Getter
 @Setter
@@ -9,6 +12,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserRequest {
-    private String phoneNumber;
+    private String username;
     private String password;
+    private String phoneNumber;
+    private String fullName;
+    private String address;
+    private LocalDateTime dateOfBirth;
 }
