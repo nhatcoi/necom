@@ -48,7 +48,9 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException(ErrorCode.USER_EXISTED.getMessage());
         }
 
-        Set<Role> roles = Set.of(Role.builder().id(RoleEnum.USER.getValue()).build());
+        Set<Role> roles = Set.of(Role.builder()
+                .id(RoleEnum.USER.getValue())
+                .name(RoleEnum.USER.name()).build());
         User user = User.builder()
                 .username(userRequest.getUsername())
                 .password(userRequest.getPassword())
@@ -64,7 +66,11 @@ public class UserServiceImpl implements UserService {
 
         return UserResponse.builder()
                 .id(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .dateOfBirth(user.getDateOfBirth())
                 .roleNames(user.getRoles().stream()
                         .map(Role::getName)
                         .collect(Collectors.toSet()))
@@ -81,6 +87,7 @@ public class UserServiceImpl implements UserService {
                         .username(user.getUsername())
                         .phoneNumber(user.getPhoneNumber())
                         .address(user.getAddress())
+                        .dateOfBirth(user.getDateOfBirth())
                         .roleNames(user.getRoles().stream()
                                 .map(Role::getName)
                                 .collect(Collectors.toSet()))
@@ -98,6 +105,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
                 .address(user.getAddress())
+                .dateOfBirth(user.getDateOfBirth())
                 .roleNames(user.getRoles().stream()
                         .map(Role::getName)
                         .collect(Collectors.toSet()))
