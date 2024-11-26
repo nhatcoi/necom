@@ -6,7 +6,7 @@ import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.RoleEnum;
 import com.example.ecommerceweb.exception.ErrorCode;
-import com.example.ecommerceweb.exception.ResourceNotFoundException;
+import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.mapper.UserMapper;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserService;
@@ -40,12 +40,11 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
     @Override
     public UserResponse createUser(UserRequest userRequest) {
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())
                 || userRepository.existsByUsername(userRequest.getUsername())) {
-            throw new ResourceNotFoundException(ErrorCode.USER_EXISTED.getMessage());
+            throw new ResourceException(ErrorCode.USER_EXISTED);
         }
 
         Set<Role> roles = Set.of(
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
         context.getAuthentication().getName();
 
         User user = userRepository.findByUsername(context.getAuthentication().getName())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTED.getMessage()));
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
 
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(Long userId) {
         log.info("Get user by id: {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTED.getMessage()));
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
 }
