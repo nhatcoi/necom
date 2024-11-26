@@ -2,6 +2,8 @@
 
 (function ($) {
     $(document).ready(function() {
+        const PREFIX = '/api/v1';
+
         handleUserAuthentication();
         updateCartCount();
 
@@ -21,7 +23,7 @@
                     window.location.href = '/';
                 });
             } else {
-                $('#authSection').html('<a href="/api/login-form"><i class="fa fa-user"></i> Login</a>');
+                $('#authSection').html(`<a href="${PREFIX}/api/login-form"><i class="fa fa-user"></i> Login</a>`);
                 $('#nameSection').hide();
             }
         }
@@ -31,7 +33,7 @@
             if (!cartId) {
                 return;
             }
-            const CART_URL = `/api/v1/shopping-cart/count/${cartId}`;
+            const CART_URL = `${PREFIX}/shopping-cart/count/${cartId}`;
             $.ajax({
                 url: CART_URL,
                 method: 'GET',

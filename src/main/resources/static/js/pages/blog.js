@@ -2,19 +2,20 @@
 
 (function ($) {
     $(document).ready(function () {
+        const PREFIX = '/api/v1';
         loadCategories();
-        loadBlogs('/blog/blogs', 0);
+        loadBlogs(`${PREFIX}/blog/blogs`, 0);
         loadRecentBlogs();
         let pagesToShow = 2;
 
         function loadCategories() {
             $.ajax({
-                url: 'categories',
+                url: `${PREFIX}/categories`,
                 type: 'GET',
                 success: function (response) {
                     response.forEach(category => {
                         $("#categories").append(`
-                            <li><a href="categories/${category.id}">${category.name}</a></li>
+                            <li><a href="/api/v1/categories/${category.id}">${category.name}</a></li>
                         `);
                     });
                 },
@@ -22,7 +23,7 @@
             });
 
             $.ajax({
-                url: 'blog/categories',
+                url: `${PREFIX}/blog/categories`,
                 type: 'GET',
                 success: function (response) {
                     response.forEach(category => {
@@ -36,7 +37,7 @@
                     $(".category-link").click(function (e) {
                         e.preventDefault();
                         let categoryId = $(this).data("category-id");
-                        loadBlogs(`/blog/category/${categoryId}`, 0);
+                        loadBlogs(`${PREFIX}/blog/category/${categoryId}`, 0);
                     });
                 },
                 error: handleError('Could not load blog categories.')
@@ -74,9 +75,9 @@
                                 <ul>
                                     <li><i class="fa fa-calendar-o"></i> ${formattedDate}</li>
                                 </ul>
-                                <h5><a href="/blog-details/${blog.id}">${blog.title}</a></h5>
+                                <h5><a href="${PREFIX}/blog-details/${blog.id}">${blog.title}</a></h5>
                                 <p>${blog.content.substring(0, 80)}...</p>
-                                <a href="blog-details.html?id=${blog.id}" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
+                                <a href="${PREFIX}/blog-details.html?id=${blog.id}" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
                             </div>
                         </div>
                     </div>
@@ -119,7 +120,7 @@
         // Load recent blog posts
         function loadRecentBlogs() {
             $.ajax({
-                url: '/blog/recent-news',
+                url: `${PREFIX}/blog/recent-news`,
                 method: 'GET',
                 success: function (data) {
                     let recentBlogContainer = $('#recent-news');
@@ -129,7 +130,7 @@
                         let date = new Date(blog.createdAt);
                         let formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                         let recentBlogItem = `
-                            <a href="/blog/${blog.id}" class="blog__sidebar__recent__item">
+                            <a href="${PREFIX}/blog/${blog.id}" class="blog__sidebar__recent__item">
                                 <div class="blog__sidebar__recent__item__pic"></div>
                                 <div class="blog__sidebar__recent__item__text">
                                     <h6>${blog.title}</h6>

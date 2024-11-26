@@ -58,7 +58,7 @@
             </div>
             <div class="header__top__right__auth authSection">
                 <!--                                <a th:href="@{/products/show}"><i class="fa fa-user"></i> Login</a>-->
-                <a th:href="@{/api/login-form}"><i class="fa fa-user"></i> Login</a>
+                <a th:href="@{/api/v1/login-form}"><i class="fa fa-user"></i> Login</a>
             </div>
             <div class="header__top__right__name nameSection" style="display:none;">
                 <a href="#" class="welcome-display"></a>
@@ -67,17 +67,17 @@
         <nav class="menu__nav mobile-menu">
             <ul>
                 <li><a th:href="@{/}">Home</a></li>
-                <li><a th:href="@{/shop-grid}">Shop</a></li>
+                <li><a th:href="@{/api/v1/shop-grid}">Shop</a></li>
                 <li><a href="#">Pages</a>
                     <ul class="header__menu__dropdown">
-                        <li><a th:href="@{/shop-details}">Shop Details</a></li>
+                        <li><a th:href="@{/api/v1/shop-details}">Shop Details</a></li>
                         <li><a th:href="@{/api/v1/shopping-cart}">Shopping Cart</a></li>
-                        <li><a th:href="@{/checkout}">Check Out</a></li>
-                        <li><a th:href="@{blog-details}">Blog Details</a></li>
+                        <li><a th:href="@{/api/v1/checkout}">Check Out</a></li>
+                        <li><a th:href="@{/api/v1/blog-details}">Blog Details</a></li>
                     </ul>
                 </li>
-                <li><a th:href="@{/blog}">Blog</a></li>
-                <li><a th:href="@{api/v1/contact}">Contact</a></li>
+                <li><a th:href="@{/api/v1/blog}">Blog</a></li>
+                <li><a th:href="@{/api/v1/contact}">Contact</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
@@ -126,7 +126,7 @@
                             </div>
                             <div class="header__top__right__auth authSection">
 <!--                                <a th:href="@{/products/show}"><i class="fa fa-user"></i> Login</a>-->
-                                <a th:href="@{/api/login-form}"><i class="fa fa-user"></i> Login</a>
+                                <a th:href="@{/api/v1/login-form}"><i class="fa fa-user"></i> Login</a>
                             </div>
                             <div class="header__top__right__name nameSection" style="display:none;">
                                 <a href="#" class="welcome-display"></a>
@@ -147,16 +147,16 @@
                     <nav class="header__menu">
                         <ul>
                             <li><a th:href="@{/}">Home</a></li>
-                            <li><a th:href="@{/shop-grid}">Shop</a></li>
+                            <li><a th:href="@{/api/v1/shop-grid}">Shop</a></li>
                             <li><a href="#">Pages</a>
                                 <ul class="header__menu__dropdown">
-                                    <li><a th:href="@{/products/2}">Shop Details</a></li>
-                                    <li><a th:href="@{api/v1/shopping-cart}">Shopping Cart</a></li>
-                                    <li><a th:href="@{/checkout}">Check Out</a></li>
-                                    <li><a th:href="@{/blog-details}">Blog Details</a></li>
+                                    <li><a th:href="@{/api/v1/products/2}">Shop Details</a></li>
+                                    <li><a th:href="@{/api/v1/shopping-cart}">Shopping Cart</a></li>
+                                    <li><a th:href="@{/api/v1/checkout}">Check Out</a></li>
+                                    <li><a th:href="@{/api/v1/blog-details}">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a th:href="@{/blog}">Blog</a></li>
+                            <li><a th:href="@{/api/v1/blog}">Blog</a></li>
                             <li><a th:href="@{/api/v1/contact}">Contact</a></li>
                         </ul>
                     </nav>

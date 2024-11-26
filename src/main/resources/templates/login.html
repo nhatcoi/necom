@@ -19,17 +19,13 @@
 
 <div id="loginForm" class="login">
   <h2>Log in</h2>
-  <form method="post">
-    <label>
-      <input type="text" placeholder="Phone Number" name="phoneNumber">
-    </label>
-    <label>
+  <form method="post" class="form">
+      <input type="text" placeholder="Username" name="username">
       <input type="password" placeholder="Password" name="password">
-    </label>
     <div></div>
     <button type="submit">Log in</button>
-  </form>
-  <p>Don't have an account? <a href="register.html">Register here</a></p>
+  </form>a
+  <p>Don't have an account? <a th:href="@{/api/v1/register-form}">Register here</a></p>
 </div>
 
 <!-- Header Section End -->

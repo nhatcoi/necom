@@ -179,7 +179,7 @@
                         <div class="special-product__slider__item" th:each="productList : ${latestProducts}">
                             <div class="special-product__item__group">
                                 <div th:each="product : ${productList}">
-                                    <a th:href="@{'/products/' + ${product.id}}" class="special-product__item">
+                                    <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">
                                         <div class="special-product__item__pic">
                                             <img th:src="@{${product.thumbnail}}" alt="">
                                         </div>
@@ -203,7 +203,7 @@
                         <div class="special-product__slider__item" th:each="productList : ${topRatedProducts}">
                             <div class="special-product__item__group">
                                 <div th:each="product : ${productList}">
-                                    <a th:href="@{'/products/' + ${product.id}}" class="special-product__item">
+                                    <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">
                                         <div class="special-product__item__pic">
                                             <img th:src="@{${product.thumbnail}}" alt="">
                                         </div>
@@ -227,7 +227,7 @@
                         <div class="special-product__slider__item" th:each="productList : ${latestProducts}">
                             <div class="special-product__item__group">
                                 <div th:each="product : ${productList}">
-                                    <a th:href="@{'/products/' + ${product.id}}" class="special-product__item">
+                                    <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">
                                         <div class="special-product__item__pic">
                                             <img th:src="@{${product.thumbnail}}" alt="">
                                         </div>

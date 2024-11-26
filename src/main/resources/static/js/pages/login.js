@@ -2,6 +2,7 @@
 
 (function ($) {
     $(document).ready(function() {
+        const PREFIX = '/api/v1';
         $('#loginForm').on('submit', function(event) {
             event.preventDefault();
 
@@ -9,7 +10,7 @@
             const password = $('input[name="password"]').val();
 
             $.ajax({
-                url: '/api/login',
+                url: `${PREFIX}/login`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ phoneNumber: phoneNumber, password: password }),

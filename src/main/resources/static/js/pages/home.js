@@ -12,7 +12,8 @@
     // });
 
     $(document).ready(function () {
-        const PRODUCTS_URL = '/products';
+        const PREFIX = '/api/v1';
+        const PRODUCTS_URL = `${PREFIX}/products`;
         const INITIAL_PAGE = 0;
         const PAGE_SIZE = 8;
         const PAGES_TO_SHOW = 2;
@@ -49,7 +50,7 @@
                                 </ul>
                             </div>
                             <div class="product__item__text">
-                                <h6><a href="/products/${product.id}">${product.name}</a></h6>
+                                <h6><a href="${PREFIX}/products/${product.id}">${product.name}</a></h6>
                                 <h5>${product.price} $</h5>
                             </div>
                         </div>
