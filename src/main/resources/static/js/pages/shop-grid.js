@@ -1,6 +1,8 @@
 'use restrict';
 
 (function ($) {
+    const PREFIX = '/api/v1';
+
     // Set percent discount
     $(document).ready(function() {
         $('.product__discount__item__pic').each(function() {
@@ -75,7 +77,7 @@
         // Filter and set products
         $("#filterButton").click(function() {
             $.ajax({
-                url: "/shop-grid/filterByPrice",
+                url: `${PREFIX}/shop-grid/filterByPrice`,
                 type: "GET",
                 data: {
                     minamount: $("#minamount").val(),
@@ -97,7 +99,7 @@
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="/products/${product.id}">${product.name}</a></h6>
+                                    <h6><a href="${PREFIX}/products/${product.id}">${product.name}</a></h6>
                                     <h5>${product.price} $</h5>
                                 </div>
                             </div>
