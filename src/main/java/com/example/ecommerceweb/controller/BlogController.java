@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/blog")
+@RequestMapping("${api.prefix}/blog")
 @RequiredArgsConstructor
 public class BlogController {
 

@@ -18,7 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 
-@RequestMapping("products")
+@RequestMapping("${api.prefix}/products")
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
@@ -36,7 +36,7 @@ public class ProductController {
         return "shop-details";
     }
 
-    @GetMapping("product/share")
+    @GetMapping("/product/share")
     public String getProductShare(@RequestParam Long id, Model model) {
         //get url product
         String urlProduct = ServletUriComponentsBuilder.fromCurrentContextPath().path("/products/").path(id.toString()).toUriString();
@@ -57,7 +57,7 @@ public class ProductController {
     }
 
 
-    @GetMapping("categories/{id}")
+    @GetMapping("/categories/{id}")
     public ResponseEntity<PaginatedResponse<ProductDTO>> getProductsByCategory(
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,

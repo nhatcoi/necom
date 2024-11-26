@@ -12,18 +12,18 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("api/v1")
+@RequestMapping("${api.prefix}/shopping-cart")
 @RequiredArgsConstructor
 public class ShoppingCartController {
 
     private final CartService cartService;
 
-    @GetMapping("/shopping-cart")
+    @GetMapping("")
     public String shoppingCart() {
         return "shopping-cart";
     }
 
-    @GetMapping("/shopping-cart/{cartId}")
+    @GetMapping("/{cartId}")
     @ResponseBody
     public ResponseEntity<?> getItemsCart(@PathVariable Long cartId)
     {
@@ -31,7 +31,7 @@ public class ShoppingCartController {
         return ResponseEntity.ok().body(cartItems);
     }
 
-    @GetMapping("/shopping-cart/count/{cartId}")
+    @GetMapping("/count/{cartId}")
     @ResponseBody
     public ResponseEntity<?> getCountInCart(@PathVariable Long cartId) {
         return ResponseEntity.ok().body(cartService.getCountInCart(cartId));

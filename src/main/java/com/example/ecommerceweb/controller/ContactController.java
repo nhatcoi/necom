@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/contact")
 @RequiredArgsConstructor
 public class ContactController {
 
-    @GetMapping("/contact")
+    @GetMapping("")
     public String contact() {
         return "contact";
     }

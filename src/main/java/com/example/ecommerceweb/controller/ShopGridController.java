@@ -25,7 +25,7 @@ import static com.example.ecommerceweb.util.DivideList.divideList;
 
 @Slf4j
 @Controller
-@RequestMapping("/shop-grid")
+@RequestMapping("${api.prefix}/shop-grid")
 @RequiredArgsConstructor
 public class ShopGridController {
     private final CategoryService categoryService;

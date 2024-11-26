@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("checkout")
+@RequestMapping("${api.prefix}/checkout")
 @RequiredArgsConstructor
 public class CheckOutController {
 

@@ -1,58 +1,51 @@
 package com.example.ecommerceweb.controller;
 
+import com.example.ecommerceweb.configuration.Translator;
+import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.dto.response.UserResponse;
 import com.example.ecommerceweb.service.UserService;
 import com.example.ecommerceweb.dto.request.UserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "login";
-    }
+    private final Translator translator;
 
-    @GetMapping("users")
-    @ResponseBody
-    public ResponseEntity<?> getUsers() {
+    @GetMapping("/users")
+    public ResponseData<?> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("User: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info("Role: {}", grantedAuthority.getAuthority()));
 
-        return ResponseEntity.ok().body(userService.getUsers());
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUsers());
     }
 
-    @GetMapping("users/{userId}")
-    @ResponseBody
-    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
-        return ResponseEntity.ok().body(userService.getUserById(userId));
+    @GetMapping("/users/{userId}")
+    public ResponseData<?> getUserById(@PathVariable Long userId) {
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUserById(userId));
     }
 
     @GetMapping("/my-info")
-    @ResponseBody
-    public ResponseEntity<?> getMyInfo() {
+    public ResponseData<?> getMyInfo() {
         // only reference token can access this API
-        return ResponseEntity.ok().body(userService.getMyInfo());
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getMyInfo());
     }
 
 
     @PostMapping("/users")
-    @ResponseBody
-    public ResponseEntity<?> register(@RequestBody UserRequest userRequest) {
+    public ResponseData<?> register(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.createUser(userRequest);
-        return ResponseEntity.ok().body(userResponse);
+        return new ResponseData<>(HttpStatus.CREATED.value(), translator.toLocated("response.success"), userResponse);
     }
 
 }

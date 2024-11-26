@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping("blog-details")
+@RequestMapping("${api.prefix}/blog-details")
 @RequiredArgsConstructor
 public class BlogDetailController {
     private final BlogService blogService;
