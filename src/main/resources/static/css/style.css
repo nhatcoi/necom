@@ -13,29 +13,31 @@ body {
 
 /* -------------------------------add ------------------------------- */
 /* Sign-in class styles */
-.signin {
+.login {
     background-color: white;
     padding: 20px 40px;
     text-align: center;
     box-shadow: 10px 10px 20px rgb(91, 187, 107);
     border-radius: 10px 20px;
     width: 50%; /* adjust the width as desired */
-    margin: 0 auto; /* center the container horizontally */
+    /* center the container horizontally */
+    margin: 5em auto;
+
 }
 
 /* Heading styles */
-.signin h2 {
+.login h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
 /* Form styles */
-.signin form {
+.login form {
     margin-bottom: 20px;
 }
 
 /* Input field styles */
-.signin input {
+.login input {
     margin-bottom: 10px;
     padding: 10px;
     width: 80%;
@@ -45,7 +47,7 @@ body {
 }
 
 /* Button styles */
-.signin button {
+.login button {
     background-color: var(--main_color);
     color: white;
     padding: 10px 30px;
@@ -57,18 +59,18 @@ body {
 }
 
 /* Button hover effect */
-.signin button:hover {
+.login button:hover {
     background-color: var(--main_color);
 }
 
 /* Link styles */
-.signin a {
+.login a {
     color: red;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.signin a:hover {
+.login a:hover {
     color: #4d29c5;
 }
 
