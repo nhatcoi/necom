@@ -6,7 +6,7 @@ import com.example.ecommerceweb.dto.response.AuthenticationResponse;
 import com.example.ecommerceweb.dto.response.IntrospectResponse;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.exception.ErrorCode;
-import com.example.ecommerceweb.exception.ResourceNotFoundException;
+import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -61,10 +61,10 @@ public class AuthenticationService {
         User user;
         if (isNumeric(request.getUserIdentifier())) {
             user = userRepository.findByPhoneNumber(request.getUserIdentifier())
-                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.PHONE_NUMBER_NOT_EXISTED.getMessage()));
+                    .orElseThrow(() -> new ResourceException(ErrorCode.PHONE_NUMBER_NOT_EXISTED));
         } else {
             user = userRepository.findByUsername(request.getUserIdentifier())
-                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.USER_NOT_EXISTED.getMessage()));
+                    .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         }
 
 
@@ -72,7 +72,7 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated)
-            throw new ResourceNotFoundException(ErrorCode.UNAUTHENTICATED.getMessage());
+            throw new ResourceException(ErrorCode.UNAUTHENTICATED);
 
         var token = generateToken(user);
 
