@@ -27,8 +27,24 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/users",
+            "/api/v1/login-form",
             "/auth/log-in",
             "/auth/introspect"
+    };
+
+    private final String[] GET_PUBLIC_ENDPOINTS = {
+            "/",
+            "/api/v1/**",
+    };
+
+    private final String[] STATIC_RESOURCES = {
+            "/css/**",
+            "/fonts/**",
+            "/img/**",
+            "/js/**",
+            "/js/pages/**",
+            "/js/vendor/**",
+            "/sass/**"
     };
 
     @Value("${jwt.signer-key}")
@@ -38,6 +54,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(STATIC_RESOURCES).permitAll()
                         .anyRequest().authenticated()
         );
 
