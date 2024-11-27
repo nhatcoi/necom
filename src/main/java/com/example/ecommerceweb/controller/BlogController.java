@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("${api.prefix}/blog")
 @RequiredArgsConstructor
 public class BlogController {
@@ -24,13 +24,7 @@ public class BlogController {
     private final BlogCategoryService blogCategoryService;
     private final BlogService blogService;
 
-    @GetMapping("")
-    public String blog() {
-        return "blog";
-    }
-
     @GetMapping("/categories")
-    @ResponseBody
     public ResponseEntity<List<?>> getCategories() {
         List<?> categories = blogCategoryService.findAll();
         return ResponseEntity.ok().body(categories);
@@ -67,6 +61,5 @@ public class BlogController {
         }
         return ResponseEntity.ok(blogs);
     }
-
 
 }

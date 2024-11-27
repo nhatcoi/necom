@@ -2,18 +2,16 @@ package com.example.ecommerceweb.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Controller
-@RequestMapping("api/v1/contact")
+@RestController
+@RequestMapping("${api.prefix}/contact")
 @RequiredArgsConstructor
 public class ContactController {
 
-    @GetMapping("")
-    public String contact() {
-        return "contact";
-    }
+
+    // TODO: build api for contact
 }
