@@ -1,6 +1,5 @@
 package com.example.ecommerceweb.configuration;
 
-import com.example.ecommerceweb.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,16 +24,17 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/users",
-            "/api/v1/login-form",
-            "/auth/log-in",
-            "/auth/introspect"
+    private final String[] POST_PUBLIC_ENDPOINTS = {
+            "/api/v1/public/**",
+            "/api/v1/blog/public/**",
+            "/api/v1/auth/log-in",
+            "/api/v1/auth/introspect",
+            "/api/v1/user/create-user"
     };
 
     private final String[] GET_PUBLIC_ENDPOINTS = {
             "/",
-            "/api/v1/**",
+            "/api/v1/**"
     };
 
     private final String[] STATIC_RESOURCES = {
@@ -44,7 +44,8 @@ public class SecurityConfig {
             "/js/**",
             "/js/pages/**",
             "/js/vendor/**",
-            "/sass/**"
+            "/sass/**",
+            "/favicon.ico"
     };
 
     @Value("${jwt.signer-key}")
@@ -53,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                request.requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(STATIC_RESOURCES).permitAll()
                         .anyRequest().authenticated()
