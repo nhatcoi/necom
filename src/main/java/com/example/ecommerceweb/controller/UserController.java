@@ -10,9 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -20,7 +21,7 @@ public class UserController {
 
     private final Translator translator;
 
-    @GetMapping("/users")
+    @GetMapping("")
     public ResponseData<?> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -30,7 +31,7 @@ public class UserController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUsers());
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public ResponseData<?> getUserById(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUserById(userId));
     }
@@ -42,7 +43,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/users")
+    @PostMapping("/create-user")
     public ResponseData<?> register(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.createUser(userRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(), translator.toLocated("response.success"), userResponse);
