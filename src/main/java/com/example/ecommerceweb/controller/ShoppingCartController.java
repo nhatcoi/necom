@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +25,12 @@ public class ShoppingCartController {
     private final Translator translator;
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/{cartId}")
-    public ResponseEntity<?> getItemsCart(@PathVariable Long cartId)
-    {
-        List<Cart> cartItems = cartService.getCartItems(cartId);
-        return ResponseEntity.ok().body(cartItems);
+    @GetMapping("/items")
+    public ResponseEntity<?> getItemsCart(Authentication authentication) {
+
+        Long userId = (Long) authentication.getPrincipal();
+
+        return ResponseEntity.ok().body("2");
     }
 
     @PreAuthorize("hasRole('USER')")
