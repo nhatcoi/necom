@@ -66,9 +66,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
-        context.getAuthentication().getName();
+        String username = context.getAuthentication().getName();
 
-        User user = userRepository.findByUsername(context.getAuthentication().getName())
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
