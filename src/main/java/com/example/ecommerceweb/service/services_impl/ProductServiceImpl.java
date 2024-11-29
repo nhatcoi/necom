@@ -122,15 +122,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getLatestProducts(int limit) {
+    public List<ProductDTO> getLatestProducts(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
-        return productRepository.fetchLatestProducts(pageable);
+
+        List<Product>  productsLatest = productRepository.fetchLatestProducts(pageable);
+
+        return productsLatest.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
     @Override
-    public List<Product> getTopRatedProducts(int limit) {
+    public List<ProductDTO> getTopRatedProducts(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
-        return productRatingRepository.fetchTopRatedProducts(pageable);
+        List<Product>  productsLatest = productRepository.fetchLatestProducts(pageable);
+
+        return productsLatest.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
     public List<Product> getProductByPriceRange(int minAmount, int maxAmount) {

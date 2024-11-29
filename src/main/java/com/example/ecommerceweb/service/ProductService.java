@@ -22,8 +22,8 @@ public interface ProductService {
     Page<Product> getAllProducts(PageRequest pageRequest);
     boolean isProductExist(Long id);
 
-    List<Product> getLatestProducts(int limit);
-    List<Product> getTopRatedProducts(int limit);
+    List<ProductDTO> getLatestProducts(int limit);
+    List<ProductDTO> getTopRatedProducts(int limit);
     List<Product> getProductByPriceRange(int min, int max);
 
 
