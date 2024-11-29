@@ -2399,6 +2399,7 @@ ol {
 
 .blog__item__pic img {
     min-width: 100%;
+    height: 200px;
 }
 
 .blog__item__text {
