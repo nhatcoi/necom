@@ -29,7 +29,7 @@ public class SecurityConfig {
             "/api/v1/blog/public/**",
             "/api/v1/auth/log-in",
             "/api/v1/auth/introspect",
-            "/api/v1/user/create-user"
+            "/api/v1/users/create-user"
     };
 
     private final String[] GET_PUBLIC_ENDPOINTS = {
