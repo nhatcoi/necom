@@ -21,7 +21,7 @@ import static com.example.ecommerceweb.util.Static.*;
 
 @Slf4j
 @Controller
-@RequestMapping("")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class HomeController {
     private final CategoryService categoryService;
@@ -30,28 +30,11 @@ public class HomeController {
 
     @GetMapping("")
     public String home(Model model) throws IOException, InterruptedException {
-        List<CategoryDTO> categories = categoryService.getAllCategories().stream()
-                .map(category -> modelMapper.map(category, CategoryDTO.class))
-                .collect(Collectors.toList());
 
-        List<List<ProductDTO>> latestProducts = divideList(
-                productService.getLatestProducts(LATEST_LIMIT).stream()
-                        .map(product -> modelMapper.map(product, ProductDTO.class))
-                        .collect(Collectors.toList()),
-                PAGE_SLIDE
-        );
-        List<List<ProductDTO>> topRatedProducts = divideList(
-                productService.getTopRatedProducts(TOP_RATING_LIMIT).stream()
-                        .map(product -> modelMapper.map(product, ProductDTO.class))
-                        .collect(Collectors.toList()),
-                PAGE_SLIDE
-        );
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("latestProducts", latestProducts);
-        model.addAttribute("topRatedProducts", topRatedProducts);
-        return "index";
+        return "home";
     }
+
+
 
 }
 

@@ -1,16 +1,17 @@
 package com.example.ecommerceweb.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Slf4j
 @Controller
 @RequestMapping("${api.prefix}")
-@RequiredArgsConstructor
 public class LayoutController {
+
+    @GetMapping("/shop-grid")
+    public String getShopGrid() {
+        return "shop-grid";
+    }
 
     @GetMapping("/login-form")
     public String loginForm() {
@@ -26,7 +27,6 @@ public class LayoutController {
     public String blog() {
         return "blog";
     }
-
 
     @GetMapping("/blog-details")
     public String blogDetail() {

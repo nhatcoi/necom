@@ -1,7 +1,8 @@
 package com.example.ecommerceweb.controller;
 
-import com.example.ecommerceweb.dto.CategoryDTO;
+import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.ProductDTO;
+import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.entity.FlashSaleItem;
 import com.example.ecommerceweb.entity.FlashSale;
 import com.example.ecommerceweb.service.CategoryService;
@@ -27,33 +28,19 @@ import static com.example.ecommerceweb.util.DivideList.divideList;
 @Controller
 @RequestMapping("${api.prefix}/shop-grid")
 @RequiredArgsConstructor
-public class ShopGridController {
-    private final CategoryService categoryService;
-    private final FlashSaleItemService flashSaleItemService;
+public class FlashSaleController {
+
     private final FlashSaleService flashSaleService;
     private final ProductService productService;
     private final ModelMapper modelMapper;
+    private final Translator translator;
 
-    @GetMapping("")
-    public String shopGrid(Model model) {
-        List<CategoryDTO> categories = categoryService.getAllCategories().stream()
-                .map(category -> modelMapper.map(category, CategoryDTO.class))
-                .collect(Collectors.toList());
+
+    @GetMapping("/flash-sale")
+    @ResponseBody
+    public ResponseData<?> getFlashSale() {
         FlashSale currentFlashSale = flashSaleService.getCurrentFlashSale() != null ? flashSaleService.getCurrentFlashSale() : new FlashSale();
-        List<FlashSaleItem> flashSaleItems = flashSaleItemService.getProductsInFlashSale(currentFlashSale.getId());
-
-        List<List<ProductDTO>> latestProducts = divideList(
-                productService.getLatestProducts(LATEST_LIMIT).stream()
-                        .map(product -> modelMapper.map(product, ProductDTO.class))
-                        .collect(Collectors.toList()),
-                PAGE_SLIDE
-        );
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("flashSaleItems", flashSaleItems);
-        model.addAttribute("flashSale", currentFlashSale);
-        model.addAttribute("latestProducts", latestProducts);
-        return "shop-grid";
+        return new ResponseData<>(200, translator.toLocated("get.flash-sale.success"), currentFlashSale);
     }
 
 
