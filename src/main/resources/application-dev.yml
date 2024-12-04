@@ -41,5 +41,3 @@ admin:
   username: ${ADMIN_USERNAME}
   password: ${ADMIN_PASSWORD}
 
-api:
-  prefix: /api/v1
