@@ -9,5 +9,5 @@ public interface FlashSaleItemRepository extends JpaRepository<FlashSaleItem, Lo
 
     List<FlashSaleItem> findByFlashSaleId(Long flashSaleId);
 
-    FlashSaleItem findByFlashSaleIdAndProductId(Long flashSaleId, Long productId);
+    FlashSaleItem findByFlashSaleIdAndProductSaleId(Long flashSaleId, Long productId);
 }

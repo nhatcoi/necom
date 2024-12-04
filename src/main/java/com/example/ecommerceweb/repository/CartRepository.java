@@ -9,7 +9,9 @@ import java.util.List;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    List<Cart> findByUserId(Long userId);
+
+    @Query("SELECT c FROM Cart c WHERE c.user.username = ?1 ORDER BY c.product.name ASC")
+    List<Cart> findByUserName(String username);
 
     @Query("SELECT COUNT(c) FROM Cart c WHERE c.user.username = ?1")
     Integer countByUsername(String username);
