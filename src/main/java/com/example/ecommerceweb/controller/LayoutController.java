@@ -5,52 +5,52 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("${api.prefix}")
+@RequestMapping("")
 public class LayoutController {
 
     @GetMapping("/shop-grid")
     public String getShopGrid() {
-        return "shop-grid";
+        return "/shop-grid";
     }
 
     @GetMapping("/login-form")
     public String loginForm() {
-        return "login";
+        return "/login";
     }
 
     @GetMapping("/register-form")
     public String registerForm() {
-        return "register";
+        return "/register";
     }
 
     @GetMapping("/blog")
     public String blog() {
-        return "blog";
+        return "/blog";
     }
 
     @GetMapping("/blog-details")
     public String blogDetail() {
-        return "blog-details";
+        return "/blog-details";
     }
 
     @GetMapping("/checkout")
     public String checkOut() {
-        return "checkout";
+        return "/checkout";
     }
 
     @GetMapping("/contact")
     public String contact() {
-        return "contact";
+        return "/contact";
     }
 
     @GetMapping("/shop-details")
     public String shopDetail() {
-        return "shop-details";
+        return "/shop-details";
     }
 
     @GetMapping("/shopping-cart")
     public String shoppingCart() {
-        return "shopping-cart";
+        return "/shopping-cart";
     }
 
 }

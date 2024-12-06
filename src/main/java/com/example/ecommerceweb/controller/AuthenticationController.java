@@ -17,7 +17,7 @@ import java.text.ParseException;
 
 @Slf4j
 @RestController
-@RequestMapping("${api.prefix}/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

@@ -24,7 +24,7 @@ import java.util.List;
 import static com.example.ecommerceweb.util.DivideList.divideList;
 import static com.example.ecommerceweb.util.Static.*;
 
-@RequestMapping("${api.prefix}/products")
+@RequestMapping("/products")
 @RestController
 @RequiredArgsConstructor
 public class ProductController {

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.prefix}/categories")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 

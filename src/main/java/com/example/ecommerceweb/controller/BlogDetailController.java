@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("${api.prefix}/blog-details")
+@RequestMapping("/blog-details")
 @RequiredArgsConstructor
 public class BlogDetailController {
     private final BlogService blogService;

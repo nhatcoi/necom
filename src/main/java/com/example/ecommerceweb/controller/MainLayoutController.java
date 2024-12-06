@@ -12,6 +12,4 @@ public class MainLayoutController {
     public String index() {
         return "index";
     }
-
-
 }

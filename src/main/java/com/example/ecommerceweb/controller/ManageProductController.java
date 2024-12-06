@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
-@RequestMapping("products")
+@RequestMapping("products-manage")
 @Controller
 @RequiredArgsConstructor
 public class ManageProductController {

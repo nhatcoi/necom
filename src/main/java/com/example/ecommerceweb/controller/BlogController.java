@@ -2,7 +2,6 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.BlogDTO;
-import com.example.ecommerceweb.dto.PaginatedResponse;
 import com.example.ecommerceweb.dto.response.Pagination;
 import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.service.BlogCategoryService;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("${api.prefix}/blog")
+@RequestMapping("/blog")
 @RequiredArgsConstructor
 public class BlogController {
 
