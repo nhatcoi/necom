@@ -25,16 +25,17 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] POST_PUBLIC_ENDPOINTS = {
-            "/api/v1/public/**",
-            "/api/v1/blog/public/**",
-            "/api/v1/auth/log-in",
-            "/api/v1/auth/introspect",
-            "/api/v1/users/create-user"
+            "/blog/public/**",
+            "/auth/log-in",
+            "/auth/introspect",
+            "/users/create-user",
+            "/checkout/**",
+            "/checkout/checkout-order"
     };
 
-    private final String[] GET_PUBLIC_ENDPOINTS = {
+    private final String[] PUBLIC_ENDPOINTS = {
             "/",
-            "/api/v1/**"
+            "/**"
     };
 
     private final String[] STATIC_RESOURCES = {
@@ -55,14 +56,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(STATIC_RESOURCES).permitAll()
                         .anyRequest().authenticated()
         );
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(JwtDecoder())
+                        .decoder(jwtDecoder())
                         .jwtAuthenticationConverter(jwtAuthenticationConverter())
                 )
         );
@@ -84,7 +86,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder JwtDecoder() {
+    public JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSignerKey.getBytes(), "HS512");
         return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
