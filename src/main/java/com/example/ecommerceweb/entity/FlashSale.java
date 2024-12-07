@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class FlashSale extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-    @OneToMany(mappedBy = "flashSale", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FlashSaleItem> flashSaleItems;
+    @OneToMany(mappedBy = "flashSale", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<FlashSaleItem> items;
 }
