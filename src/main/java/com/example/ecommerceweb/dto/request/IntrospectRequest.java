@@ -2,11 +2,9 @@ package com.example.ecommerceweb.dto.request;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
 public class IntrospectRequest {
     private String token;
