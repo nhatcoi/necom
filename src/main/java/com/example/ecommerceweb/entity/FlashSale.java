@@ -8,7 +8,6 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Data
 @Getter
 @Setter
 @NoArgsConstructor

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @ToString(callSuper = true)
-@Data
 @Getter
 @Setter
 @NoArgsConstructor

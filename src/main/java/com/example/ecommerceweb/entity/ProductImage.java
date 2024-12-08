@@ -3,7 +3,6 @@ package com.example.ecommerceweb.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
