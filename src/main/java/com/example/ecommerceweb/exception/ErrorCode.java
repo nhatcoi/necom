@@ -26,7 +26,9 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1005, "User does not exist", HttpStatus.NOT_FOUND),
     PHONE_NUMBER_NOT_EXISTED(1009, "Phone number is invalid", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED_USER(1011, "Unauthenticated user", HttpStatus.UNAUTHORIZED),
-    CART_NOT_FOUND(1012, "Cart item not found", HttpStatus.NOT_FOUND);
+    CART_NOT_FOUND(1012, "Cart item not found", HttpStatus.NOT_FOUND),
+    CART_QUANTITY_LIMIT(1013, "Limit quantity in cart", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_EXISTED(1014, "Product does not exist", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;
