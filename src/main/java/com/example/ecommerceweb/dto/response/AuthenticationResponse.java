@@ -2,12 +2,11 @@ package com.example.ecommerceweb.dto.response;
 
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class AuthenticationResponse {
     private String token;
     private boolean isAuthenticated;
