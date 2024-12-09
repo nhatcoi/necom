@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.repository;
 
-import com.example.ecommerceweb.entities.ProductImage;
+import com.example.ecommerceweb.entity.ProductImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
