@@ -2,6 +2,7 @@ package com.example.ecommerceweb.service.services_impl;
 
 import com.example.ecommerceweb.dto.request.UserRequest;
 import com.example.ecommerceweb.dto.response.UserResponse;
+import com.example.ecommerceweb.entity.Address;
 import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.RoleEnum;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -58,6 +60,18 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
+        List<Address> addresses = userRequest.getAddresses().stream()
+                .map(addressRequest -> Address.builder()
+                        .addressLine(addressRequest.getAddressLine())
+                        .city(addressRequest.getCity())
+                        .district(addressRequest.getDistrict())
+                        .postcode(addressRequest.getPostcode())
+                        .country(addressRequest.getCountry())
+                        .user(user) // map to user
+                        .build())
+                .collect(Collectors.toList());
+        user.setAddresses(addresses);
+
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
@@ -70,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+        log.info(user.getEmail());
         return userMapper.toUserResponse(user);
     }
 
