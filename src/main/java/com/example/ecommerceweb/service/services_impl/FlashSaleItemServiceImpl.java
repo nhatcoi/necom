@@ -33,7 +33,7 @@ public class FlashSaleItemServiceImpl implements FlashSaleItemService {
 
     @Override
     public FlashSaleItem getProductInFlashSale(Long flashSaleId, Long productId) {
-        return flashSaleItemRepository.findByFlashSaleIdAndProductId(flashSaleId, productId);
+        return flashSaleItemRepository.findByFlashSaleIdAndProductSaleId(flashSaleId, productId);
     }
 
     @Override
