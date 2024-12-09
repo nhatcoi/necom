@@ -1159,14 +1159,14 @@ ol {
 
 .breadcrumb__text h2 {
     font-size: 46px;
-    color: #ffffff;
+    color: #000000;
     font-weight: 700;
 }
 
 .breadcrumb__option a {
     display: inline-block;
     font-size: 16px;
-    color: #ffffff;
+    color: #000000;
     font-weight: 700;
     margin-right: 20px;
     position: relative;
@@ -1185,7 +1185,7 @@ ol {
 .breadcrumb__option span {
     display: inline-block;
     font-size: 16px;
-    color: #ffffff;
+    color: #676767;
 }
 
 /*---------------------
@@ -1365,6 +1365,7 @@ ol {
 /*---------------------
   Shop Grid
 -----------------------*/
+
 
 .product {
     padding-top: 80px;
@@ -2260,6 +2261,8 @@ ol {
     margin-bottom: 10px;
 }
 
+
+
 .checkout__input__checkbox label {
     position: relative;
     font-size: 16px;
@@ -2322,6 +2325,18 @@ ol {
     margin-bottom: 20px;
 }
 
+.checkout__order ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.checkout__order .your-order p {
+    width: 160px;
+    margin-top: 13px;
+}
+
 .checkout__order .checkout__order__products {
     font-size: 18px;
     color: #1c1c1c;
@@ -2345,6 +2360,8 @@ ol {
 }
 
 .checkout__order ul li span {
+    margin-top: 0;
+    padding-top: 0;
     font-weight: 700;
     float: right;
 }
