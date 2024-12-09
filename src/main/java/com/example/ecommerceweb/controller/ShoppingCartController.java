@@ -34,7 +34,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/count")
     public ResponseData<?> getCountInCart() {
-        return new ResponseData<>(HttpStatus.OK.value(),  translator.toLocated("response.success"), cartService.getCountInCart());
+        return new ResponseData<>(HttpStatus.OK.value(),  translator.toLocated("response.success"), cartService.getTotalInCart());
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -46,15 +46,26 @@ public class ShoppingCartController {
 
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/update/{id}")
-    public ResponseData<?> updateCartItem( @PathVariable Long id,
-                                           @RequestBody @Valid UpdateCartItemRequest request) {
+    public ResponseData<?> updateCartItem(@PathVariable Long id,
+                                          @RequestBody @Valid UpdateCartItemRequest request) {
 
         cartService.updateCartItem(id, request.getQuantity());
 
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Cart item updated successfully.",
+                "quantity updated successfully.",
                 null
+        );
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/add-to-cart/{productId}")
+    public ResponseData<?> createCartItem(@PathVariable Long productId) {
+        Integer totalInCart = cartService.createCartItem(productId);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Cart item updated successfully.",
+                totalInCart
         );
     }
 }
