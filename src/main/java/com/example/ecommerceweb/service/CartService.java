@@ -7,6 +7,9 @@ import java.util.List;
 
 @Service
 public interface CartService {
-    List<Cart> getCartItems(Long cartId);
-    Integer getCountInCart();
+    List<Cart> getCartItems();
+    Integer getTotalInCart();
+    void removeItem(Long id);
+    void updateCartItem(Long id, Integer quantity);
+    Integer createCartItem(Long productId);
 }
