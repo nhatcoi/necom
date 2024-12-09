@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class BlogDTO {
     private Long id;
     private String title;
