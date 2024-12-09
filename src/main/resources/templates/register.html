@@ -21,8 +21,13 @@
     <h2>Register</h2>
     <form method="post">
         <input type="text" placeholder="Full Name" name="fullName">
-        <input type="text" placeholder="Address" name="address">
+        <input type="text" placeholder="Address Line" name="addressLine">
+        <input type="text" placeholder="District" name="district">
+        <input type="text" placeholder="City / state" name="city">
+        <input type="text" placeholder="country" name="country">
+        <input type="text" placeholder="postcode" name="postcode">
         <input type="text" placeholder="Username" name="username">
+        <input type="email" placeholder="example@gmail.com" name="email">
         <input type="text" placeholder="Phone Number" name="phoneNumber">
         <input type="password" placeholder="Password" name="password">
         <input type="password" placeholder="Confirm Password" name="confirmPassword">
@@ -30,7 +35,7 @@
         <div></div>
         <button type="submit">Register</button>
     </form>
-    <p>Already have an account? <a th:href="@{/api/v1/login-form}">Log in here</a></p>
+    <p>Already have an account? <a th:href="@{/login-form}">Log in here</a></p>
 </div>
 
 <!-- Header Section End -->
