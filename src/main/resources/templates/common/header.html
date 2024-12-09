@@ -1,37 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="JackieShop">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>JackieShop</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-
-    <!-- Css Styles thymeleaf -->
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/elegant-icons.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/nice-select.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/jquery-ui.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/owl.carousel.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/slicknav.min.css}" rel="stylesheet" type="text/css">
-    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}" type="text/css">
-</head>
-<body>
-
 <div th:fragment="header">
-    <!-- Page preloaded -->
-    <div id="preloaded">
-        <div class="loader"></div>
-    </div>
 
     <!-- Begin Mobile First -->
     <div class="menu__overlay"></div>
@@ -42,7 +9,7 @@
         <div class="menu__cart">
             <ul>
                 <li><a href="#"><i class="fa fa-heart"></i> <span>0</span></a></li>
-                <li><a class="amount-cart" th:href="@{/api/v1/shopping-cart}"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
+                <li><a class="amount-cart" th:href="@{/shopping-cart}"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
             </ul>
             <div class="header__cart__price">item: <span>0$</span></div>
         </div>
@@ -56,28 +23,26 @@
                     <li><a href="#">VietNam</a></li>
                 </ul>
             </div>
-            <div class="header__top__right__auth authSection">
-                <!--                                <a th:href="@{/products/show}"><i class="fa fa-user"></i> Login</a>-->
-                <a th:href="@{/api/v1/login-form}"><i class="fa fa-user"></i> Login</a>
-            </div>
-            <div class="header__top__right__name nameSection" style="display:none;">
-                <a href="#" class="welcome-display"></a>
+            <div class="header__top__right__social">
+                <a class="authSection" th:href="@{/login-form}"><i class="fa fa-user"></i> Login</a>
+                <a href="#" class="welcome-display nameSection" style="display:none;"></a>
             </div>
         </div>
         <nav class="menu__nav mobile-menu">
             <ul>
-                <li><a th:href="@{/}">Home</a></li>
-                <li><a th:href="@{/api/v1/shop-grid}">Shop</a></li>
+                <li><a th:href="@{/}" data-target="home-content">Home</a></li>
+                <li><a th:href="@{/shop-grid}">Shop</a></li>
+
                 <li><a href="#">Pages</a>
                     <ul class="header__menu__dropdown">
-                        <li><a th:href="@{/api/v1/shop-details}">Shop Details</a></li>
-                        <li><a th:href="@{/api/v1/shopping-cart}">Shopping Cart</a></li>
-                        <li><a th:href="@{/api/v1/checkout}">Check Out</a></li>
-                        <li><a th:href="@{/api/v1/blog-details}">Blog Details</a></li>
+                        <li><a th:href="@{/product-details/2}">Shop Details</a></li>
+                        <li><a th:href="@{/shopping-cart}">Shopping Cart</a></li>
+                        <li><a th:href="@{/checkout}">Check Out</a></li>
+                        <li><a th:href="@{/blog-details}">Blog Details</a></li>
                     </ul>
                 </li>
-                <li><a th:href="@{/api/v1/blog}">Blog</a></li>
-                <li><a th:href="@{/api/v1/contact}">Contact</a></li>
+                <li><a th:href="@{/blog}">Blog</a></li>
+                <li><a th:href="@{/contact}">Contact</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
@@ -112,8 +77,6 @@
                             <div class="header__top__right__social">
                                 <a href="https://www.facebook.com/nhatcoi037"><i class="fa fa-facebook"></i></a>
                                 <a href="https://www.messenger.com/t/100038026341974"><i class="fa fa-envelope"></i></a>
-                                <!--                                <a href="#"><i class="fa fa-linkedin"></i></a>-->
-                                <!--                                <a href="#"><i class="fa fa-pinterest-p"></i></a>-->
                             </div>
                             <div class="header__top__right__language">
                                 <img src="/img/LanguageVN.png" alt="">
@@ -124,12 +87,11 @@
                                     <li><a href="#">English</a></li>
                                 </ul>
                             </div>
-                            <div class="header__top__right__auth authSection">
-<!--                                <a th:href="@{/products/show}"><i class="fa fa-user"></i> Login</a>-->
-                                <a th:href="@{/api/v1/login-form}"><i class="fa fa-user"></i> Login</a>
+                            <div class="header__top__right__social">
+                                <a class="authSection" th:href="@{/login-form}"><i class="fa fa-user"></i> Login</a>
+                                <a href="#" class="welcome-display nameSection" style="display:none;"></a>
                             </div>
-                            <div class="header__top__right__name nameSection" style="display:none;">
-                                <a href="#" class="welcome-display"></a>
+                            <div class="header__top__right__auth">
                             </div>
                         </div>
                     </div>
@@ -146,18 +108,19 @@
                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
-                            <li><a th:href="@{/}">Home</a></li>
-                            <li><a th:href="@{/api/v1/shop-grid}">Shop</a></li>
+                            <li><a th:href="@{/}" data-target="home-content">Home</a></li>
+                            <li><a th:href="@{/shop-grid}">Shop</a></li>
+
                             <li><a href="#">Pages</a>
                                 <ul class="header__menu__dropdown">
-                                    <li><a th:href="@{/api/v1/products/2}">Shop Details</a></li>
-                                    <li><a th:href="@{/api/v1/shopping-cart}">Shopping Cart</a></li>
-                                    <li><a th:href="@{/api/v1/checkout}">Check Out</a></li>
-                                    <li><a th:href="@{/api/v1/blog-details}">Blog Details</a></li>
+                                    <li><a th:href="@{/product-details/2}">Shop Details</a></li>
+                                    <li><a th:href="@{/shopping-cart}">Shopping Cart</a></li>
+                                    <li><a th:href="@{/checkout}">Check Out</a></li>
+                                    <li><a th:href="@{/blog-details}">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a th:href="@{/api/v1/blog}">Blog</a></li>
-                            <li><a th:href="@{/api/v1/contact}">Contact</a></li>
+                            <li><a th:href="@{/blog}">Blog</a></li>
+                            <li><a th:href="@{/contact}">Contact</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -165,7 +128,7 @@
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>0</span></a></li>
-                            <li><a class="amount-cart" th:href="@{/api/v1/shopping-cart}"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
+                            <li><a class="amount-cart" th:href="@{/shopping-cart}"><i class="fa fa-shopping-bag"></i> <span>0</span></a></li>
                         </ul>
                         <div class="header__cart__price">item: <span>0$</span></div>
                     </div>
@@ -176,9 +139,55 @@
             </div>
         </div>
     </header>
+
+    <!-- Hero Section Begin -->
+    <section class="hero hero-normal">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="hero__categories">
+                        <div class="hero__categories__all">
+                            <i class="fa fa-bars"></i>
+                            <span>Categories</span>
+                        </div>
+                        <ul>
+                            <li>
+                                <a href="#"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="hero__search">
+                        <div class="hero__search__form">
+                            <form action="#">
+                                <div class="hero__search__categories">
+                                    Product Search
+                                    <span class="arrow_carrot-down"></span>
+                                </div>
+                                <label>
+                                    <input type="text" placeholder="Search">
+                                </label>
+                                <button type="submit" class="site-btn">SEARCH</button>
+                            </form>
+                        </div>
+                        <div class="hero__search__phone">
+                            <div class="hero__search__phone__icon">
+                                <a href="tel:0376696037">
+                                    <i class="fa fa-phone"></i>
+                                </a>
+                            </div>
+                            <div class="hero__search__phone__text">
+                                <h5>+84 37 6696 037</h5>
+                                <span>support 24/7 time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="home-banner">
+                        <!--                        banner home-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-
-
-</body>
-
-</html>
