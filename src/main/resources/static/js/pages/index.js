@@ -1,0 +1,7 @@
+'use restrict';
+
+(function ($) {
+
+
+
+} (jQuery));

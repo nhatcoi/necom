@@ -2,20 +2,23 @@
 
 (function ($) {
     $(document).ready(function () {
-        const PREFIX = '/api/v1';
+        const PREFIX = '';
+        let pagesToShow = 2;
+        const urlProdCate = `${PREFIX}/categories`;
+        const urlBLogCate = `${PREFIX}/blog/categories`;
+
         loadCategories();
         loadBlogs(`${PREFIX}/blog/blogs`, 0);
         loadRecentBlogs();
-        let pagesToShow = 2;
 
         function loadCategories() {
             $.ajax({
-                url: `${PREFIX}/categories`,
+                url: urlProdCate,
                 type: 'GET',
                 success: function (response) {
-                    response.forEach(category => {
+                    response.data.forEach(category => {
                         $("#categories").append(`
-                            <li><a href="/api/v1/categories/${category.id}">${category.name}</a></li>
+                            <li><a href="${urlProdCate}/${category.id}">${category.name}</a></li>
                         `);
                     });
                 },
@@ -23,21 +26,21 @@
             });
 
             $.ajax({
-                url: `${PREFIX}/blog/categories`,
+                url: urlBLogCate,
                 type: 'GET',
                 success: function (response) {
-                    response.forEach(category => {
+                    response.data.forEach(category => {
                         const categoryItem = `
                             <li><a href="#" class="category-link" data-category-id="${category.id}">${category.name}</a></li>
                         `;
-                        $("#blog-categories, #search-by").append(categoryItem);
+                        $("#blog-categories").append(categoryItem);
                     });
 
                     // click event
                     $(".category-link").click(function (e) {
                         e.preventDefault();
                         let categoryId = $(this).data("category-id");
-                        loadBlogs(`${PREFIX}/blog/category/${categoryId}`, 0);
+                        loadBlogs(`${urlBLogCate}/${categoryId}`, 0);
                     });
                 },
                 error: handleError('Could not load blog categories.')
@@ -49,9 +52,9 @@
                 url: url,
                 method: 'GET',
                 data: { page: page, size: 4 },
-                success: function (data) {
-                    renderBlogs(data.content);
-                    renderPagination(data.totalPages, data.currentPage, url);
+                success: function (response) {
+                    renderBlogs(response.data);
+                    renderPagination(response.pagination.totalPages, response.pagination.currentPage, url);
                 },
                 error: handleError('Error fetching blog data.')
             });
@@ -122,11 +125,11 @@
             $.ajax({
                 url: `${PREFIX}/blog/recent-news`,
                 method: 'GET',
-                success: function (data) {
+                success: function (response) {
                     let recentBlogContainer = $('#recent-news');
                     recentBlogContainer.empty();
 
-                    data.forEach(blog => {
+                    response.data.forEach(blog => {
                         let date = new Date(blog.createdAt);
                         let formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                         let recentBlogItem = `
@@ -145,7 +148,6 @@
             });
         }
 
-        // General error handler for AJAX requests
         function handleError(message) {
             return function () {
                 alert(message);

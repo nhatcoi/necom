@@ -2,7 +2,7 @@
 
 (function ($) {
     $(document).ready(function() {
-        const PREFIX = '/api/v1';
+        const PREFIX = '';
         // When clicking on the blog item link
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
