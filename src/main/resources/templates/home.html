@@ -1,0 +1,196 @@
+
+<div th:fragment="home">
+
+
+    <!-- Categories Section Slider Begin -->
+    <section class="categories">
+        <div class="container">
+            <div class="row">
+                <div class="categories__slider owl-carousel categories-slider">
+                    <div class="col-lg-3">
+                        <div class="categories__item set-bg">
+                            <h5><a href="#"></a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Categories Section Slider End -->
+
+    <!-- Featured Section Begin -->
+    <section class="featured spade">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>PRODUCTS</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row featured__filter product-container">
+                <!-- Products will be loaded here via AJAX -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mix">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg">
+                            <ul class="product__item__pic__hover">
+                                <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                                <li><a href="#"><i class="fa fa-retweet"></i></a></li>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6><a href="/products/${product.id}">${product.name}</a></h6>
+                            <h5>${product.price} $</h5>
+                        </div>
+                    </div>
+                </div>
+                <!-- container -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="col-lg-12">
+                <div class="product__pagination blog__pagination d-flex justify-content-center">
+                    <a href="#">1</a>
+                    <a href="#"><i class="fa fa-long-arrow-right"></i></a>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+    <!-- Featured Section End -->
+
+    <!-- Banner Begin -->
+<!--    <div class="banner">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-lg-6 col-md-6 col-sm-6">-->
+<!--                    <div class="banner__pic">-->
+<!--                        <img src="/img/banner/banner-left.jpeg" alt="">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-lg-6 col-md-6 col-sm-6">-->
+<!--                    <div class="banner__pic">-->
+<!--                        <img src="/img/banner/banner-right.jpeg" alt="">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <!-- Banner End -->
+
+    <!-- Latest Product Section Begin -->
+<!--    <section class="latest-product spade">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-lg-4 col-md-6">-->
+<!--                    <div class="special-product__text">-->
+<!--                        <h4>Latest Products</h4>-->
+<!--                        <div id="latest-product" class="special-product__slider owl-carousel">-->
+<!--                            <div  class="special-product__slider__item" th:each="productList : ${latestProducts}">-->
+<!--                                <div class="special-product__item__group">-->
+<!--                                    <div th:each="product : ${productList}">-->
+<!--                                        <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">-->
+<!--                                            <div class="special-product__item__pic">-->
+<!--                                                <img th:src="@{${product.thumbnail}}" alt="">-->
+<!--                                            </div>-->
+<!--                                            <div class="special-product__item__text">-->
+<!--                                                <h6 th:text="${product.name}"></h6>-->
+<!--                                                <span th:text="${product.price} + ' $'"></span>-->
+<!--                                            </div>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash;            Top Rated Products&ndash;&gt;-->
+<!--                <div class="col-lg-4 col-md-6">-->
+<!--                    <div class="special-product__text">-->
+<!--                        <h4>Top Rated Products</h4>-->
+<!--                        <div class="special-product__slider owl-carousel">-->
+<!--                            <div class="special-product__slider__item" th:each="productList : ${topRatedProducts}">-->
+<!--                                <div class="special-product__item__group">-->
+<!--                                    <div th:each="product : ${productList}">-->
+<!--                                        <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">-->
+<!--                                            <div class="special-product__item__pic">-->
+<!--                                                <img th:src="@{${product.thumbnail}}" alt="">-->
+<!--                                            </div>-->
+<!--                                            <div class="special-product__item__text">-->
+<!--                                                <h6 th:text="${product.name}"></h6>-->
+<!--                                                <span th:text="${product.price} + ' $'"></span>-->
+<!--                                            </div>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+
+<!--                <div class="col-lg-4 col-md-6">-->
+<!--                    <div class="special-product__text">-->
+<!--                        <h4>Upcoming Products</h4>-->
+<!--                        <div class="special-product__slider owl-carousel">-->
+<!--                            <div class="special-product__slider__item" th:each="productList : ${latestProducts}">-->
+<!--                                <div class="special-product__item__group">-->
+<!--                                    <div th:each="product : ${productList}">-->
+<!--                                        <a th:href="@{'/api/v1/products/' + ${product.id}}" class="special-product__item">-->
+<!--                                            <div class="special-product__item__pic">-->
+<!--                                                <img th:src="@{${product.thumbnail}}" alt="">-->
+<!--                                            </div>-->
+<!--                                            <div class="special-product__item__text">-->
+<!--                                                <h6 th:text="${product.name}"></h6>-->
+<!--                                                <span th:text="${product.price} + ' $'"></span>-->
+<!--                                            </div>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+    <!-- Latest Product Section End -->
+
+    <!-- Blog Section Begin -->
+    <section class="from-blog spade">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title from-blog__title">
+                        <h2>TECH BLOG</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row tech-blog">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="blog__item">
+                        <div class="blog__item__pic">
+                            <img src="" alt="">
+                        </div>
+                        <div class="blog__item__text">
+                            <ul>
+                                <li><i class="fa fa-calendar-o"></i>10/10/2024</li>
+                                <li><i class="fa fa-comment-o">5</i></li>
+                            </ul>
+                            <h5><a href="#"></a></h5>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+

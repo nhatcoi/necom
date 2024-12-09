@@ -2,19 +2,23 @@
 
 (function ($) {
     $(document).ready(function () {
-        loadCategories();
-        loadBlogs('/blog/blogs', 0);
-        loadRecentBlogs();
+        const PREFIX = '';
         let pagesToShow = 2;
+        const urlProdCate = `${PREFIX}/categories`;
+        const urlBLogCate = `${PREFIX}/blog/categories`;
+
+        loadCategories();
+        loadBlogs(`${PREFIX}/blog/blogs`, 0);
+        loadRecentBlogs();
 
         function loadCategories() {
             $.ajax({
-                url: 'categories',
+                url: urlProdCate,
                 type: 'GET',
                 success: function (response) {
-                    response.forEach(category => {
+                    response.data.forEach(category => {
                         $("#categories").append(`
-                            <li><a href="categories/${category.id}">${category.name}</a></li>
+                            <li><a href="${urlProdCate}/${category.id}">${category.name}</a></li>
                         `);
                     });
                 },
@@ -22,21 +26,21 @@
             });
 
             $.ajax({
-                url: 'blog/categories',
+                url: urlBLogCate,
                 type: 'GET',
                 success: function (response) {
-                    response.forEach(category => {
+                    response.data.forEach(category => {
                         const categoryItem = `
                             <li><a href="#" class="category-link" data-category-id="${category.id}">${category.name}</a></li>
                         `;
-                        $("#blog-categories, #search-by").append(categoryItem);
+                        $("#blog-categories").append(categoryItem);
                     });
 
                     // click event
                     $(".category-link").click(function (e) {
                         e.preventDefault();
                         let categoryId = $(this).data("category-id");
-                        loadBlogs(`/blog/category/${categoryId}`, 0);
+                        loadBlogs(`${urlBLogCate}/${categoryId}`, 0);
                     });
                 },
                 error: handleError('Could not load blog categories.')
@@ -48,9 +52,9 @@
                 url: url,
                 method: 'GET',
                 data: { page: page, size: 4 },
-                success: function (data) {
-                    renderBlogs(data.content);
-                    renderPagination(data.totalPages, data.currentPage, url);
+                success: function (response) {
+                    renderBlogs(response.data);
+                    renderPagination(response.pagination.totalPages, response.pagination.currentPage, url);
                 },
                 error: handleError('Error fetching blog data.')
             });
@@ -74,9 +78,9 @@
                                 <ul>
                                     <li><i class="fa fa-calendar-o"></i> ${formattedDate}</li>
                                 </ul>
-                                <h5><a href="/blog-details/${blog.id}">${blog.title}</a></h5>
+                                <h5><a href="${PREFIX}/blog-details/${blog.id}">${blog.title}</a></h5>
                                 <p>${blog.content.substring(0, 80)}...</p>
-                                <a href="blog-details.html?id=${blog.id}" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
+                                <a href="${PREFIX}/blog-details.html?id=${blog.id}" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
                             </div>
                         </div>
                     </div>
@@ -119,17 +123,17 @@
         // Load recent blog posts
         function loadRecentBlogs() {
             $.ajax({
-                url: '/blog/recent-news',
+                url: `${PREFIX}/blog/recent-news`,
                 method: 'GET',
-                success: function (data) {
+                success: function (response) {
                     let recentBlogContainer = $('#recent-news');
                     recentBlogContainer.empty();
 
-                    data.forEach(blog => {
+                    response.data.forEach(blog => {
                         let date = new Date(blog.createdAt);
                         let formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                         let recentBlogItem = `
-                            <a href="/blog/${blog.id}" class="blog__sidebar__recent__item">
+                            <a href="${PREFIX}/blog/${blog.id}" class="blog__sidebar__recent__item">
                                 <div class="blog__sidebar__recent__item__pic"></div>
                                 <div class="blog__sidebar__recent__item__text">
                                     <h6>${blog.title}</h6>
@@ -144,7 +148,6 @@
             });
         }
 
-        // General error handler for AJAX requests
         function handleError(message) {
             return function () {
                 alert(message);

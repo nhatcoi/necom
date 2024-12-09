@@ -1,49 +1,70 @@
 'use strict';
 
 (function ($) {
-    $(document).ready(function() {
-        handleUserAuthentication();
-        updateCartCount();
+    const { API, Utils } = App;
 
-        function handleUserAuthentication() {
-            const userId = localStorage.getItem('userId');
-            const fullName = localStorage.getItem('fullName');
+    $(document).ready(function () {
+        const authSection = $('.authSection');
+        const nameSection = $('.nameSection');
+        const welcomeDisplay = $('.welcome-display');
+        const amountCart = $('.amount-cart span');
+        const token = localStorage.getItem('token');
 
-            if (fullName && userId) {
-                $('.welcome-display').text(`Welcome, ${fullName}`);
-                $('.nameSection').show();
-                $('.authSection').html('<a href="#" class="logout"><i class="fa fa-sign-out"></i> Logout</a>');
-
-                $('.logout').on('click', function(event) {
-                    event.preventDefault();
-                    localStorage.removeItem('userId');
-                    localStorage.removeItem('fullName');
-                    window.location.href = '/';
-                });
-            } else {
-                $('#authSection').html('<a href="/api/login-form"><i class="fa fa-user"></i> Login</a>');
-                $('#nameSection').hide();
-            }
+        if (token) {
+            handleUserAuthentication();
+            getCountCart();
+        } else {
+            displayLoginLink();
         }
 
-        function updateCartCount() {
-            let cartId = localStorage.getItem('userId');
-            if (!cartId) {
-                return;
-            }
-            const CART_URL = `/api/v1/shopping-cart/count/${cartId}`;
+        function displayLoginLink() {
+            authSection.html('<div><i class="fa fa-user"></i> Login</div>');
+            nameSection.hide();
+        }
+
+        function handleUserAuthentication() {
             $.ajax({
-                url: CART_URL,
+                url: `${API.PREFIX}${API.urls.myInfo}`,
                 method: 'GET',
-                success: function (data) {
-                    $('.amount-cart span').text(data);
+                headers: Utils.getAuthHeaders(),
+                success: function (userResponse) {
+                    const fullName = Utils.formatName(userResponse.data.fullName);
+                    if (fullName) {
+                        welcomeDisplay.text(`Hi, ${fullName}`);
+                        nameSection.show();
+                        authSection.html('<a href="#" class="logout"><i class="fa fa-sign-out"></i></a>');
+                        attachLogoutHandler();
+                    }
                 },
-                error: function (xhr) {
-                    console.error("Failed to fetch cart count:", xhr.responseText);
-                }
+                error: function () {
+                    displayLoginLink();
+                },
+            });
+        }
+
+        function getCountCart() {
+            $.ajax({
+                url: `${API.PREFIX}${API.urls.cartCount}`,
+                method: 'GET',
+                headers: Utils.getAuthHeaders(),
+                success: function (response) {
+                    amountCart.text(response.data || 0);
+                },
+                error: function () {
+                    localStorage.clear();
+                    Utils.redirectToLogin();
+                },
+            });
+        }
+
+
+        function attachLogoutHandler() {
+            $('.logout').on('click', function (event) {
+                event.preventDefault();
+                localStorage.removeItem('token');
+                alert('You have been logged out.');
+                window.location.href = '/';
             });
         }
     });
-
-
 })(jQuery);

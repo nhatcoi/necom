@@ -2,6 +2,7 @@
 
 (function ($) {
     $(document).ready(function() {
+        const PREFIX = '';
         // When clicking on the blog item link
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -13,7 +14,7 @@
 
         if (blogId) {
             $.ajax({
-                url: `/blog-details/${blogId}`, // API endpoint to fetch blog details
+                url: `${PREFIX}/blog-details/${blogId}`,// API endpoint to fetch blog details
                 type: 'GET',
                 success: function (data) {
                     // Assuming `data` is a JSON object with all necessary fields

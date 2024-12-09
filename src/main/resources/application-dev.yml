@@ -36,3 +36,11 @@ firebase:
 
 jwt:
   signer-key: ${JWT_SIGNER_KEY}
+
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
+
+stripe:
+  api: ${API_STRIPE_KEY}
+

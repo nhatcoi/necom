@@ -13,29 +13,31 @@ body {
 
 /* -------------------------------add ------------------------------- */
 /* Sign-in class styles */
-.signin {
+.login {
     background-color: white;
     padding: 20px 40px;
     text-align: center;
     box-shadow: 10px 10px 20px rgb(91, 187, 107);
     border-radius: 10px 20px;
     width: 50%; /* adjust the width as desired */
-    margin: 0 auto; /* center the container horizontally */
+    /* center the container horizontally */
+    margin: 5em auto;
+
 }
 
 /* Heading styles */
-.signin h2 {
+.login h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
 /* Form styles */
-.signin form {
+.login form {
     margin-bottom: 20px;
 }
 
 /* Input field styles */
-.signin input {
+.login input {
     margin-bottom: 10px;
     padding: 10px;
     width: 80%;
@@ -45,7 +47,7 @@ body {
 }
 
 /* Button styles */
-.signin button {
+.login button {
     background-color: var(--main_color);
     color: white;
     padding: 10px 30px;
@@ -57,18 +59,18 @@ body {
 }
 
 /* Button hover effect */
-.signin button:hover {
+.login button:hover {
     background-color: var(--main_color);
 }
 
 /* Link styles */
-.signin a {
+.login a {
     color: red;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.signin a:hover {
+.login a:hover {
     color: #4d29c5;
 }
 
@@ -236,7 +238,7 @@ ol {
     background-position: top center;
 }
 
-.spad {
+.spade {
     padding-top: 100px;
     padding-bottom: 100px;
 }
@@ -844,11 +846,20 @@ ol {
 
 .hero__text h2 {
     font-size: 46px;
-    color: #252525;
-    line-height: 52px;
     font-weight: 700;
+    line-height: 52px;
     margin: 10px 0;
+    text-align: center;
+
+    /* Gradient background */
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+
+    /* Đặt gradient vào text */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px #000;
 }
+
 
 .hero__text p {
     margin-bottom: 35px;
@@ -1148,14 +1159,14 @@ ol {
 
 .breadcrumb__text h2 {
     font-size: 46px;
-    color: #ffffff;
+    color: #000000;
     font-weight: 700;
 }
 
 .breadcrumb__option a {
     display: inline-block;
     font-size: 16px;
-    color: #ffffff;
+    color: #000000;
     font-weight: 700;
     margin-right: 20px;
     position: relative;
@@ -1174,7 +1185,7 @@ ol {
 .breadcrumb__option span {
     display: inline-block;
     font-size: 16px;
-    color: #ffffff;
+    color: #676767;
 }
 
 /*---------------------
@@ -1354,6 +1365,7 @@ ol {
 /*---------------------
   Shop Grid
 -----------------------*/
+
 
 .product {
     padding-top: 80px;
@@ -1983,98 +1995,100 @@ ol {
   Shop Cart
 -----------------------*/
 
-.shoping-cart {
+.shopping-cart {
     padding-top: 80px;
     padding-bottom: 80px;
 }
 
-.shoping__cart__table {
+.shopping__cart__table {
     margin-bottom: 30px;
 }
 
-.shoping__cart__table table {
+.shopping__cart__table table {
     width: 100%;
     text-align: center;
 }
 
-.shoping__cart__table table thead tr {
+.shopping__cart__table table thead tr {
     border-bottom: 1px solid #ebebeb;
 }
 
-.shoping__cart__table table thead th {
+.shopping__cart__table table thead th {
     font-size: 20px;
     font-weight: 700;
     color: #1c1c1c;
     padding-bottom: 20px;
 }
 
-.shoping__cart__table table thead th.shoping__product {
+.shopping__cart__table table thead th.shopping__product {
     text-align: left;
 }
 
-.shoping__cart__table table tbody tr td {
+.shopping__cart__table table tbody tr td {
     padding-top: 30px;
     padding-bottom: 30px;
     border-bottom: 1px solid #ebebeb;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__item {
+.shopping__cart__table table tbody tr td.shopping__cart__item {
     width: 630px;
     text-align: left;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__item img {
+.shopping__cart__table table tbody tr td.shopping__cart__item img {
     display: inline-block;
     margin-right: 25px;
+    width: 70px;
+    border-radius: 7px;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__item h5 {
+.shopping__cart__table table tbody tr td.shopping__cart__item h5 {
     color: #1c1c1c;
     display: inline-block;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__price {
+.shopping__cart__table table tbody tr td.shopping__cart__price {
     font-size: 18px;
     color: #1c1c1c;
     font-weight: 700;
     width: 100px;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__total {
+.shopping__cart__table table tbody tr td.shopping__cart__total {
     font-size: 18px;
     color: #1c1c1c;
     font-weight: 700;
     width: 110px;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__item__close {
+.shopping__cart__table table tbody tr td.shopping__cart__item__close {
     text-align: right;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__item__close span {
+.shopping__cart__table table tbody tr td.shopping__cart__item__close span {
     font-size: 24px;
     color: #b2b2b2;
     cursor: pointer;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__quantity {
+.shopping__cart__table table tbody tr td.shopping__cart__quantity {
     width: 225px;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty {
+.shopping__cart__table table tbody tr td.shopping__cart__quantity .pro-qty {
     width: 120px;
     height: 40px;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty input {
+.shopping__cart__table table tbody tr td.shopping__cart__quantity .pro-qty input {
     color: #1c1c1c;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty input::placeholder {
+.shopping__cart__table table tbody tr td.shopping__cart__quantity .pro-qty input::placeholder {
     color: #1c1c1c;
 }
 
-.shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty .qtybtn {
+.shopping__cart__table table tbody tr td.shopping__cart__quantity .pro-qty .qtybtn {
     width: 15px;
 }
 
@@ -2092,18 +2106,18 @@ ol {
     float: right;
 }
 
-.shoping__discount {
+.shopping__discount {
     margin-top: 45px;
 }
 
-.shoping__discount h5 {
+.shopping__discount h5 {
     font-size: 20px;
     color: #1c1c1c;
     font-weight: 700;
     margin-bottom: 25px;
 }
 
-.shoping__discount form input {
+.shopping__discount form input {
     width: 255px;
     height: 46px;
     border: 1px solid #cccccc;
@@ -2114,36 +2128,36 @@ ol {
     margin-right: 15px;
 }
 
-.shoping__discount form input::placeholder {
+.shopping__discount form input::placeholder {
     color: #b2b2b2;
 }
 
-.shoping__discount form button {
+.shopping__discount form button {
     padding: 15px 30px 11px;
     font-size: 12px;
     letter-spacing: 4px;
     background: #6f6f6f;
 }
 
-.shoping__checkout {
+.shopping__checkout {
     background: #f5f5f5;
     padding: 30px;
     padding-top: 20px;
     margin-top: 50px;
 }
 
-.shoping__checkout h5 {
+.shopping__checkout h5 {
     color: #1c1c1c;
     font-weight: 700;
     font-size: 20px;
     margin-bottom: 28px;
 }
 
-.shoping__checkout ul {
+.shopping__checkout ul {
     margin-bottom: 28px;
 }
 
-.shoping__checkout ul li {
+.shopping__checkout ul li {
     font-size: 16px;
     color: #1c1c1c;
     font-weight: 700;
@@ -2154,19 +2168,19 @@ ol {
     margin-bottom: 18px;
 }
 
-.shoping__checkout ul li:last-child {
+.shopping__checkout ul li:last-child {
     padding-bottom: 0;
     border-bottom: none;
     margin-bottom: 0;
 }
 
-.shoping__checkout ul li span {
+.shopping__checkout ul li span {
     font-size: 18px;
     color: #dd2222;
     float: right;
 }
 
-.shoping__checkout .primary-btn {
+.shopping__checkout .primary-btn {
     display: block;
     text-align: center;
 }
@@ -2247,6 +2261,8 @@ ol {
     margin-bottom: 10px;
 }
 
+
+
 .checkout__input__checkbox label {
     position: relative;
     font-size: 16px;
@@ -2309,6 +2325,18 @@ ol {
     margin-bottom: 20px;
 }
 
+.checkout__order ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.checkout__order .your-order p {
+    width: 160px;
+    margin-top: 13px;
+}
+
 .checkout__order .checkout__order__products {
     font-size: 18px;
     color: #1c1c1c;
@@ -2332,6 +2360,8 @@ ol {
 }
 
 .checkout__order ul li span {
+    margin-top: 0;
+    padding-top: 0;
     font-weight: 700;
     float: right;
 }
@@ -2386,6 +2416,7 @@ ol {
 
 .blog__item__pic img {
     min-width: 100%;
+    height: 200px;
 }
 
 .blog__item__text {
@@ -3046,7 +3077,7 @@ ol {
         width: 265px;
     }
 
-    .shoping__discount form input {
+    .shopping__discount form input {
         width: 240px;
     }
 }
@@ -3396,11 +3427,11 @@ ol {
         display: none;
     }
 
-    .shoping__cart__table {
+    .shopping__cart__table {
         overflow-y: auto;
     }
 
-    .shoping__discount form input {
+    .shopping__discount form input {
         margin-bottom: 15px;
     }
 
@@ -3651,7 +3682,7 @@ ol {
         margin-right: 20px;
     }
 
-    .shoping__cart__btns {
+    .shopping__cart__btn {
         text-align: center;
     }
 
@@ -3660,7 +3691,7 @@ ol {
         margin-top: 10px;
     }
 
-    .shoping__checkout .primary-btn {
+    .shopping__checkout .primary-btn {
         display: block;
         text-align: center;
         padding: 10px 15px 10px;
@@ -3680,7 +3711,7 @@ ol {
         margin-right: 15px;
     }
 
-    .shoping__discount form input {
+    .shopping__discount form input {
         width: 100%;
     }
 
