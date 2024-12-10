@@ -1,7 +1,25 @@
 'use strict';
 
 (function ($) {
-    const PREFIX = '';
+
+    const { API, Utils, Alerts } = App;
+
+    function init() {
+        filterByPrice();
+        sortProducts();
+        loadCategories();
+        handleCategoryClick();
+        $("#filterButton").trigger("click");
+        $(document).on('click', '.add-to-cart', handleAddToCart);
+    }
+    $(document).ready(init);
+
+
+    function handleAddToCart(event) {
+        event.preventDefault();
+        const productId = $(this).data('id');
+        Utils.addToCartHandler(productId);
+    }
 
     function renderProducts(products) {
         const productsContainer = $("#filterProducts");
@@ -15,11 +33,13 @@
                             <ul class="product__item__pic__hover">
                                 <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                 <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                
+<!--                                add to cart-->
+                                <li><a href="#" class="add-to-cart" data-id="${product.id}"><i class="fa fa-shopping-cart"></i></a></li>
                             </ul>
                         </div>
                         <div class="product__item__text">
-                            <h6><a href="${PREFIX}/product-details/${product.id}">${product.name}</a></h6>
+                            <h6><a href="/product-details/${product.id}">${product.name}</a></h6>
                             <h5>${product.price} $</h5>
                         </div>
                     </div>
@@ -63,7 +83,7 @@
 
         $("#filterButton").click(() => {
             $.ajax({
-                url: `${PREFIX}/shop-grid/filterByPrice`,
+                url: API.urls.shopGrid.filterByPrice,
                 type: "GET",
                 data: {
                     minamount: minAmount.val(),
@@ -97,7 +117,7 @@
 
     function loadCategories() {
         $.ajax({
-            url: '/categories',
+            url: API.urls.categories,
             type: 'GET',
             success: (response) => {
                 const categoriesContainer = $('.hero__categories ul');
@@ -123,20 +143,10 @@
             $(this).addClass("active").siblings().removeClass("active");
 
             const cateId = $(this).find('a').data('category-id');
-            const urlCate = `${PREFIX}/products/category/${cateId}`;
+            const urlCate = `/products/category/${cateId}`;
             getProductsByCategory(urlCate);
         });
     }
-
-    function init() {
-        filterByPrice();
-        sortProducts();
-        loadCategories();
-        handleCategoryClick();
-        $("#filterButton").trigger("click");
-    }
-
-    $(document).ready(init);
 
 })(jQuery);
 

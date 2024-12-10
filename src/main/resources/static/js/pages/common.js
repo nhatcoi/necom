@@ -15,6 +15,9 @@
             products: '/products',
             recentBlogs: '/blog/recent-news',
             addToCart: '/shopping-cart/add-to-cart/',
+            shopGrid: {
+                filterByPrice: '/shop-grid/filterByPrice',
+            },
             cart: {
                 base: '/shopping-cart',
                 items: '/shopping-cart/items',
@@ -40,6 +43,34 @@
     };
 
     const Utils = {
+        addToCartHandler: function (productId) {
+            if (!productId) return console.error('Product ID is missing!');
+
+            $.ajax({
+                url: `${App.API.PREFIX}${App.API.urls.addToCart}${productId}`,
+                method: 'POST',
+                headers: this.getAuthHeaders(),
+                success: (response) => {
+                    const totalInCart = response.data;
+                    const amountCart = $('.amount-cart span');
+                    amountCart.text(totalInCart);
+                    Alerts.handleSuccess("Good job!", response.message)
+                },
+                error: (jqXHR) => {
+                    try {
+                        const errorResponse = JSON.parse(jqXHR.responseText);
+                        if (errorResponse.message) {
+                            Alerts.handleError("Oops",errorResponse.message);
+                        } else {
+                            Alerts.handleError("Oops",'An unknown error occurred!');
+                        }
+                    } catch (err) {
+                        Alerts.handleError("Oops", "Not Authenticated, Please Login!")
+                    }
+                },
+            });
+        },
+
         getAuthHeaders: () => {
             const token = localStorage.getItem('token');
             return token ? { 'Authorization': `Bearer ${token}` } : {};
@@ -52,9 +83,33 @@
             console.log(message);
             alert(message);
         },
+
         formatName: (name) => (name && name.length > 10 ? name.substring(0, 8) + '...' : name),
         redirectToLogin: () => (window.location.href = API.urls.loginForm),
     };
 
-    window.App = { API, Utils, REGEX_VALIDATORS };
+
+    const Alerts = {
+        handleSuccess: (title, text, confirmButtonText) => {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'success',
+                confirmButtonText: "oce"
+            });
+        },
+
+        handleError: (title, text, confirmButtonText) => {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: "error",
+                confirmButtonText: "oce"
+            });
+        },
+    }
+
+
+
+    window.App = { API, Utils, Alerts, REGEX_VALIDATORS };
 })(jQuery);

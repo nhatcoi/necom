@@ -1,6 +1,5 @@
 'use strict';
 
-
 (function ($) {
 
     const { API, Utils } = App;
@@ -28,20 +27,7 @@
     function handleAddToCart(event) {
         event.preventDefault();
         const productId = $(this).data('id');
-        if (!productId) return console.error('Product ID is missing!');
-
-        $.ajax({
-            url: `${API.PREFIX}${API.urls.addToCart}${productId}`,
-            method: 'POST',
-            headers: Utils.getAuthHeaders(),
-            success: (response) => {
-                const totalInCart = response.data;
-                const amountCart = $('.amount-cart span');
-                amountCart.text(totalInCart);
-                Utils.handleSuccess('Add to Cart Successful')
-            },
-            error: Utils.handleError('Failed to add product to cart. Please Login!'),
-        });
+        Utils.addToCartHandler(productId);
     }
 
     function loadBlogs(url) {
