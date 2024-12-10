@@ -1,11 +1,22 @@
 'use strict';
 
 (function ($) {
-
-    const {REGEX_VALIDATORS} = App;
+    const regexValidators = {
+        fullName: /^[A-Za-z\s]{2,50}$/,
+        addressLine: /^[A-Za-z0-9\s,.-]{5,100}$/,
+        district: /^[A-Za-z\s]{2,50}$/,
+        city: /^[A-Za-z\s]{2,50}$/,
+        country: /^[A-Za-z\s]{2,50}$/,
+        postcode: /^[A-Za-z0-9]{3,10}$/,
+        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        username: /^[A-Za-z0-9_-]{3,20}$/,
+        phoneNumber: /^[0-9]{7,15}$/,
+        password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        dob: /^\d{4}-\d{2}-\d{2}$/
+    };
 
     function validateField(fieldName, value) {
-        const regex = REGEX_VALIDATORS[fieldName];
+        const regex = regexValidators[fieldName];
         return regex ? regex.test(value) : true;
     }
 
