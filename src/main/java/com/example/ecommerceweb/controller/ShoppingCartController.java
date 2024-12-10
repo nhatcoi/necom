@@ -41,7 +41,7 @@ public class ShoppingCartController {
     @DeleteMapping("/remove/{id}")
     public ResponseData<?> removeItem(@PathVariable Long id) {
         cartService.removeItem(id);
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("delete.cart.item.ok"), null);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("Delete items in cart successfully!"), null);
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -64,7 +64,7 @@ public class ShoppingCartController {
         Integer totalInCart = cartService.createCartItem(productId);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Cart item updated successfully.",
+                translator.toLocated("Add product to cart successfully"),
                 totalInCart
         );
     }
