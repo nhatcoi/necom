@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="primary-btn" th:href="@{'/cart/add/' + ${product.getId()}}">ADD TO CART</a>
+                        <a href="#" class="add-to-cart primary-btn" th:data-id="${product.getId()}">ADD TO CART</a>
                         <a href="#" class="heart-icon" th:href="@{'/wishlist/add/' + ${product.getId()}}"><span class="icon_heart_alt"></span></a>
                         <ul>
                             <li><b>Availability</b> <span th:text="${product.getQuantityInStock()} + ' in stock'"></span></li>
@@ -120,6 +120,7 @@
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/pages/common.js}"></script>
     <script th:src="@{/js/pages/header.js}"></script>
+    <script th:src="@{/js/pages/shop-details.js}"></script>
 
 
 
