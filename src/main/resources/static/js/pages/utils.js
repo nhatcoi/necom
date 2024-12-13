@@ -74,11 +74,11 @@ export const Alerts = {
 
     handleSuccessTop(text) {
         Swal.fire({
-            position: 'top-end',
+            position: 'center',
             icon: 'success',
             title: text,
             showConfirmButton: false,
-            timer: 1500,
+            timer: 2500,
         });
     },
 
