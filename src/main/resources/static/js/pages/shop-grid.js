@@ -1,9 +1,9 @@
 'use strict';
+import {API, Utils, Alerts} from "./utils.js";
 
 (function ($) {
 
-    const { API, Utils, Alerts } = App;
-
+    $(document).ready(init);
     function init() {
         filterByPrice();
         sortProducts();
@@ -12,8 +12,6 @@
         $("#filterButton").trigger("click");
         $(document).on('click', '.add-to-cart', handleAddToCart);
     }
-    $(document).ready(init);
-
 
     function handleAddToCart(event) {
         event.preventDefault();
@@ -57,7 +55,7 @@
                 renderProducts(response.data);
                 document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
             },
-            error: () => alert("Error fetching category products"),
+            error: () => Alerts.handleError("Error fetching category products"),
         });
     }
 
@@ -94,7 +92,7 @@
                     renderProducts(data);
                     document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
                 },
-                error: () => alert("Error filtering products by price"),
+                error: () => Alerts.handleError("Error filtering products by price"),
             });
         });
     }
@@ -133,7 +131,8 @@
                     $(".cate-filter").append(categoryItem);
                 });
             },
-            error: (error) => console.error('Error loading categories:', error),
+            error: (error) =>
+                console.error('Error loading categories:', error),
         });
     }
 

@@ -1,109 +1,138 @@
-'use restrict';
+'use strict';
 
-(function ($) {
-    const CartAPI = {
-        BASE_URL: App.API.urls.cart.base,
-        endpoints: App.API.urls.cart,
-        getAuthHeaders: () => App.Utils.getAuthHeaders(),
-    };
+import {API, Utils, Alerts} from "./utils.js";
 
-    $(document).ready(() => {
-        loadCart();
+// Cart API Module
+const CartAPI = {
+    BASE_URL: API.urls.cart.base,
+    endpoints: API.urls.cart,
+    getAuthHeaders: () => Utils.getAuthHeaders(),
+    async fetchCartItems() {
+        try {
+            const response = await fetch(this.endpoints.items, {
+                method: 'GET',
+                headers: this.getAuthHeaders(),
+            });
+            if (!response.ok) throw new Error('Failed to fetch cart items');
+            return await response.json();
+        } catch (e) {
+            Alerts.handleError('Error fetching cart items', e.message);
+        }
+    },
+
+    async updateCartItemQuantity(itemId, quantity) {
+        try {
+            const response = await fetch(this.endpoints.update.replace('{id}', itemId), {
+                method: 'PUT',
+                headers: {
+                    ...this.getAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity }),
+            });
+            if (!response.ok) throw new Error('Failed to update cart item');
+            return await response.json();
+        } catch (error) {
+            Alerts.handleError('Error updating cart item', error.message);
+        }
+    },
+
+    async removeCartItem(itemId) {
+        try {
+            const response = await fetch(this.endpoints.remove.replace('{id}', itemId), {
+                method: 'DELETE',
+                headers: this.getAuthHeaders(),
+            });
+            console.log(this.endpoints.remove.replace('{id}', itemId));
+            if (!response.ok) throw new Error('Failed to remove cart item');
+            return await response.json();
+        } catch (error) {
+            Alerts.handleError('Error removing cart item', error.message);
+        }
+    },
+};
+
+// UI Rendering
+async function loadCart() {
+    const cartItems = await CartAPI.fetchCartItems();
+    if (!cartItems || !cartItems.data) return;
+    renderCartItems(cartItems.data);
+}
+
+function renderCartItems(cartItems) {
+    const cartTableBody = document.querySelector('#cart-items');
+    cartTableBody.innerHTML = ''; // Clear existing items
+    let subtotal = 0;
+
+    cartItems.forEach((item) => {
+        const itemTotal = item.product.price * item.quantity;
+        subtotal += itemTotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="shopping__cart__item">
+                <img src="${item.product.thumbnail}" alt="">
+                <h5>${item.product.name}</h5>
+            </td>
+            <td class="shopping__cart__price">$${item.product.price.toFixed(2)}</td>
+            <td class="shopping__cart__quantity">
+                <div class="quantity">
+                    <div class="pro-qty">
+                        <input type="number" value="${item.quantity}" min="1" max="5" data-item-id="${item.id}" />
+                    </div>
+                </div>
+            </td>
+            <td class="shopping__cart__total">$${itemTotal.toFixed(2)}</td>
+            <td class="shopping__cart__item__close">
+                <span class="icon_close" data-item-id="${item.id}"></span>
+            </td>
+        `;
+        cartTableBody.appendChild(row);
     });
 
-    function loadCart() {
-        $.ajax({
-            url: CartAPI.endpoints.items,
-            type: 'GET',
-            headers: CartAPI.getAuthHeaders(),
-            success: (response) => renderCartItems(response.data),
-            error: App.Utils.handleError('Error fetching cart items'),
-        });
+    document.querySelector('#subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.querySelector('#total').textContent = `$${subtotal.toFixed(2)}`;
+
+    attachEventListeners();
+}
+
+function attachEventListeners() {
+    const cartTableBody = document.querySelector('#cart-items');
+
+    // Kiểm tra nếu listener đã được gắn, tránh việc gắn nhiều lần
+    cartTableBody.removeEventListener('change', onQuantityChange);
+    cartTableBody.removeEventListener('click', onRemoveItemClick);
+
+    cartTableBody.addEventListener('change', onQuantityChange);
+    cartTableBody.addEventListener('click', onRemoveItemClick);
+}
+
+async function onQuantityChange(event) {
+    const input = event.target;
+    if (input.tagName === 'INPUT' && input.type === 'number') {
+        const itemId = input.dataset.itemId;
+        let newQuantity = parseInt(input.value, 10);
+
+        if (newQuantity < 1 || newQuantity > 5) {
+            newQuantity = Math.max(1, Math.min(newQuantity, 5));
+            input.value = newQuantity;
+        }
+
+        await CartAPI.updateCartItemQuantity(itemId, newQuantity);
+        await loadCart();
     }
+}
 
-    function renderCartItems(cartItems) {
-        const cartTableBody = $('#cart-items').empty();
-        let subtotal = 0;
-
-        cartItems.forEach((item) => {
-            const itemTotal = item.product.price * item.quantity;
-            subtotal += itemTotal;
-
-            const row = `
-            <tr>
-                <td class="shopping__cart__item">
-                    <img src="${item.product.thumbnail}" alt="">
-                    <h5>${item.product.name}</h5>
-                </td>
-                <td class="shopping__cart__price">$${item.product.price.toFixed(2)}</td>
-                <td class="shopping__cart__quantity">
-                    <div class="quantity">
-                        <div class="pro-qty">
-                            <input type="number" value="${item.quantity}" min="1" max="5" data-item-id="${item.id}" />
-                        </div>
-                    </div>
-                </td>
-                <td class="shopping__cart__total">$${itemTotal.toFixed(2)}</td>
-                <td class="shopping__cart__item__close">
-                    <span class="icon_close" data-item-id="${item.id}"></span>
-                </td>
-            </tr>
-            `;
-            cartTableBody.append(row);
-        });
-
-        $('#subtotal').text(`$${subtotal.toFixed(2)}`);
-        $('#total').text(`$${subtotal.toFixed(2)}`);
-
-        attachEventListeners();
+async function onRemoveItemClick(event) {
+    const closeIcon = event.target;
+    if (closeIcon.classList.contains('icon_close')) {
+        const itemId = closeIcon.dataset.itemId;
+        const removeItem = await CartAPI.removeCartItem(itemId);
+        await loadCart();
+        Alerts.handleSuccessTop(removeItem.message);
     }
+}
 
-    function attachEventListeners() {
-        const cartItems = $('#cart-items');
-        cartItems.off('change', '.pro-qty input').on('change', '.pro-qty input', function () {
-            const itemId = $(this).data('item-id');
-            let newQuantity = parseInt($(this).val(), 10);
 
-            if (newQuantity < 1 || newQuantity > 5) {
-                newQuantity = Math.max(1, Math.min(newQuantity, 5));
-                $(this).val(newQuantity);
-            }
-
-            updateCartItemQuantity(itemId, newQuantity);
-        });
-
-        cartItems.off('click', '.icon_close').on('click', '.icon_close', function () {
-            const itemId = $(this).data('item-id');
-            removeCartItem(itemId);
-        });
-    }
-
-    function updateCartItemQuantity(itemId, quantity) {
-        $.ajax({
-            url: CartAPI.endpoints.update.replace('{id}', itemId),
-            type: 'PUT',
-            headers: CartAPI.getAuthHeaders(),
-            contentType: 'application/json',
-            data: JSON.stringify({ quantity }),
-            success: (response) => {
-                App.Utils.handleSuccess(response.message);
-                loadCart();
-            },
-            error: App.Utils.handleError('Error updating cart item'),
-        });
-    }
-
-    function removeCartItem(itemId) {
-        $.ajax({
-            url: CartAPI.endpoints.remove.replace('{id}', itemId),
-            type: 'DELETE',
-            headers: CartAPI.getAuthHeaders(),
-            success: (response) => {
-                App.Utils.handleSuccess(response.message);
-                loadCart();
-            },
-            error: App.Utils.handleError('Error removing cart item'),
-        });
-    }
-
-} (jQuery));
+// Initialize
+document.addEventListener('DOMContentLoaded', loadCart);

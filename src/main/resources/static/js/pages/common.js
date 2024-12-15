@@ -1,6 +1,8 @@
 'use strict';
 
+
 (function ($) {
+
     const API = {
         PREFIX: '',
         urls: {
@@ -99,6 +101,52 @@
             });
         },
 
+        handleSuccessTop: (text) => {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: text,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        },
+
+        handleDelete(text) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Deleted!",
+                        text: text,
+                        icon: "success"
+                    });
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your imaginary file is safe :)",
+                        icon: "error"
+                    });
+                }
+            });
+        },
+
         handleError: (title, text, confirmButtonText) => {
             Swal.fire({
                 title: title,
@@ -108,8 +156,6 @@
             });
         },
     }
-
-
 
     window.App = { API, Utils, Alerts, REGEX_VALIDATORS };
 })(jQuery);
