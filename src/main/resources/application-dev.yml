@@ -43,5 +43,5 @@ admin:
 
 stripe:
   api: ${API_STRIPE_KEY}
-  webhook: "whsec_uW5aPHBeorRakrouiFe0bhkygJOLd9GB"
+  webhook: "whsec_arHwyuNcwcX6weuyqGE31vcbQW1LsLma"
 
