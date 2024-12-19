@@ -58,8 +58,8 @@ public class PaymentService {
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("http://localhost:8085/")
-                        .setCancelUrl("http://localhost:8085/")
+                        .setSuccessUrl("https://1303-2a09-bac5-d45b-16d2-00-246-bd.ngrok-free.app")
+                        .setCancelUrl("https://1303-2a09-bac5-d45b-16d2-00-246-bd.ngrok-free.app")
                         .addAllLineItem(lineItems)
                         .build();
 
@@ -114,8 +114,8 @@ public class PaymentService {
         SessionCreateParams params =
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
-                        .setSuccessUrl("http://localhost:8085/")
-                        .setCancelUrl("http://localhost:8085/")
+                        .setSuccessUrl("https://1303-2a09-bac5-d45b-16d2-00-246-bd.ngrok-free.app")
+                        .setCancelUrl("https://1303-2a09-bac5-d45b-16d2-00-246-bd.ngrok-free.app")
                         .addLineItem(lineItem)
                         .build();
 
