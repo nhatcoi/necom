@@ -22,11 +22,12 @@ public class StripeWebhookController {
     @Value("${stripe.webhook}")
     private String webhookSecret;
 
-    @PostMapping("/webhook")
+    @PostMapping("")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
                                                       @RequestHeader("Stripe-Signature") String stripeSignature,
                                                       HttpServletRequest request) {
         try {
+            log.info("Webhook payload: {}", payload);
             // Xác thực chữ ký của webhook
             Event event = Webhook.constructEvent(payload, stripeSignature, webhookSecret);
 
