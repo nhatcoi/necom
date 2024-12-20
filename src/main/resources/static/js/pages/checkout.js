@@ -114,31 +114,51 @@
                 city: $('.city').val(),
                 postcode: $('.postcode').val(),
                 phoneNumber: $('.phone').val(),
-                email: $('.email').val()
+                email: $('.email').val(),
+                totalPrice: 0
             }
+
+            let totalPrice = 0;
+            items.forEach(item => {
+                totalPrice += item.product.price * item.quantity;
+            });
+            fields.totalPrice = totalPrice;
 
             if(!validateForm(fields)){
                 return;
             }
 
-            const orderData = {
-                products: items.map(item => ({
-                    name: item.product.name,
-                    currency: 'USD',
-                    amount: item.product.price,
-                    quantity: item.quantity
-                }))
-            };
-
             ajaxRequest({
-                url: API.urls.checkout,
+                url: '/orders',
                 type: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                data: orderData,
+                data: fields,
                 success: function (response) {
-                    window.location.href = response.sessionUrl;
+                    const orderData = {
+                        products: items.map(item => ({
+                            name: item.product.name,
+                            currency: 'USD',
+                            amount: item.product.price,
+                            quantity: item.quantity
+                        })),
+                        orderMetadata: response.data
+                    };
+
+                    ajaxRequest({
+                        url: API.urls.checkout,
+                        type: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        data: orderData,
+                        success: function (response) {
+                            window.location.href = response.sessionUrl;
+                        }
+                    });
                 }
             });
+
+
+
+
         });
     }
 
