@@ -1,7 +1,6 @@
 package com.example.ecommerceweb.service.services_impl;
 
 import com.example.ecommerceweb.dto.BlogDTO;
-import com.example.ecommerceweb.dto.PaginatedResponse;
 import com.example.ecommerceweb.repository.BlogRepository;
 import com.example.ecommerceweb.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -46,18 +45,5 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.findAllByCategoryId(pageable, categoryId)
                 .map(blog -> modelMapper.map(blog, BlogDTO.class));
     }
-
-    @Override
-    public PaginatedResponse<BlogDTO> createPaginatedResponse(Page<BlogDTO> blogPage) {
-        return new PaginatedResponse<>(
-                blogPage.getContent(),
-                blogPage.getTotalPages(),
-                blogPage.getTotalElements(),
-                blogPage.getNumber(),
-                blogPage.getSize()
-        );
-    }
-
-
 
 }
