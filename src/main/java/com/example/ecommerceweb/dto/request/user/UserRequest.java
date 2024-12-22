@@ -1,23 +1,20 @@
-package com.example.ecommerceweb.dto.response;
+package com.example.ecommerceweb.dto.request.user;
 
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-    private Long id;
-    private String fullName;
+public class UserRequest {
     private String username;
+    private String password;
     private String phoneNumber;
     private String email;
+    private String fullName;
     private LocalDate dateOfBirth;
-    private List<AddressResponse> addresses;
-    private Set<String> roleNames;
+    private List<AddressRequest> addresses;
 }
