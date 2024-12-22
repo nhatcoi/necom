@@ -3,11 +3,12 @@ package com.example.ecommerceweb.service.services_impl;
 import com.example.ecommerceweb.entity.Cart;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
-import com.example.ecommerceweb.mapper.CartMapper;
 import com.example.ecommerceweb.repository.CartRepository;
 import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.CartService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,10 +22,11 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-    private final CartMapper cartMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<Cart> getCartItems() {
@@ -97,5 +99,11 @@ public class CartServiceImpl implements CartService {
         );
 
         return cartRepository.countByUsername(username);
+    }
+
+    @Override
+    public void removeItems(String username, List<Long> productIds) {
+        Long userId = userRepository.findIdByUsername(username);
+        cartRepository.deleteByUserIdAndProductId(userId, productIds);
     }
 }
