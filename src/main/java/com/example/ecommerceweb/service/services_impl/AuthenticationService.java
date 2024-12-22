@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.request.AuthenticationRequest;
-import com.example.ecommerceweb.dto.request.IntrospectRequest;
-import com.example.ecommerceweb.dto.response.AuthenticationResponse;
-import com.example.ecommerceweb.dto.response.IntrospectResponse;
+import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
+import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
+import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
+import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;

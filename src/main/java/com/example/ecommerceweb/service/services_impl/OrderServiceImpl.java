@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.request.OrderInfoRequest;
-import com.example.ecommerceweb.dto.request.OrderRequest;
-import com.example.ecommerceweb.dto.request.ProductOrderRequest;
-import com.example.ecommerceweb.dto.response.OrderMetadataIntentResponse;
+import com.example.ecommerceweb.dto.request.order.OrderInfoRequest;
+import com.example.ecommerceweb.dto.request.order.OrderRequest;
+import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
+import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentResponse;
 import com.example.ecommerceweb.entity.Order;
 import com.example.ecommerceweb.entity.OrderDetail;
 import com.example.ecommerceweb.entity.Product;

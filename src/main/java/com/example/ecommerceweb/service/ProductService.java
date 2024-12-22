@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service;
 
 
-import com.example.ecommerceweb.dto.PaginatedResponse;
+import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.entity.Product;
 import org.springframework.data.domain.Page;

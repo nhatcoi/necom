@@ -2,9 +2,9 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.UserResponse;
+import com.example.ecommerceweb.dto.response.user.UserResponse;
 import com.example.ecommerceweb.service.UserService;
-import com.example.ecommerceweb.dto.request.UserRequest;
+import com.example.ecommerceweb.dto.request.user.UserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

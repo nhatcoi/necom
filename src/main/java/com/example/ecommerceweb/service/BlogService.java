@@ -1,7 +1,6 @@
 package com.example.ecommerceweb.service;
 
 import com.example.ecommerceweb.dto.BlogDTO;
-import com.example.ecommerceweb.dto.PaginatedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

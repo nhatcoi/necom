@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.PaginatedResponse;
+import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.entity.Category;
 import com.example.ecommerceweb.entity.Product;

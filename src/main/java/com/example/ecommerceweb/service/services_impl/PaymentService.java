@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.service.services_impl;
 
 
-import com.example.ecommerceweb.dto.request.CheckoutRequest;
-import com.example.ecommerceweb.dto.request.ProductOrderRequest;
-import com.example.ecommerceweb.dto.response.StripeResponse;
+import com.example.ecommerceweb.dto.request.order.CheckoutRequest;
+import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
+import com.example.ecommerceweb.dto.response.order.StripeResponse;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;

@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.PaginatedResponse;
+import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.entity.Product;

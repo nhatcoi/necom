@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.UpdateCartItemRequest;
+import com.example.ecommerceweb.dto.request.cart.UpdateCartItemRequest;
 import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.service.CartService;
 import jakarta.validation.Valid;

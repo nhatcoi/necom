@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.request.OrderRequest;
-import com.example.ecommerceweb.dto.response.OrderMetadataIntentResponse;
+import com.example.ecommerceweb.dto.request.order.OrderRequest;
+import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentResponse;
 import com.example.ecommerceweb.enums.StatusEnum;
 import org.springframework.stereotype.Service;
 
