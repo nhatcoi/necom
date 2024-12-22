@@ -30,80 +30,89 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<Cart> getCartItems() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        String username = getAuthenticatedUsername();
         return cartRepository.findByUserName(username);
     }
 
     @Override
     public Integer getTotalInCart() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResourceException(ErrorCode.UNAUTHENTICATED);
-        }
-        String username = authentication.getName();
-        Integer count = cartRepository.countByUsername(username);
-        return count != null ? count : 0;
+        String username = getAuthenticatedUsername();
+        return cartRepository.countByUsername(username) != null ? cartRepository.countByUsername(username) : 0;
     }
 
     @Override
     public void removeItem(Long id) {
-        cartRepository.findById(id).ifPresentOrElse(
-                cart -> cartRepository.deleteById(id),
-                () -> { throw new ResourceException(ErrorCode.CART_NOT_FOUND); }
-        );
+        Cart cart = findCartById(id);
+        cartRepository.delete(cart);
     }
 
     @Override
     public void updateCartItem(Long id, Integer quantity) {
-        cartRepository.findById(id).ifPresentOrElse(
-                cart -> {
-                    cart.setQuantity(quantity);
-                    cartRepository.save(cart);
-                },
-                () -> { throw new ResourceException(ErrorCode.CART_NOT_FOUND); }
-        );
+        Cart cart = findCartById(id);
+        cart.setQuantity(quantity);
+        cartRepository.save(cart);
     }
 
     @Override
     public Integer createCartItem(Long productId) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = getAuthenticatedUsername();
+        Cart cart = findCartByUsernameAndProductId(username, productId);
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
+        if (cart != null) {
+            updateCartItemQuantity(cart);
+        } else {
+            createNewCartItem(username, productId);
         }
-        String username = authentication.getName();
 
-
-
-        cartRepository.findByUsernameAndProductId(username, productId).ifPresentOrElse(
-                cart -> {
-                    if(cart.getQuantity() < 5) cart.setQuantity(cart.getQuantity() + 1);
-                    else throw new ResourceException(ErrorCode.CART_QUANTITY_LIMIT);
-                    cartRepository.save(cart);
-                },
-                () -> {
-                    var user = userRepository.findByUsername(username)
-                            .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
-
-                    var product = productRepository.findById(productId)
-                            .orElseThrow(() -> new ResourceException(ErrorCode.PRODUCT_NOT_EXISTED));
-                    Cart cartItem = Cart.builder()
-                            .user(user)
-                            .product(product)
-                            .quantity(1)
-                            .build();
-                    cartRepository.save(cartItem);
-                }
-        );
-
-        return cartRepository.countByUsername(username);
+        return cartRepository.countByUsername(username) != null ? cartRepository.countByUsername(username) : 0;
     }
 
     @Override
     public void removeItems(String username, List<Long> productIds) {
         Long userId = userRepository.findIdByUsername(username);
         cartRepository.deleteByUserIdAndProductId(userId, productIds);
+    }
+
+    private String getAuthenticatedUsername() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResourceException(ErrorCode.UNAUTHENTICATED);
+        }
+        return authentication.getName();
+    }
+
+    private Cart findCartById(Long id) {
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new ResourceException(ErrorCode.CART_NOT_FOUND));
+    }
+
+    private Cart findCartByUsernameAndProductId(String username, Long productId) {
+        return cartRepository.findByUsernameAndProductId(username, productId)
+                .orElse(null);
+    }
+
+    private void updateCartItemQuantity(Cart cart) {
+        if (cart.getQuantity() < 5) {
+            cart.setQuantity(cart.getQuantity() + 1);
+            cartRepository.save(cart);
+        } else {
+            throw new ResourceException(ErrorCode.CART_QUANTITY_LIMIT);
+        }
+    }
+
+    private void createNewCartItem(String username, Long productId) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceException(ErrorCode.PRODUCT_NOT_EXISTED));
+
+        Cart cartItem = Cart.builder()
+                .user(user)
+                .product(product)
+                .quantity(1)
+                .build();
+
+        cartRepository.save(cartItem);
     }
 }
