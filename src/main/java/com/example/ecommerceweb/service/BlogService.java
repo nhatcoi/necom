@@ -13,7 +13,5 @@ public interface BlogService {
     Page<BlogDTO> getAllBlogs(Pageable pageable);
     List<BlogDTO> getRecentBlogs(int limit);
     Page<BlogDTO> getBlogByCategory(Pageable pageable, Long categoryId);
-    PaginatedResponse<BlogDTO> createPaginatedResponse(Page<BlogDTO> blogPage);
-
     BlogDTO getBlogById(Long id);
 }
