@@ -13,6 +13,9 @@ import {API, Utils, Alerts} from "./utils.js";
         $(document).on('click', '.add-to-cart', handleAddToCart);
     }
 
+
+
+
     function handleAddToCart(event) {
         event.preventDefault();
         const productId = $(this).data('id');

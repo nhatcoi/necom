@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateForm(fields) {
         for (const [field, value] of Object.entries(fields)) {
             if (!validateField(field, value)) {
-                alert(`${field} is invalid. Please check your input.`);
+                Swal.fire(`${field} is invalid. Please check your input.`);
                 return false;
             }
         }
@@ -49,7 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return await response.json();
         } catch (error) {
-            alert(`Error: ${error.message}`);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Account already exists",
+            });
             console.error(error);
             throw error;
         }

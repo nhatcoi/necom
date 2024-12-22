@@ -47,8 +47,17 @@ export const Utils = {
             if (!response.ok) throw new Error('Failed to add to cart');
 
             const data = await response.json();
-            document.querySelector('.amount-cart span').textContent = data.data;
+            console.log(data.data);
+
             Alerts.handleSuccess('Good job!', data.message);
+
+            const amountSpan = document.querySelector('.quantity-in-cart');
+            if (amountSpan) {
+                amountSpan.textContent = data.data;
+            } else {
+                console.error("Element '.amount-cart span' not found!");
+            }
+
         } catch (error) {
             const errorMessage = error.message || 'Not Authenticated, Please Login!';
             Alerts.handleError('Oops', errorMessage);

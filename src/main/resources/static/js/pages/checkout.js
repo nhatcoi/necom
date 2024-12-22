@@ -107,7 +107,7 @@
         $("#place-order").click(function (e) {
             e.preventDefault();
 
-            const fields = {
+            const orderInfo = {
                 fullName: $('.full-name').val(),
                 country: $('.country').val(),
                 addressLine: $('.street-address').val(),
@@ -122,27 +122,34 @@
             items.forEach(item => {
                 totalPrice += item.product.price * item.quantity;
             });
-            fields.totalPrice = totalPrice;
+            orderInfo.totalPrice = totalPrice;
 
-            if(!validateForm(fields)){
+            if(!validateForm(orderInfo)){
                 return;
             }
+
+
+            const orderData = {
+                products: items.map(item => ({
+                    id: item.product.id,
+                    name: item.product.name,
+                    currency: 'USD',
+                    amount: item.product.price,
+                    quantity: item.quantity
+                })),
+                orderInfo: orderInfo
+            };
+
+            console.log(orderData)
 
             ajaxRequest({
                 url: '/orders',
                 type: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                data: fields,
+                data: orderData,
                 success: function (response) {
-                    const orderData = {
-                        products: items.map(item => ({
-                            name: item.product.name,
-                            currency: 'USD',
-                            amount: item.product.price,
-                            quantity: item.quantity
-                        })),
-                        orderMetadata: response.data
-                    };
+                    orderData.orderMetadata = response.data;
+                    delete orderData.orderInfo;
 
                     ajaxRequest({
                         url: API.urls.checkout,

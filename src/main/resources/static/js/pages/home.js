@@ -8,28 +8,31 @@ const INITIAL_PAGE = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log(API.urls.products);
-    loadProducts(API.urls.products, INITIAL_PAGE);
-    loadCategories(API.urls.categories);
-    loadBlogs(API.urls.recentBlogs, 3);
+    loadProducts(API.urls.products, INITIAL_PAGE).catch(error => handleError('Error loading products.'));
+    loadCategories(API.urls.categories).catch(error => handleError('Error loading categories.'));
+    loadBlogs(API.urls.recentBlogs, 3).catch(error => handleError('Error loading blogs.'));
 
     document.addEventListener('click', event => {
-        if (event.target.classList.contains('add-to-cart')) {
-            handleAddToCart(event);
+        let productElement = event.target.closest('.add-to-cart');
+        if (productElement) {
+            let productId = productElement.dataset.id;
+            handleAddToCart(event, productId);
         }
-        if (event.target.classList.contains('pagination-link')) {
+
+        const paginationLink = event.target.closest('.pagination-link');
+        if (paginationLink) {
             event.preventDefault();
-            let page = event.target.dataset.page;
-            let url = event.target.dataset.url;
-            loadProducts(url, page);
+            let page = paginationLink.dataset.page;
+            let url = paginationLink.dataset.url;
+            loadProducts(url, page).catch(error => handleError('Error loading products.'));
         }
     });
+
 });
 
-function handleAddToCart(event) {
-    event.preventDefault();
-    const productId = event.target.dataset.id;
+function handleAddToCart(event, productId) {
     console.log(productId)
-    Utils.addToCartHandler(productId);
+    Utils.addToCartHandler(productId).then(r => console.log(r)).catch(error => handleError('Error adding to cart.'));
 }
 
 async function loadBlogs(url) {
@@ -87,11 +90,11 @@ function renderCategories(categories) {
     slider.innerHTML = '';
 
     categories.forEach(category => {
-        categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="${API.PREFIX}/categories/${category.id}">${category.name}</a></li>`);
+        categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="/shop-grid">${category.name}</a></li>`);
         slider.insertAdjacentHTML('beforeend', `
             <div class="col-lg-3">
                 <div class="categories__item set-bg" style="background-image: url('${category.imageUrl}');">
-                    <h5><a href="${API.PREFIX}/categories/${category.id}">${category.name}</a></h5>
+                    <h5><a href="/shop-grid">${category.name}</a></h5>
                 </div>
             </div>
         `);
