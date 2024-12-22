@@ -107,38 +107,65 @@
         $("#place-order").click(function (e) {
             e.preventDefault();
 
-            const fields = {
+            const orderInfo = {
                 fullName: $('.full-name').val(),
                 country: $('.country').val(),
                 addressLine: $('.street-address').val(),
                 city: $('.city').val(),
                 postcode: $('.postcode').val(),
                 phoneNumber: $('.phone').val(),
-                email: $('.email').val()
+                email: $('.email').val(),
+                totalPrice: 0
             }
 
-            if(!validateForm(fields)){
+            let totalPrice = 0;
+            items.forEach(item => {
+                totalPrice += item.product.price * item.quantity;
+            });
+            orderInfo.totalPrice = totalPrice;
+
+            if(!validateForm(orderInfo)){
                 return;
             }
 
+
             const orderData = {
                 products: items.map(item => ({
+                    id: item.product.id,
                     name: item.product.name,
                     currency: 'USD',
                     amount: item.product.price,
                     quantity: item.quantity
-                }))
+                })),
+                orderInfo: orderInfo
             };
 
+            console.log(orderData)
+
             ajaxRequest({
-                url: API.urls.checkout,
+                url: '/orders',
                 type: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 data: orderData,
                 success: function (response) {
-                    window.location.href = response.sessionUrl;
+                    orderData.orderMetadata = response.data;
+                    delete orderData.orderInfo;
+
+                    ajaxRequest({
+                        url: API.urls.checkout,
+                        type: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        data: orderData,
+                        success: function (response) {
+                            window.location.href = response.sessionUrl;
+                        }
+                    });
                 }
             });
+
+
+
+
         });
     }
 

@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.request.UserRequest;
-import com.example.ecommerceweb.dto.response.UserResponse;
+import com.example.ecommerceweb.dto.request.user.UserRequest;
+import com.example.ecommerceweb.dto.response.user.UserResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

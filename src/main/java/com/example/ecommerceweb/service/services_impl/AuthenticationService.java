@@ -1,9 +1,9 @@
-package com.example.ecommerceweb.service;
+package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.request.AuthenticationRequest;
-import com.example.ecommerceweb.dto.request.IntrospectRequest;
-import com.example.ecommerceweb.dto.response.AuthenticationResponse;
-import com.example.ecommerceweb.dto.response.IntrospectResponse;
+import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
+import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
+import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
+import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
@@ -43,11 +43,8 @@ public class AuthenticationService {
         var token = request.getToken();
 
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY);
-
         SignedJWT signedJWT = SignedJWT.parse(token);
-
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
         boolean verified = signedJWT.verify(verifier);
 
         return IntrospectResponse.builder()
@@ -57,7 +54,6 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
         User user;
         if (isNumeric(request.getUserIdentifier())) {
             user = userRepository.findByPhoneNumber(request.getUserIdentifier())
@@ -67,13 +63,9 @@ public class AuthenticationService {
                     .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         }
 
-
-
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
-
         if (!authenticated)
             throw new ResourceException(ErrorCode.UNAUTHENTICATED);
-
         var token = generateToken(user);
 
         return AuthenticationResponse.builder()

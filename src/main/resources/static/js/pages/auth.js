@@ -1,6 +1,6 @@
 'use strict';
 
-(function ($) {
+document.addEventListener('DOMContentLoaded', () => {
     const regexValidators = {
         fullName: /^[A-Za-z\s]{2,50}$/,
         addressLine: /^[A-Za-z0-9\s,.-]{5,100}$/,
@@ -15,73 +15,92 @@
         dob: /^\d{4}-\d{2}-\d{2}$/
     };
 
+    const PREFIX = '';
+
     function validateField(fieldName, value) {
         const regex = regexValidators[fieldName];
         return regex ? regex.test(value) : true;
     }
 
     function validateForm(fields) {
-        let isValid = true;
         for (const [field, value] of Object.entries(fields)) {
             if (!validateField(field, value)) {
-                isValid = false;
-                console.error(`${field} is invalid: ${value}`);
-                alert(`${field} is invalid. Please check your input.`);
-                return isValid;
+                Swal.fire(`${field} is invalid. Please check your input.`);
+                return false;
             }
         }
-        return isValid;
+        return true;
     }
 
-    $(document).ready(function () {
-        const PREFIX = '';
+    async function submitForm(url, data) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
 
-        $('#loginForm').on('submit', function (event) {
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText);
+            }
+
+            return await response.json();
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Account already exists",
+            });
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const userIdentifier = $('input[name="userIdentifier"]').val();
-            const password = $('input[name="password"]').val();
+            const userIdentifier = document.querySelector('input[name="userIdentifier"]').value;
+            const password = document.querySelector('input[name="password"]').value;
 
             if (!userIdentifier || !password) {
                 alert("Please fill in all required fields.");
                 return;
             }
 
-            $.ajax({
-                url: `${PREFIX}/auth/log-in`,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ userIdentifier, password }),
-                success: function (response) {
-                    const token = response.data.token;
-                    localStorage.setItem('token', token);
-                    window.location.href = '/';
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                    alert("Login failed: " + xhr.responseText);
-                }
-            });
+            try {
+                const response = await submitForm(`${PREFIX}/auth/log-in`, { userIdentifier, password });
+                localStorage.setItem('token', response.data.token);
+                window.location.href = '/';
+            } catch (error) {
+                // Error is already handled in submitForm
+            }
         });
+    }
 
-        $('#registerForm').on('submit', function (event) {
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const fields = {
-                fullName: $('input[name="fullName"]').val(),
-                addressLine: $('input[name="addressLine"]').val(),
-                district: $('input[name="district"]').val(),
-                city: $('input[name="city"]').val(),
-                country: $('input[name="country"]').val(),
-                postcode: $('input[name="postcode"]').val(),
-                email: $('input[name="email"]').val(),
-                username: $('input[name="username"]').val(),
-                phoneNumber: $('input[name="phoneNumber"]').val(),
-                password: $('input[name="password"]').val(),
-                confirmPassword: $('input[name="confirmPassword"]').val(),
-                dob: $('input[name="dob"]').val()
+                fullName: document.querySelector('input[name="fullName"]').value,
+                addressLine: document.querySelector('input[name="addressLine"]').value,
+                district: document.querySelector('input[name="district"]').value,
+                city: document.querySelector('input[name="city"]').value,
+                country: document.querySelector('input[name="country"]').value,
+                postcode: document.querySelector('input[name="postcode"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                username: document.querySelector('input[name="username"]').value,
+                phoneNumber: document.querySelector('input[name="phoneNumber"]').value,
+                password: document.querySelector('input[name="password"]').value,
+                confirmPassword: document.querySelector('input[name="confirmPassword"]').value,
+                dob: document.querySelector('input[name="dob"]').value
             };
-
 
             if (!validateForm(fields)) {
                 return;
@@ -92,16 +111,6 @@
                 return;
             }
 
-            const addresses = [
-                {
-                    addressLine: fields.addressLine,
-                    city: fields.city,
-                    state: fields.district,
-                    country: fields.country,
-                    postcode: fields.postcode
-                }
-            ];
-
             const requestData = {
                 username: fields.username,
                 fullName: fields.fullName,
@@ -109,23 +118,24 @@
                 email: fields.email,
                 phoneNumber: fields.phoneNumber,
                 dateOfBirth: fields.dob,
-                addresses: addresses
+                addresses: [
+                    {
+                        addressLine: fields.addressLine,
+                        city: fields.city,
+                        state: fields.district,
+                        country: fields.country,
+                        postcode: fields.postcode
+                    }
+                ]
             };
 
-            $.ajax({
-                url: `${PREFIX}/users/create-user`,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),
-                success: function () {
-                    alert("Registration successful. Please login to continue.");
-                    window.location.href = `${PREFIX}/login-form`;
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                    alert("Registration failed: " + xhr.responseText);
-                }
-            });
+            try {
+                await submitForm(`${PREFIX}/users/create-user`, requestData);
+                alert("Registration successful. Please login to continue.");
+                window.location.href = `${PREFIX}/login-form`;
+            } catch (error) {
+                // Error is already handled in submitForm
+            }
         });
-    });
-})(jQuery);
+    }
+});

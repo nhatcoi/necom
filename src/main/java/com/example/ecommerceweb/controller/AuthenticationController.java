@@ -1,12 +1,12 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.AuthenticationRequest;
-import com.example.ecommerceweb.dto.request.IntrospectRequest;
-import com.example.ecommerceweb.dto.response.AuthenticationResponse;
-import com.example.ecommerceweb.dto.response.IntrospectResponse;
+import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
+import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
+import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
+import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
 import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.service.AuthenticationService;
+import com.example.ecommerceweb.service.services_impl.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.mapper;
 
-import com.example.ecommerceweb.dto.response.CartItemDTO;
+import com.example.ecommerceweb.dto.CartItemDTO;
 import com.example.ecommerceweb.entity.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

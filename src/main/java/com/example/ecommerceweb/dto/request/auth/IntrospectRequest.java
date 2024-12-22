@@ -1,4 +1,4 @@
-package com.example.ecommerceweb.dto.request;
+package com.example.ecommerceweb.dto.request.auth;
 
 import lombok.*;
 

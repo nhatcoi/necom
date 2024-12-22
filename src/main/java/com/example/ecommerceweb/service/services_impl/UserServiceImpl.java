@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.request.UserRequest;
-import com.example.ecommerceweb.dto.response.UserResponse;
+import com.example.ecommerceweb.dto.request.user.UserRequest;
+import com.example.ecommerceweb.dto.response.user.UserResponse;
 import com.example.ecommerceweb.entity.Address;
 import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;

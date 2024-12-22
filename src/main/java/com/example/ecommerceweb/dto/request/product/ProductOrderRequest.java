@@ -1,4 +1,4 @@
-package com.example.ecommerceweb.dto.request;
+package com.example.ecommerceweb.dto.request.product;
 
 import lombok.*;
 
@@ -6,9 +6,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductRequest {
+public class ProductOrderRequest {
+    private Long id;
     private Long amount;
-    private Long quantity;
+    private Integer quantity;
     private String name;
     private String currency;
+
 }

@@ -1,3 +1,7 @@
+create sequence products_ratings_id_seq;
+
+alter sequence products_ratings_id_seq owner to postgres;
+
 create table blog_categories
 (
     id   serial
@@ -64,9 +68,7 @@ create table flash_sale_items
     product_id     integer
         references products,
     sale_price     numeric(10, 2) not null,
-    quantity_limit integer,
-    created_at     timestamp default CURRENT_TIMESTAMP,
-    updated_at     timestamp
+    quantity_limit integer
 );
 
 alter table flash_sale_items
@@ -109,6 +111,8 @@ create table product_ratings
 alter table product_ratings
     owner to postgres;
 
+alter sequence products_ratings_id_seq owned by product_ratings.id;
+
 create index idx_category_id
     on products (category_id);
 
@@ -128,15 +132,15 @@ create table users
         primary key,
     full_name     varchar(255),
     phone_number  varchar(20)  not null,
-    address       varchar(255) default ''::character varying,
     password      varchar(255) not null,
-    created_at    timestamp    default CURRENT_TIMESTAMP,
-    updated_at    timestamp    default CURRENT_TIMESTAMP,
-    is_active     boolean      default true,
+    created_at    timestamp default CURRENT_TIMESTAMP,
+    updated_at    timestamp default CURRENT_TIMESTAMP,
+    is_active     boolean   default true,
     date_of_birth timestamp,
-    facebook_id   integer      default 0,
-    google_id     integer      default 0,
-    username      varchar(255)
+    facebook_id   integer   default 0,
+    google_id     integer   default 0,
+    username      varchar(255),
+    email         varchar(255)
 );
 
 alter table users
@@ -209,8 +213,7 @@ create table order_details
             check (number_of_products > 0),
     total_price        double precision
         constraint order_details_total_price_check
-            check (total_price >= (0)::double precision),
-    color              varchar(255)
+            check (total_price >= (0)::double precision)
 );
 
 alter table order_details
@@ -280,18 +283,33 @@ create table carts
 (
     id         serial
         primary key,
-    user_id    integer
-        references users
-            on delete cascade,
-    product_id integer
-        references products
-            on delete cascade,
+    user_id    integer not null
+        references users,
+    product_id integer not null
+        references products,
     quantity   integer not null,
     created_at timestamp default CURRENT_TIMESTAMP,
-    updated_at timestamp default CURRENT_TIMESTAMP,
-    unique (user_id, product_id)
+    updated_at timestamp default CURRENT_TIMESTAMP
 );
 
 alter table carts
+    owner to postgres;
+
+create table user_address
+(
+    id           serial
+        primary key,
+    user_id      integer      not null
+        constraint fk_user
+            references users
+            on delete cascade,
+    address_line varchar(255) not null,
+    city         varchar(100) not null,
+    district     varchar(100),
+    postcode     varchar(20),
+    country      varchar(100) not null
+);
+
+alter table user_address
     owner to postgres;
 

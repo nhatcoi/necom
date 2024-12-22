@@ -43,4 +43,5 @@ admin:
 
 stripe:
   api: ${API_STRIPE_KEY}
+  webhook: ${API_STRIPE_WEBHOOK_KEY}
 

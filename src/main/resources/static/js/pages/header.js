@@ -1,5 +1,9 @@
 'use strict';
 
+function handleError(errorLoadingCategories) {
+    return undefined;
+}
+
 (function ($) {
     const { API, Utils } = App;
 
@@ -9,6 +13,7 @@
         const welcomeDisplay = $('.welcome-display');
         const amountCart = $('.amount-cart span');
         const token = localStorage.getItem('token');
+        loadCategories(API.urls.categories).then(r => console.log(r)).catch(error => handleError('Error loading categories.'));
 
         if (token) {
             handleUserAuthentication();
@@ -67,4 +72,29 @@
             });
         }
     });
+
+
+    async function loadCategories() {
+        try {
+            const response = await fetch(`${API.PREFIX}${API.urls.categories}`);
+            const data = await response.json();
+            renderCategories(data.data);
+        } catch (error) {
+            handleError('Error loading categories.');
+        }
+    }
+
+    function renderCategories(categories) {
+        const categoriesContainer = document.querySelector('.hero__categories ul');
+        categoriesContainer.innerHTML = '';
+
+        categories.forEach(category => {
+            categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="/shop-grid">${category.name}</a></li>`);
+        });
+    }
+
+
+
+
+
 })(jQuery);

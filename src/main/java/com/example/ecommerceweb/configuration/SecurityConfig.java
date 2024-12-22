@@ -30,7 +30,8 @@ public class SecurityConfig {
             "/auth/introspect",
             "/users/create-user",
             "/checkout/**",
-            "/checkout/checkout-order"
+            "/checkout/checkout-order",
+            "/webhook"
     };
 
     private final String[] PUBLIC_ENDPOINTS = {
