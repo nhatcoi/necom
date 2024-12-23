@@ -15,7 +15,6 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 public class EcommerceWebApplication {
 
     public static void main(String[] args) {
-        // change test
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
         SpringApplication.run(EcommerceWebApplication.class, args);
