@@ -28,11 +28,11 @@ spring:
 # env
 image:
   base:
-    url: ${IMAGE_BASE_URL:https://firebasestorage.googleapis.com/v0/b/ecommerce-web-18f77.appspot.com/o/}
+    url: ${IMAGE_BASE_URL}
 
 firebase:
-  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:ecommerce-web-key.json}
-  storage-bucket: ${FIREBASE_STORAGE_BUCKET:ecommerce-web-18f77.appspot.com}
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH}
+  storage-bucket: ${FIREBASE_STORAGE_BUCKET}
 
 jwt:
   signer-key: ${JWT_SIGNER_KEY}
