@@ -55,6 +55,9 @@ create table products
 alter table products
     owner to postgres;
 
+create index idx_category_id
+    on products (category_id);
+
 create table flash_sale_items
 (
     id             serial
@@ -88,14 +91,14 @@ alter table product_images
 
 create table product_ratings
 (
-    id         bigserial not null
+    id         bigserial
         constraint products_ratings_pkey
             primary key,
-    product_id bigint                                                         not null
+    product_id bigint  not null
         constraint products_ratings_product_id_fkey
             references products
             on delete cascade,
-    rating     integer                                                        not null
+    rating     integer not null
         constraint products_ratings_rating_check
             check ((rating >= 1) AND (rating <= 5)),
     created_at timestamp default CURRENT_TIMESTAMP,
@@ -108,9 +111,6 @@ create table product_ratings
 
 alter table product_ratings
     owner to postgres;
-
-create index idx_category_id
-    on products (category_id);
 
 create table roles
 (
@@ -141,6 +141,9 @@ create table users
 
 alter table users
     owner to postgres;
+
+create index idx_password
+    on users (password);
 
 create table blogs
 (
@@ -191,6 +194,9 @@ create table orders
 alter table orders
     owner to postgres;
 
+create index idx_user_id
+    on orders (user_id);
+
 create table order_details
 (
     id                 bigserial
@@ -221,9 +227,6 @@ create index idx_order_id
 
 create index idx_product_id
     on order_details (product_id);
-
-create index idx_user_id
-    on orders (user_id);
 
 create table social_accounts
 (
@@ -259,9 +262,6 @@ create table tokens
 alter table tokens
     owner to postgres;
 
-create index idx_password
-    on users (password);
-
 create table user_roles
 (
     user_id integer not null
@@ -293,5 +293,23 @@ create table carts
 );
 
 alter table carts
+    owner to postgres;
+
+create table user_address
+(
+    id           serial
+        primary key,
+    user_id      integer      not null
+        constraint fk_user
+            references users
+            on delete cascade,
+    address_line varchar(255) not null,
+    city         varchar(100) not null,
+    district     varchar(100),
+    postcode     varchar(20),
+    country      varchar(100) not null
+);
+
+alter table user_address
     owner to postgres;
 
