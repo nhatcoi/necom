@@ -39,16 +39,6 @@ public class SecurityConfig {
             "/**"
     };
 
-    private final String[] STATIC_RESOURCES = {
-            "/css/**",
-            "/fonts/**",
-            "/img/**",
-            "/js/**",
-            "/js/pages/**",
-            "/js/vendor/**",
-            "/sass/**",
-            "/favicon.ico"
-    };
 
     @Value("${jwt.signer-key}")
     private String jwtSignerKey;
@@ -57,9 +47,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(STATIC_RESOURCES).permitAll()
                         .anyRequest().authenticated()
         );
 
