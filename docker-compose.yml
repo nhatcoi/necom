@@ -7,7 +7,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - src/main/resources/.env
     ports:
       - '8085:8085'
     depends_on:
@@ -22,7 +22,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - .env
+      - src/main/resources/.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:

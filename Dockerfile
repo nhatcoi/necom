@@ -12,5 +12,6 @@ FROM amazoncorretto:21.0.5
 
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
+COPY ecommerce-web-key.json /app/ecommerce-web-key.json
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
