@@ -11,8 +11,22 @@ import {API, Utils, Alerts} from "./utils.js";
         handleCategoryClick();
         $("#filterButton").trigger("click");
         $(document).on('click', '.add-to-cart', handleAddToCart);
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const query = searchParams.get('query'); // Lấy giá trị query từ URL
+        if (query) {
+            console.log('Search query:', query);
+            // Hiển thị giá trị tìm kiếm lên giao diện
+            $('.search-results-title').text(`Search results for: "${query}"`);
+
+            // Gửi yêu cầu tìm kiếm sản phẩm qua API
+            fetchProducts(query);
+        }
     }
 
+    function fetchProducts(query) {
+
+    }
 
 
 

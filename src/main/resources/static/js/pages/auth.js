@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Account already exists",
+                text: "Account Invalid",
             });
             console.error(error);
             throw error;
