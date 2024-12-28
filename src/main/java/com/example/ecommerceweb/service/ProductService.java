@@ -30,4 +30,6 @@ public interface ProductService {
     Page<ProductDTO> getAllProducts(Pageable pageable);
     Page<ProductDTO> getProductsByCategory(Pageable pageable, Long categoryId);
     PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs);
+
+    List<ProductDTO> searchProducts(String keyword);
 }

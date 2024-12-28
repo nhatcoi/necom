@@ -96,4 +96,10 @@ public class ProductController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), topRatedProducts);
     }
 
+    @GetMapping("/search")
+    public ResponseData<?> searchProducts(@RequestParam(value = "search", required = false) String keyword) {
+        List<ProductDTO> products = productService.searchProducts(keyword);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products);
+    }
+
 }

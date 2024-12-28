@@ -20,11 +20,21 @@ import {API, Utils, Alerts} from "./utils.js";
             $('.search-results-title').text(`Search results for: "${query}"`);
 
             // Gửi yêu cầu tìm kiếm sản phẩm qua API
-            fetchProducts(query);
+            fetchProductsBySearch(query);
         }
     }
 
-    function fetchProducts(query) {
+    function fetchProductsBySearch(query) {
+        $.ajax({
+            url: `${API.urls.products}?search=${encodeURIComponent(query)}`,
+            method: 'GET',
+            success: function (response) {
+                renderProducts(response.data);
+            },
+            error: function () {
+                console.error('Error fetching products.');
+            },
+        });
 
     }
 

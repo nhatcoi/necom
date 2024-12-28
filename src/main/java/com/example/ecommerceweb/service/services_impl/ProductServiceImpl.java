@@ -171,4 +171,12 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Override
+    public List<ProductDTO> searchProducts(String keyword) {
+        List<Product> products = productRepository.findByNameContaining(keyword);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+    }
+
 }
