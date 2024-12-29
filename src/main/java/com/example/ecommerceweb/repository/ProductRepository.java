@@ -22,12 +22,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p JOIN FETCH p.categoryId WHERE p.price BETWEEN :min AND :max")
     List<Product> findByPriceBetween(double min, double max);
 
+    @Query("SELECT p FROM Product p JOIN FETCH p.categoryId WHERE p.price BETWEEN :min AND :max")
+    Page<Product> findByPriceBetween(double min, double max, Pageable pageable);
+
     @Query("SELECT p FROM Product p ORDER BY p.createdAt DESC")
     Page<Product> findAllProducts(Pageable pageable);
 
     @Query("SELECT p FROM Product p JOIN FETCH p.categoryId WHERE p.categoryId.id = :categoryId")
     Page<Product> findAllByCategoryId(Pageable pageable, Long categoryId);
 
-    @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword%")
-    List<Product> findByNameContaining(@Param("keyword") String keyword);
+
+    @Query(value = """
+    SELECT * FROM products
+    WHERE to_tsvector('english', name) @@ plainto_tsquery(:keyword)
+       OR name ILIKE '%' || :keyword || '%'
+    """, nativeQuery = true)
+    Page<Product> findByNameContaining(Pageable pageable, @Param("keyword") String keyword);
+
 }

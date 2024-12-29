@@ -24,12 +24,13 @@ public interface ProductService {
 
     List<ProductDTO> getLatestProducts(int limit);
     List<ProductDTO> getTopRatedProducts(int limit);
-    List<Product> getProductByPriceRange(int min, int max);
+    List<ProductDTO> getProductByPriceRange(int min, int max);
+    Page<ProductDTO> getProductByPriceRange(int min, int max, Pageable pageable);
 
 
     Page<ProductDTO> getAllProducts(Pageable pageable);
     Page<ProductDTO> getProductsByCategory(Pageable pageable, Long categoryId);
     PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs);
 
-    List<ProductDTO> searchProducts(String keyword);
+    Page<ProductDTO> searchProducts(Pageable pageable, String keyword);
 }
