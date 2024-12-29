@@ -313,3 +313,5 @@ create table user_address
 alter table user_address
     owner to postgres;
 
+
+CREATE INDEX idx_product_name_tsvector ON products USING GIN (to_tsvector('english', name));
