@@ -3,42 +3,57 @@ import {API, Utils, Alerts} from "./utils.js";
 
 (function ($) {
 
+    const PROD_IN_PAGE = 6;
+    const PAGINATION_TO_SHOW = 3;
+    const INITIAL_PAGE = 0;
+
     $(document).ready(init);
     function init() {
         filterByPrice();
         sortProducts();
         loadCategories();
         handleCategoryClick();
-        $("#filterButton").trigger("click");
+
         $(document).on('click', '.add-to-cart', handleAddToCart);
 
+        const currentPath = window.location.pathname;
         const searchParams = new URLSearchParams(window.location.search);
-        const query = searchParams.get('query'); // Lấy giá trị query từ URL
-        if (query) {
-            console.log('Search query:', query);
-            // Hiển thị giá trị tìm kiếm lên giao diện
-            $('.search-results-title').text(`Search results for: "${query}"`);
+        const search = searchParams.get('search');
 
-            // Gửi yêu cầu tìm kiếm sản phẩm qua API
-            fetchProductsBySearch(query);
+        if (search) {
+            $('.search-results-title').text(`Search results for: "${search}"`);
+            fetchProductsBySearch(search);
+        } else {
+            $("#filterButton").trigger("click");
         }
-    }
 
-    function fetchProductsBySearch(query) {
-        $.ajax({
-            url: `${API.urls.products}?search=${encodeURIComponent(query)}`,
-            method: 'GET',
-            success: function (response) {
-                renderProducts(response.data);
-            },
-            error: function () {
-                console.error('Error fetching products.');
-            },
+        // form submit handle
+        $('.hero__search__form form').on('submit', function (event) {
+            const searchQuery = $(this).find('input[type="text"]').val();
+
+            if (currentPath === '/shop-grid') {
+                event.preventDefault();
+                console.log('Search:', searchQuery);
+                const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`;
+                window.history.pushState(null, '', newUrl);
+                fetchProductsBySearch(searchQuery);
+            }
         });
 
+        // pagination handle
+        $(document).on('click', '.pagination-link', function (event) {
+            event.preventDefault();
+            const page = $(this).data('page');
+            const url = $(this).data('url');
+            loadProducts(url, page);
+        });
     }
 
-
+    function fetchProductsBySearch(search) {
+        console.log(`${API.urls.products}/search?search=${encodeURIComponent(search)}`);
+        const url = `${API.urls.products}/search?search=${encodeURIComponent(search)}`;
+        loadProducts(url, INITIAL_PAGE);
+    }
 
     function handleAddToCart(event) {
         event.preventDefault();
@@ -47,6 +62,7 @@ import {API, Utils, Alerts} from "./utils.js";
     }
 
     function renderProducts(products) {
+        console.log('Products render:', products);
         const productsContainer = $("#filterProducts");
         productsContainer.empty();
 
@@ -107,22 +123,55 @@ import {API, Utils, Alerts} from "./utils.js";
         maxAmount.val(priceRange.slider("values", 1));
 
         $("#filterButton").click(() => {
-            $.ajax({
-                url: API.urls.shopGrid.filterByPrice,
-                type: "GET",
-                data: {
-                    minamount: minAmount.val(),
-                    maxamount: maxAmount.val(),
-                },
-                success: (data) => {
-                    $("#products-found").text(data.length);
-                    renderProducts(data);
-                    document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
-                },
-                error: () => Alerts.handleError("Error filtering products by price"),
-            });
+            const url = `${API.urls.products}/filter-by-price?minamount=${minAmount.val()}&maxamount=${maxAmount.val()}`;
+            loadProducts(url, INITIAL_PAGE);
         });
     }
+
+    function loadProducts(urlBase, page) {
+        $.ajax({
+            url: urlBase + `&page=${page}&size=${PROD_IN_PAGE}`,
+            type: "GET",
+            success: (response) => {
+                console.log('response:', response);
+                const products = response.data;
+                $("#products-found").text(response.pagination.totalItems);
+                renderProducts(products);
+                renderPagination(response.pagination, urlBase);
+                document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
+            },
+            error: () => Alerts.handleError("Error loading products"),
+        });
+    }
+
+    function renderPagination(pagination, url) {
+        const paginationDiv = $('.product__pagination.blog__pagination');
+        paginationDiv.html('');
+
+        const { currentPage, totalPages, hasPreviousPage, hasNextPage } = pagination;
+
+        if (hasPreviousPage) {
+            paginationDiv.append(createPageLink(url, currentPage - 1, '&laquo;', ''));
+        }
+
+        const startPage = Math.max(0, currentPage - Math.floor(PAGINATION_TO_SHOW / 2));
+        const endPage = Math.min(totalPages, startPage + PAGINATION_TO_SHOW);
+
+        for (let i = startPage; i < endPage; i++) {
+            const activeClass = i === currentPage ? 'active' : '';
+            paginationDiv.append(createPageLink(url, i, i + 1, activeClass));
+        }
+
+        if (hasNextPage) {
+            paginationDiv.append(createPageLink(url, currentPage + 1, '&raquo;', ''));
+        }
+    }
+
+    function createPageLink(url, page, text, active = '') {
+        return `<a href="#" class="pagination-link ${active}" data-page="${page}" data-url="${url}">${text}</a>`;
+    }
+
+
 
     function sortProducts() {
         $('#sortOptions').niceSelect('destroy').change(function () {
