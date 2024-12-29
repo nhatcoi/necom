@@ -89,11 +89,9 @@ function handleError(errorLoadingCategories) {
         categoriesContainer.innerHTML = '';
 
         categories.forEach(category => {
-            categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="/shop-grid">${category.name}</a></li>`);
+            categoriesContainer.insertAdjacentHTML('beforeend', `<li><a data-category-id="${category.id}" href="/shop-grid">${category.name}</a></li>`);
         });
     }
-
-
 
 
 
