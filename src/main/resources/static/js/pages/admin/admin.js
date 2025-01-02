@@ -2,23 +2,22 @@ import {API, Utils, Alerts} from "../components/utils.js";
 
 const USERS_IN_PAGE = 10;
 const PAGINATION_TO_SHOW = 5;
-const INITIAL_PAGE = 0
-
+const INITIAL_PAGE = 0;
 const SELECTORS = {
     adminMenu: '.admin-menu .list-group-item',
-    functionContent: '#function-content',
-    userTableBody: '#user-table-body',
+    functionContent: 'function-content', // id
+    userTableBody: 'user-table-body', // id
     paginationDiv: '.user__pagination.blog__pagination'
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     verifyAdminAccess();
-    initAdminFunctions();
+    initializeAdminFunctions();
 });
-
 
 async function verifyAdminAccess() {
     const url = API.urls.auth.info;
+
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -27,17 +26,13 @@ async function verifyAdminAccess() {
 
         if (!response.ok) throw new Error(`Access denied! Status: ${response.status}`);
 
-        const data = await response.json();
-        const roles = data.data.roleNames;
-        console.log(roles);
-        if (roles.includes('ADMIN')) {
-            console.log('Admin verified');
+        const { data: { roleNames } } = await response.json();
+
+        if (roleNames.includes('ADMIN')) {
             Alerts.handleSuccessTimeCenter('You are authorized as ADMIN.');
         } else {
             Alerts.handleErrorTimeCenter('Access Denied - You are not authorized as ADMIN.');
-            setTimeout(() => {
-                window.history.back();
-            }, 2500);
+            setTimeout(() => window.history.back(), 2500);
             throw new Error('Not authorized');
         }
     } catch (error) {
@@ -45,7 +40,7 @@ async function verifyAdminAccess() {
     }
 }
 
-function initAdminFunctions() {
+function initializeAdminFunctions() {
     const menuItems = document.querySelectorAll(SELECTORS.adminMenu);
     const contentArea = document.getElementById(SELECTORS.functionContent);
 
@@ -71,6 +66,8 @@ function initAdminFunctions() {
         "settings": `<h5>Settings</h5><p>Configure application settings.</p>`
     };
 
+
+    // Add event listeners to menu items
     menuItems.forEach((item) => {
         item.addEventListener("click", () => {
             const functionKey = item.dataset.function;
@@ -83,35 +80,24 @@ function initAdminFunctions() {
     });
 }
 
-
-
 async function populateUserTable(url, page) {
-    const urlGetUsersByPage = url + `?page=${page}&size=${USERS_IN_PAGE}`;
-    const responseUser = await fetch(urlGetUsersByPage, {
-        method: 'GET',
-        headers: Utils.getAuthHeaders(),
-    });
+    const urlWithParams = `${url}?page=${page}&size=${USERS_IN_PAGE}`;
 
+    try {
+        const response = await fetch(urlWithParams, {
+            method: 'GET',
+            headers: Utils.getAuthHeaders(),
+        });
 
-    const dataUser = await responseUser.json();
-    const users = dataUser.data;
-    const pagination = dataUser.pagination;
+        if (!response.ok) throw new Error('Failed to fetch users');
 
-    const userTableBody = document.getElementById(SELECTORS.userTableBody);
-    userTableBody.innerHTML = '';
+        const { data: users, pagination } = await response.json();
 
-    renderUser(users, userTableBody);
-    renderPagination(pagination, url);
-
-
-    userTableBody.addEventListener('click', (event) => {
-        const clickedRow = event.target.closest('tr');
-        if (clickedRow) {
-            const userId = clickedRow.dataset.userId;
-            const user = users.find(u => u.id == userId);
-            displayUserDetail(user);
-        }
-    }); 
+        renderUsers(users);
+        renderPagination(pagination, url);
+    } catch (error) {
+        Alerts.handleError('Error loading users', error.message);
+    }
 }
 
 document.addEventListener('click', function (event) {
@@ -127,41 +113,48 @@ document.addEventListener('click', function (event) {
 });
 
 
-function renderUser(users, tableDOM) {
-    users.forEach(user => {
+function renderUsers(users) {
+    const userTableBody = document.getElementById(SELECTORS.userTableBody);
+    console.log('userTableBody: ' + userTableBody);
+    userTableBody.innerHTML = '';
+
+    users.forEach((user) => {
         const row = document.createElement('tr');
-        row.dataset.userId = user.id.toString();
+        row.dataset.userId = user.id;
         row.innerHTML = `
             <td>${user.id}</td>
             <td>${user.fullName}</td>
             <td>${user.phoneNumber}</td>
-            <td>${user.isActive ? 'Active' : 'Inactive'}</td>
-        `;
-        tableDOM.appendChild(row);
+            <td>${user.isActive ? 'Active' : 'Inactive'}</td>`;
+        userTableBody.appendChild(row);
     });
+
+    userTableBody.addEventListener('click', handleUserRowClick);
 }
 
-function renderPagination(pagination, url) {
+function handleUserRowClick(event) {
+    const row = event.target.closest('tr');
+    if (!row) return;
+
+    const userId = row.dataset.userId;
+    displayUserDetail(userId);
+}
+
+function renderPagination({ currentPage, totalPages, hasPreviousPage, hasNextPage }, url) {
     const paginationDiv = document.querySelector(SELECTORS.paginationDiv);
-    paginationDiv.html('');
+    paginationDiv.innerHTML = '';
 
-    const { currentPage, totalPages, hasPreviousPage, hasNextPage } = pagination;
-
-    if (hasPreviousPage) {
-        paginationDiv.append(createPageLink(url, currentPage - 1, '&laquo;', ''));
-    }
+    if (hasPreviousPage) paginationDiv.innerHTML += createPageLink(url, currentPage - 1, '&laquo;');
 
     const startPage = Math.max(0, currentPage - Math.floor(PAGINATION_TO_SHOW / 2));
     const endPage = Math.min(totalPages, startPage + PAGINATION_TO_SHOW);
 
     for (let i = startPage; i < endPage; i++) {
-        const activeClass = i === currentPage ? 'active' : '';
-        paginationDiv.append(createPageLink(url, i, i + 1, activeClass));
+        const isActive = i === currentPage ? 'active' : '';
+        paginationDiv.innerHTML += createPageLink(url, i, i + 1, isActive);
     }
 
-    if (hasNextPage) {
-        paginationDiv.append(createPageLink(url, currentPage + 1, '&raquo;', ''));
-    }
+    if (hasNextPage) paginationDiv.innerHTML += createPageLink(url, currentPage + 1, '&raquo;');
 }
 
 function createPageLink(url, page, text, active = '') {
@@ -170,42 +163,24 @@ function createPageLink(url, page, text, active = '') {
 
 
 // Function to display user details
-function displayUserDetail(user) {
+function displayUserDetail(userId) {
+    // Example modal with SweetAlert
     Swal.fire({
         title: 'User Details',
         html: `
-            <p><strong>ID:</strong> ${user.id}</p>
-            <p><strong>Full Name:</strong> ${user.fullName}</p>
-            <p><strong>Phone Number:</strong> ${user.phoneNumber}</p>
-            <p><strong>Status:</strong> ${user.isActive ? 'Active' : 'Inactive'}</p>
-        `,
+            <p><strong>ID:</strong> ${userId}</p>
+            <!-- Add more user details here -->`,
         icon: 'info',
         showCancelButton: true,
-        cancelButtonText: 'OK',
-        confirmButtonColor: "#cf0000",
         confirmButtonText: 'Delete',
-
+        cancelButtonText: 'Close',
     }).then((result) => {
-        if (result.isConfirmed) {
-            deleteUser(user.id);
-            Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success"
-            });
-        }
+        if (result.isConfirmed) deleteUser(userId);
     });
 }
 
-// Function to delete a user (example)
 function deleteUser(userId) {
-    // TODO: delete from server
-
-    // Here, you can make an API call to delete the user from the backend
-    console.log(`User with ID ${userId} has been deleted.`);
-    // You can also remove the user from the DOM
+    console.log(`User with ID ${userId} deleted.`);
     const rowToDelete = document.querySelector(`tr[data-user-id="${userId}"]`);
-    if (rowToDelete) {
-        rowToDelete.remove();
-    }
+    if (rowToDelete) rowToDelete.remove();
 }
