@@ -58,4 +58,9 @@ public class LayoutController {
         return "shopping-cart";
     }
 
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin/admin";
+    }
+
 }
