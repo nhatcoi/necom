@@ -13,6 +13,8 @@ import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userRequest);
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setIsActive(true);
 
         List<Address> addresses = userRequest.getAddresses().stream()
                 .map(addressRequest -> Address.builder()
@@ -90,12 +93,9 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public List<UserResponse> getUsers() {
-        log.info("Get all users");
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(userMapper::toUserResponse)
-                .collect(Collectors.toList());
+    public Page<UserResponse> getUsers(int page, int size) {
+        Page<User> users = userRepository.findAll(PageRequest.of(page, size));
+        return users.map(userMapper::toUserResponse);
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
