@@ -56,4 +56,9 @@ public class UserController {
         return new ResponseData<>(HttpStatus.CREATED.value(), translator.toLocated("response.success"), userResponse);
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseData<?> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("Delete User Successfully"), "Delete User Successfully");
+    }
 }

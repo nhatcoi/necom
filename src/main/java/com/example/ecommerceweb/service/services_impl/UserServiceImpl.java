@@ -93,12 +93,20 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+        userRepository.delete(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public Page<UserResponse> getUsers(int page, int size) {
         Page<User> users = userRepository.findAll(PageRequest.of(page, size));
         return users.map(userMapper::toUserResponse);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public UserResponse getUserById(Long userId) {
         log.info("Get user by id: {}", userId);

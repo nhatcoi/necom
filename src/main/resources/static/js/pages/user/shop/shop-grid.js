@@ -1,5 +1,5 @@
 'use strict';
-import {API, Utils, Alerts} from "../components/utils.js";
+import {API, Utils, Alerts} from "../../util/utils.js";
 
 (function ($) {
 

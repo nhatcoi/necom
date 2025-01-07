@@ -14,4 +14,7 @@ public interface UserService {
     Page<UserResponse> getUsers(int page, int size);
     UserResponse getUserById(Long userId);
     UserResponse getMyInfo();
+
+    // delete user by id
+    void deleteUser(Long userId);
 }
