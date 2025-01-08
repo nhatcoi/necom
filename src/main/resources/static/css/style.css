@@ -3038,7 +3038,14 @@ ol {
     letter-spacing: 2px;
 }
 
-/*--------------------------------- Responsive Media Quaries -----------------------------*/
+/*admin*/
+.admin-menu .list-group-item:hover {
+    cursor: pointer;
+}
+
+
+
+/*--------------------------------- Responsive Media -----------------------------*/
 
 @media only screen and (min-width: 1200px) {
     .container {

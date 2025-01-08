@@ -142,10 +142,19 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    public List<Product> getProductByPriceRange(int minAmount, int maxAmount) {
-        return productRepository.findByPriceBetween(minAmount, maxAmount);
+    @Override
+    public List<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount) {
+        List<Product> products = productRepository.findByPriceBetween(minAmount, maxAmount);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
+    @Override
+    public Page<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount, Pageable pageable) {
+        return productRepository.findByPriceBetween(minAmount, maxAmount, pageable)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
 
 
     @Override
@@ -169,6 +178,12 @@ public class ProductServiceImpl implements ProductService {
                 productDTOs.getNumber(),
                 productDTOs.getSize()
         );
+    }
+
+    @Override
+    public Page<ProductDTO> searchProducts(Pageable pageable, String keyword) {
+        Page<Product> products = productRepository.findByNameContaining(pageable, keyword);
+        return products.map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
 }

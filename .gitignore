@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### project ###
-ecommerce-web-key.json
+src/main/resources/ecommerce-web-key.json
 
 ### ignore directories ###
 docs_ignore/

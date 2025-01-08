@@ -1,6 +1,6 @@
 'use strict';
 
-import {API, Utils, Alerts} from "./utils.js";
+import {API, Utils, Alerts} from "../../util/utils.js";
 
 // Cart API Module
 const CartAPI = {
@@ -129,7 +129,7 @@ async function onRemoveItemClick(event) {
         const itemId = closeIcon.dataset.itemId;
         const removeItem = await CartAPI.removeCartItem(itemId);
         await loadCart();
-        Alerts.handleSuccessTop(removeItem.message);
+        Alerts.handleSuccessTimeCenter(removeItem.message);
     }
 }
 

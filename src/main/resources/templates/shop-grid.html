@@ -1,6 +1,9 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+ lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -82,8 +85,11 @@
                     <div id="filterProducts" class="row">
                         <!--  products     -->
                     </div>
-                    <div class="product__pagination">
-                        <a href="#">1</a>
+                    <div class="col-lg-12">
+                        <div class="product__pagination blog__pagination d-flex justify-content-center">
+                            <a href="#">1</a>
+                            <a href="#"><i class="fa fa-long-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,11 +109,11 @@
     <script th:src="@{/js/vendor/jquery.slicknav.js}"></script>
     <script th:src="@{/js/vendor/mixitup.min.js}"></script>
     <script th:src="@{/js/vendor/owl.carousel.min.js}"></script>
-    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/vendor/main.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" th:src="@{/js/pages/common.js}"></script>
-    <script type="module" th:src="@{/js/pages/header.js}"></script>
-    <script type="module" th:src="@{/js/pages/shop-grid.js}"></script>
+    <script type="module" th:src="@{/js/pages/util/common.js}"></script>
+    <script type="module" th:src="@{/js/pages/util/header.js}"></script>
+    <script type="module" th:src="@{/js/pages/user/shop/shop-grid.js}"></script>
 
 
 </body>

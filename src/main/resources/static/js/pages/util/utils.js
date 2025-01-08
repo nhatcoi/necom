@@ -6,9 +6,18 @@
 export const API = {
     PREFIX: '',
     urls: {
+        admin: {
+            base: '/admin',
+            users: '/users',
+            products: '/admin/products',
+            categories: '/admin/categories',
+            blogs: '/admin/blogs',
+            reports: '/admin/reports',
+        },
         auth: {
             logIn: '/auth/log-in',
             register: '/users/create-user',
+            info: '/users/my-info'
         },
         myInfo: '/users/my-info',
         cartCount: '/shopping-cart/count',
@@ -81,7 +90,7 @@ export const Alerts = {
         });
     },
 
-    handleSuccessTop(text) {
+    handleSuccessTimeCenter(text) {
         Swal.fire({
             position: 'center',
             icon: 'success',
@@ -114,6 +123,16 @@ export const Alerts = {
             text,
             icon: 'error',
             confirmButtonText: 'Okay',
+        });
+    },
+
+    handleErrorTimeCenter(text) {
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: text,
+            showConfirmButton: false,
+            timer: 2500,
         });
     },
 };
