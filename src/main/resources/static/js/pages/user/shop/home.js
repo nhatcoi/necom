@@ -1,6 +1,6 @@
 'use strict';
 
-import {API, Utils, Alerts} from "./util/utils.js";
+import {API, Utils, Alerts} from "../../util/utils.js";
 
 const PROD_IN_PAGE = 8;
 const PAGINATION_TO_SHOW = 3;

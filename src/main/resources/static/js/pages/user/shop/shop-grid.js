@@ -144,33 +144,23 @@ import {API, Utils, Alerts} from "../../util/utils.js";
         });
     }
 
-    function renderPagination(pagination, url) {
-        const paginationDiv = $('.product__pagination.blog__pagination');
-        paginationDiv.html('');
+    function renderPagination({ currentPage, totalPages }, url) {
+        const paginationDiv = document.querySelector('.product__pagination.blog__pagination');
+        paginationDiv.innerHTML = '';
 
-        const { currentPage, totalPages, hasPreviousPage, hasNextPage } = pagination;
+        const startPage = Math.floor(currentPage / PAGINATION_TO_SHOW) * PAGINATION_TO_SHOW;
+        const endPage = Math.min(startPage + PAGINATION_TO_SHOW, totalPages);
 
-        if (hasPreviousPage) {
-            paginationDiv.append(createPageLink(url, currentPage - 1, '&laquo;', ''));
-        }
-
-        const startPage = Math.max(0, currentPage - Math.floor(PAGINATION_TO_SHOW / 2));
-        const endPage = Math.min(totalPages, startPage + PAGINATION_TO_SHOW);
-
+        if (startPage > 0) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, startPage - 1, '&laquo;'));
         for (let i = startPage; i < endPage; i++) {
-            const activeClass = i === currentPage ? 'active' : '';
-            paginationDiv.append(createPageLink(url, i, i + 1, activeClass));
+            paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, i, i + 1, i === currentPage ? 'active' : ''));
         }
-
-        if (hasNextPage) {
-            paginationDiv.append(createPageLink(url, currentPage + 1, '&raquo;', ''));
-        }
+        if (endPage < totalPages) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, endPage, '&raquo;'));
     }
 
-    function createPageLink(url, page, text, active = '') {
+    function createPageLink(url, page, text, active = "") {
         return `<a href="#" class="pagination-link ${active}" data-page="${page}" data-url="${url}">${text}</a>`;
     }
-
 
 
     function sortProducts() {

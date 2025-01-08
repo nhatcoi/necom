@@ -1,9 +1,6 @@
 import { API, Utils } from "../util/utils.js";
 import { Alerts } from "./alerts.js";
-// import { renderPagination } from "./pagination.js";
-
-const USERS_IN_PAGE = 5;
-const PAGINATION_TO_SHOW = 2;
+import { USERS_IN_PAGE, renderPagination } from "./pagination.js";
 
 export function initializeManageUsers(contentArea) {
     contentArea.innerHTML = `
@@ -24,6 +21,7 @@ export function initializeManageUsers(contentArea) {
             <div class="user__pagination blog__pagination d-flex justify-content-center"></div>
         </div>
     `;
+
 
     populateUserTable(API.urls.admin.users, 0);
 }
@@ -71,7 +69,7 @@ function renderUsers(users) {
             <td>${user.id}</td>
             <td>${user.fullName}</td>
             <td>${user.phoneNumber}</td>
-            <td>${user.isActive ? "Active" : "Inactive"}</td>
+            <td>${user.isActive}</td>
         `;
         userTableBody.appendChild(row);
     });
@@ -80,23 +78,6 @@ function renderUsers(users) {
 }
 
 
-function renderPagination({ currentPage, totalPages, hasPreviousPage, hasNextPage }, url) {
-    const paginationDiv = document.querySelector(".user__pagination.blog__pagination");
-    paginationDiv.innerHTML = "";
-
-    const startPage = Math.floor(currentPage / PAGINATION_TO_SHOW) * PAGINATION_TO_SHOW;
-    const endPage = Math.min(startPage + PAGINATION_TO_SHOW, totalPages);
-
-    if (startPage > 0) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, startPage - 1, '&laquo;'));
-    for (let i = startPage; i < endPage; i++) {
-        paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, i, i + 1, i === currentPage ? 'active' : ''));
-    }
-    if (endPage < totalPages) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, endPage, '&raquo;'));
-}
-
-function createPageLink(url, page, text, active = "") {
-    return `<a href="#" class="pagination-link ${active}" data-page="${page}" data-url="${url}">${text}</a>`;
-}
 
 function handleUserRowClick(event) {
     const row = event.target.closest("tr");
