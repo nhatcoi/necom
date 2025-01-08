@@ -18,6 +18,7 @@ public class UserResponse {
     private String phoneNumber;
     private String email;
     private LocalDate dateOfBirth;
+    private Boolean isActive;
     private List<AddressResponse> addresses;
     private Set<String> roleNames;
 }
