@@ -7,8 +7,8 @@ const SELECTORS = {
     paginationDiv: '.product__pagination.blog__pagination',
     paginationLinkClass: 'product-pagination-link',
     productTableBodyId: 'product-table-body',
-    PRODS_PER_PAGE: 10,
     editBtn: '.edit-btn',
+    PRODS_PER_PAGE: 10
 };
 
 export function initializeManageProducts(contentArea) {

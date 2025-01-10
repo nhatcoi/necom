@@ -30,6 +30,11 @@ function initializeAdminFunctions() {
                 case "manage-products":
                     initializeManageProducts(contentArea);
                     break;
+
+                case "view-reports":
+
+                    break;
+
                 default:
                     contentArea.innerHTML = "<p>Function not implemented.</p>";
                     break;

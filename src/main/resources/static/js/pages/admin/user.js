@@ -7,12 +7,13 @@ const SELECTORS = {
     paginationDiv: '.user__pagination.blog__pagination',
     paginationLinkClass: 'user-pagination-link',
     editBtn: '.edit-btn',
+    USERS_PER_PAGE: 10
 };
 
-const USERS_PER_PAGE = 10;
 
 export function initializeManageUsers(contentArea) {
     contentArea.innerHTML = generateHtmlContent();
+    attachSearchButtonListener();
     populateUserTable(API.urls.admin.users, 0);
 }
 
@@ -24,8 +25,42 @@ document.addEventListener('click', function (event) {
     }
 });
 
-async function populateUserTable(url, page) {
-    const urlWithParams = `${url}?page=${page}&size=${USERS_PER_PAGE}`;
+async function attachSearchButtonListener() {
+    const searchButton = document.getElementById("button-search");
+    if (searchButton) {
+        searchButton.addEventListener("click", function () {
+            const searchBox = document.getElementById("search-box");
+            const searchValue = searchBox.value.trim();
+            if (searchValue) searchUsers(searchValue)
+
+            else populateUserTable(API.urls.admin.users, 0);
+        });
+    }
+}
+
+function searchUsers(searchValue) {
+    const searchParams = new URLSearchParams({ search: searchValue });
+    const urlSearchBase = `${API.urls.admin.users}/search?${searchParams.toString()}`;
+    const urlSearch = `${urlSearchBase}&page=0&size=${SELECTORS.USERS_PER_PAGE}`;
+    console.log(urlSearch);
+    fetchUsers(urlSearch, urlSearchBase);
+}
+
+async function populateUserTable(urlBase, page) {
+    let urlWithParams;
+    // template  /users/search?search=user?page=1&size=3
+
+    if(urlBase.includes("search?search=")) {
+        urlWithParams = `${urlBase}&page=${page}&size=${SELECTORS.USERS_PER_PAGE}`;
+    } else {
+        urlWithParams = `${urlBase}?page=${page}&size=${SELECTORS.USERS_PER_PAGE}`;
+    }
+
+    await fetchUsers(urlWithParams, urlBase);
+}
+
+async function fetchUsers(urlWithParams, urlBase) {
+    console.log("url with param: " + urlWithParams);
     try {
         const response = await fetch(urlWithParams, {
             method: "GET",
@@ -35,7 +70,7 @@ async function populateUserTable(url, page) {
         if (!response.ok) throw new Error("Failed to fetch users");
         const { data: users, pagination } = await response.json();
         renderUsers(users);
-        renderPagination(pagination, url, SELECTORS.paginationDiv, SELECTORS.paginationLinkClass);
+        renderPagination(pagination, urlBase, SELECTORS.paginationDiv, SELECTORS.paginationLinkClass);
     } catch (error) {
         Alerts.handleError("Error loading users", error.message);
     }
@@ -233,6 +268,8 @@ async function deleteUser(userId) {
     }
 }
 
+
+
 function generateHtmlContent() {
     return `
         <h5 class="mb-4">Manage Users</h5>
@@ -240,6 +277,7 @@ function generateHtmlContent() {
             <input type="text" class="form-control" id="search-box" placeholder="Search users..." aria-label="Search users" aria-describedby="button-search">
             <button class="btn btn-primary" type="button" id="button-search">Search</button>
         </div>
+        
         <table class="table table-bordered table-hover mb-4">
             <thead>
                 <tr class="table-primary">
@@ -252,6 +290,7 @@ function generateHtmlContent() {
             </thead>
             <tbody id="user-table-body"></tbody>
         </table>
+        
         <div class="col-lg-12">
             <div class="user__pagination blog__pagination d-flex justify-content-center"></div>
         </div>
