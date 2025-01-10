@@ -119,8 +119,9 @@ async function loadProducts(url, page) {
     try {
         const response = await fetch(url + `?page=${page}&size=${PROD_IN_PAGE}`);
         const data = await response.json();
-        renderProducts(data.content);
-        renderPagination(data.totalPages, data.currentPage, url);
+        const pagination = data.pagination;
+        renderProducts(data.data);
+        renderPagination(pagination.totalPages, pagination.currentPage, url);
     } catch (error) {
         handleError('Error loading products.');
     }

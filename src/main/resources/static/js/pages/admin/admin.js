@@ -25,6 +25,7 @@ function initializeAdminFunctions() {
             switch (functionKey) {
                 case "manage-users":
                     initializeManageUsers(contentArea);
+
                     break;
                 case "manage-products":
                     initializeManageProducts(contentArea);

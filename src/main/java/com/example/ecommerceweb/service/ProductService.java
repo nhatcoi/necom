@@ -18,7 +18,7 @@ public interface ProductService {
     Product updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
     Product getProductById(Long id);
-    List<Product> getAllProducts();
+    List<ProductDTO> getAllProducts();
     Page<Product> getAllProducts(PageRequest pageRequest);
     boolean isProductExist(Long id);
 
@@ -33,4 +33,5 @@ public interface ProductService {
     PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs);
 
     Page<ProductDTO> searchProducts(Pageable pageable, String keyword);
+    Page<ProductDTO> getProducts(Pageable pageable);
 }

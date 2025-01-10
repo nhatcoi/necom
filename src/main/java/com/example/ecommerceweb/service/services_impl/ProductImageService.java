@@ -24,4 +24,8 @@ public class ProductImageService {
     public List<ProductImage> getProductImagesByProductId(Long productId) {
         return productImageRepository.findByProductId(productId);
     }
+
+    public List<String> getImageListUrl(Long productId) {
+        return productImageRepository.findUrlImageByProductId(productId);
+    }
 }

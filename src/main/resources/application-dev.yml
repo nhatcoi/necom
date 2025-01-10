@@ -35,9 +35,9 @@ firebase:
   storage-bucket: ${FIREBASE_STORAGE_BUCKET:ecommerce-web-18f77.appspot.com}
 
 jwt:
-  signer-key: ${JWT_SIGNER_KEY}
+  signer-key: ${JWT_SIGNER_KEY:hTQTdTxhQD9Jx12CCdB3ynJOHdCzeQzVx8MI0HwTqFcY0rPw9AmzQmElutWe8y19}
 
 stripe:
-  api: ${API_STRIPE_KEY}
-  webhook: ${API_STRIPE_WEBHOOK_KEY}
+  api: ${API_STRIPE_KEY:sk_test_51QSse7EEKvaSQquGKCjTDUkhpffPxgPylxMXaUnZXkMoX95aEVulNoB8FxjCaElNjvR7xCT05juy4D3n0Ec8FEKm00IIZ4G1t8}
+  webhook: ${API_STRIPE_WEBHOOK_KEY:whsec_94c10f3edffcf47506534ed0cc9647f8cf0575dc6229569945698bd95f12ad9b}
 

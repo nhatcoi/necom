@@ -27,6 +27,9 @@ public class ProductDTO {
 
     private String description;
 
+    @JsonProperty("quantity_in_stock")
+    private Integer quantityInStock;
+
     @JsonProperty("category_id")
     private Long categoryId;
 }

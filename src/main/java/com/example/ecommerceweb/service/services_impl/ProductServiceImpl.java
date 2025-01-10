@@ -107,8 +107,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
     @Override
@@ -186,4 +189,9 @@ public class ProductServiceImpl implements ProductService {
         return products.map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
+    @Override
+    public Page<ProductDTO> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
 }

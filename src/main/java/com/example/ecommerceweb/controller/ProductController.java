@@ -5,6 +5,7 @@ import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.dto.response.Pagination;
 import com.example.ecommerceweb.dto.response.ResponseData;
+import com.example.ecommerceweb.dto.response.product.ProductResponse;
 import com.example.ecommerceweb.entity.Product;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.service.services_impl.ProductImageService;
@@ -44,12 +45,19 @@ public class ProductController {
     private final ModelMapper modelMapper;
 
     @GetMapping("/{id}")
-    public String getProductById(@PathVariable Long id, Model model) throws IOException {
+    public ResponseData<?> getProductById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        model.addAttribute("productImages", productImageService.getProductImagesByProductId(id));
-        model.addAttribute("avgRating", productRatingService.avgRating(id));
-        return "shop-details";
+        ProductResponse response = modelMapper.map(product, ProductResponse.class);
+        response.setProductImages(productImageService.getImageListUrl(id));
+        response.setAvgRating(productRatingService.avgRating(id));
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), response);
+    }
+
+    @GetMapping("/list-image/{id}")
+    public ResponseData<?> getListImage(@PathVariable Long id) {
+        // test
+        List<String> response = productImageService.getImageListUrl(id);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), response);
     }
 
     @GetMapping("/product/share")
@@ -61,15 +69,13 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<PaginatedResponse<ProductDTO>> getProducts(
+    public ResponseData<?> getProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
+            @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productsPage = productService.getAllProducts(pageable);
-        PaginatedResponse<ProductDTO> response = productService.createPaginatedResponse(productsPage);
-
-        return ResponseEntity.ok(response);
+        Page<ProductDTO> products = productService.getProducts(pageable);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
     }
 
 

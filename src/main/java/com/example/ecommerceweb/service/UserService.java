@@ -1,11 +1,11 @@
 package com.example.ecommerceweb.service;
 
 import com.example.ecommerceweb.dto.request.user.UserRequest;
+import com.example.ecommerceweb.dto.request.user.UserUpdateRequest;
 import com.example.ecommerceweb.dto.response.user.UserResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface UserService {
@@ -17,4 +17,9 @@ public interface UserService {
 
     // delete user by id
     void deleteUser(Long userId);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    UserResponse updateUserByAdmin(Long userId, UserUpdateRequest userUpdateRequest);
+
+    Page<UserResponse> searchUsers(String decodedSearch, int page, int size);
 }
