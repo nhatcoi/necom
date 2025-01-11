@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="JackieShop">
+    <meta name="user-id" content="${userId}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JackieShop</title>
+
+    <!-- Css Styles thymeleaf -->
+    <link th:href="@{/css/admin.css}" rel="stylesheet"/>
+    <th:block th:replace="~{common/css-fragment :: cssStyles}"></th:block>
+</head>
+<body>
+<!-- Header Section End -->
+<div th:replace="~{common/header :: header}"></div>
+<!-- Header Section End -->
+
+<section class="product spade">
+    <div class="container">
+        <div class="row">
+            <div class="header__cart user">
+                <ul>
+                    <li><a data-content="cart" class="amount-cart"><i class="fa fa-shopping-bag"></i> <span class="quantity-in-cart">0</span></a></li>
+                    <li><a data-content="shipping"><i class="fa-solid fa-truck"></i> <span>0</span></a></li>
+                    <li><a data-content="favorites"><i class="fa-regular fa-star"></i></a></li>
+                    <li><a data-content="settings"><i class="fa-solid fa-gear"></i></a></li>
+                </ul>
+                </div>
+                <div class="user-content">
+                    <!-- Nội dung sẽ được DOM động ở đây -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+
+
+<!-- Footer Section End -->
+<div th:replace="~{common/footer :: footer}"></div>
+<!-- Footer Section End -->
+
+<!-- Js Plugins -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/vendor/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/js/vendor/jquery.nice-select.min.js}"></script>
+<script th:src="@{/js/vendor/jquery-ui.min.js}"></script>
+<script th:src="@{/js/vendor/jquery.slicknav.js}"></script>
+<script th:src="@{/js/vendor/mixitup.min.js}"></script>
+<script th:src="@{/js/vendor/owl.carousel.min.js}"></script>
+<script th:src="@{/js/vendor/main.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" th:src="@{/js/pages/util/common.js}"></script>
+<script type="module" th:src="@{/js/pages/util/header.js}"></script>
+<script type="module" th:src="@{/js/pages/user/user-info.js}"></script>
+
+</body>
+</html>
+
+
