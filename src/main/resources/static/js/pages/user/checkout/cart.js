@@ -1,5 +1,3 @@
-'use strict';
-
 import {API, Utils, Alerts} from "../../util/utils.js";
 
 // Cart API Module

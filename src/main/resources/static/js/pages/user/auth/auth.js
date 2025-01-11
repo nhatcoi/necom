@@ -1,5 +1,3 @@
-'use strict';
-
 document.addEventListener('DOMContentLoaded', () => {
     const regexValidators = {
         fullName: /^[A-Za-z\s]{2,50}$/,
