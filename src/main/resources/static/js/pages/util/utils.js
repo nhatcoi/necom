@@ -1,7 +1,4 @@
-'use strict';
 
-
-// API Configuration
 
 export const API = {
     PREFIX: '',
@@ -24,6 +21,7 @@ export const API = {
         loginForm: '/login-form',
         categories: '/categories',
         products: '/products',
+        productsByCategory: '/products/category',
         recentBlogs: '/blog/recent-news',
         addToCart: '/shopping-cart/add-to-cart/',
         shopGrid: {
@@ -91,6 +89,9 @@ export const Utils = {
         const token = localStorage.getItem('token');
         return token ? { Authorization: `Bearer ${token}` } : {};
     },
+
+    formatName: (name) => (name && name.length > 10 ? name.substring(0, 8) + '...' : name),
+    redirectToLogin: () => (window.location.href = API.urls.loginForm),
 };
 
 // Alert Utilities

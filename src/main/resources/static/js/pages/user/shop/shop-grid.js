@@ -1,4 +1,3 @@
-'use strict';
 import {API, Utils, Alerts} from "../../util/utils.js";
 
 (function ($) {
@@ -8,6 +7,7 @@ import {API, Utils, Alerts} from "../../util/utils.js";
     const INITIAL_PAGE = 0;
 
     $(document).ready(init);
+
     function init() {
         filterByPrice();
         sortProducts();
@@ -16,31 +16,81 @@ import {API, Utils, Alerts} from "../../util/utils.js";
 
         $(document).on('click', '.add-to-cart', handleAddToCart);
 
+        handleSearchOnPageLoad();
+        handleSearchFormSubmit();
+        handlePaginationClick();
+        // handleFilterCategory();
+    }
+
+
+    function handleFilterCategory() {
+        const currentPath = window.location.pathname; // Lấy đường dẫn hiện tại
+
+
+            $(this).addClass("active").siblings().removeClass("active");
+
+            const cateId = $(this).find('a').data('category-id'); // Lấy category ID
+            console.log('Category ID:', cateId);
+
+            if (currentPath === '/shop-grid') {
+                // Nếu đang ở trang shop-grid, chỉ cần gọi hàm getProductsByCategory
+                getProductsByCategory(cateId);
+            } else {
+                // Nếu ở trang khác, chuyển hướng đến shop-grid và truyền cateId qua URL
+                const shopGridURL = `/shop-grid?category=${cateId}`;
+                console.log('Redirecting to:', shopGridURL);
+                window.location.href = shopGridURL;
+            }
+
+    }
+
+
+    // Tách xử lý search khi tải trang
+    function handleSearchOnPageLoad() {
         const currentPath = window.location.pathname;
         const searchParams = new URLSearchParams(window.location.search);
+        console.log('Search params:', searchParams);
+
         const search = searchParams.get('search');
+        const categoryId = searchParams.get('category');
 
         if (search) {
             $('.search-results-title').text(`Search results for: "${search}"`);
             fetchProductsBySearch(search);
+        } else if (categoryId) {
+            if (categoryId) {
+                console.log(`Loading products for category ID: ${categoryId}`);
+                getProductsByCategory(categoryId);
+            } else {
+                console.log('No category selected, loading all products');
+                getProductsByCategory(null);
+            }
         } else {
             $("#filterButton").trigger("click");
         }
 
-        // form submit handle
+
+    }
+
+    // Tách xử lý form submit cho search
+    function handleSearchFormSubmit() {
         $('.hero__search__form form').on('submit', function (event) {
             const searchQuery = $(this).find('input[type="text"]').val();
 
-            if (currentPath === '/shop-grid') {
+            if (window.location.pathname === '/shop-grid') {
                 event.preventDefault();
                 console.log('Search:', searchQuery);
+
                 const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`;
                 window.history.pushState(null, '', newUrl);
+
                 fetchProductsBySearch(searchQuery);
             }
         });
+    }
 
-        // pagination handle
+    // Tách xử lý sự kiện click phân trang
+    function handlePaginationClick() {
         $(document).on('click', '.pagination-link', function (event) {
             event.preventDefault();
             const page = $(this).data('page');
@@ -89,9 +139,10 @@ import {API, Utils, Alerts} from "../../util/utils.js";
         });
     }
 
-    function getProductsByCategory(urlCate) {
+    function getProductsByCategory(cateId) {
+        const url = `${API.urls.productsByCategory}/${cateId}`;
         $.ajax({
-            url: urlCate,
+            url: url,
             type: "GET",
             success: (response) => {
                 $("#products-found").text(response.data.length);
@@ -208,8 +259,7 @@ import {API, Utils, Alerts} from "../../util/utils.js";
             $(this).addClass("active").siblings().removeClass("active");
 
             const cateId = $(this).find('a').data('category-id');
-            const urlCate = `/products/category/${cateId}`;
-            getProductsByCategory(urlCate);
+            getProductsByCategory(cateId);
         });
     }
 

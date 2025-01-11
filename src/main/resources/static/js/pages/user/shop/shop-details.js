@@ -1,4 +1,4 @@
-'use restrict';
+
 
 (function ($) {
     const { API, Utils } = App;
