@@ -49,7 +49,7 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseData<?> searchUsers(
-            @RequestParam(value = "search", required = false) String keyword,
+            @RequestParam(value = "search", required = false, defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -83,4 +83,5 @@ public class UserController {
         UserResponse userResponse = userService.updateUserByAdmin(userId, userUpdateRequest);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userResponse);
     }
+
 }

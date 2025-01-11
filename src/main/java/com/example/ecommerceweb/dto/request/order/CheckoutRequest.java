@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.dto.request.order;
 
 import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
-import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentResponse;
+import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentDTO;
 import lombok.*;
 
 import java.util.List;
@@ -12,5 +12,5 @@ import java.util.List;
 @Builder
 public class CheckoutRequest {
     private List<ProductOrderRequest> products;
-    private OrderMetadataIntentResponse orderMetadata;
+    private OrderMetadataIntentDTO orderMetadata;
 }

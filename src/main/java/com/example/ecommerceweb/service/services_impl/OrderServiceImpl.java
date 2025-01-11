@@ -3,7 +3,7 @@ package com.example.ecommerceweb.service.services_impl;
 import com.example.ecommerceweb.dto.request.order.OrderInfoRequest;
 import com.example.ecommerceweb.dto.request.order.OrderRequest;
 import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
-import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentResponse;
+import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentDTO;
 import com.example.ecommerceweb.entity.Order;
 import com.example.ecommerceweb.entity.OrderDetail;
 import com.example.ecommerceweb.entity.Product;
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderMetadataIntentResponse createOrder(OrderRequest orderRequest) {
+    public OrderMetadataIntentDTO createOrder(OrderRequest orderRequest) {
         User user = getAuthenticatedUser();
         Order order = createOrderFromRequest(orderRequest, user);
         orderRepository.save(order);
@@ -109,8 +109,8 @@ public class OrderServiceImpl implements OrderService {
         return orderDetails;
     }
 
-    private OrderMetadataIntentResponse buildOrderMetadataResponse(Order order) {
-        return OrderMetadataIntentResponse.builder()
+    private OrderMetadataIntentDTO buildOrderMetadataResponse(Order order) {
+        return OrderMetadataIntentDTO.builder()
                 .orderId(order.getId())
                 .fullName(order.getFullName())
                 .email(order.getEmail())

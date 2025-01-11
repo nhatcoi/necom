@@ -12,5 +12,4 @@ public class ProductOrderRequest {
     private Integer quantity;
     private String name;
     private String currency;
-
 }

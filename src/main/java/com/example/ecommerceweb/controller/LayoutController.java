@@ -63,4 +63,9 @@ public class LayoutController {
         return "admin/admin";
     }
 
+    @GetMapping("/user")
+    public String user() {
+        return "pages/user";
+    }
+
 }
