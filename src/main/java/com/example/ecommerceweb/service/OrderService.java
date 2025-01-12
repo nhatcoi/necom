@@ -9,4 +9,6 @@ import org.springframework.stereotype.Service;
 public interface OrderService {
     OrderMetadataIntentDTO createOrder(OrderRequest orderRequest);
     void updateOrderStatus(Long orderId, StatusEnum statusEnum);
+
+    Integer countOrders(Long userId);
 }

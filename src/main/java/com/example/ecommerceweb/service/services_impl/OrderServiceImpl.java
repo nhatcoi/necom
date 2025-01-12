@@ -56,6 +56,12 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.updateOrderStatusById(orderId, status);
     }
 
+    @Override
+    public Integer countOrders(Long userId) {
+        return 0;
+    }
+
+
     private User getAuthenticatedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)

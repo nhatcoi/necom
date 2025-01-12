@@ -34,6 +34,8 @@ export const API = {
             remove: '/shopping-cart/remove/{id}',
         },
         checkout: '/checkout/checkout-list',
+        orderCount: undefined
+
     },
 };
 
