@@ -67,7 +67,7 @@ export const Utils = {
                 headers: this.getAuthHeaders(),
             });
 
-            if (!response.ok) throw new Error('Failed to add to cart');
+            if (!response.ok) throw new Error('Failed to add to cart, maximum is 5');
 
             const data = await response.json();
             console.log(data.data);

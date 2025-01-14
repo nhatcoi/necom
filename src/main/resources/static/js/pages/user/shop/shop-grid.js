@@ -23,28 +23,6 @@ import {API, Utils, Alerts} from "../../util/utils.js";
     }
 
 
-    function handleFilterCategory() {
-        const currentPath = window.location.pathname; // Lấy đường dẫn hiện tại
-
-
-            $(this).addClass("active").siblings().removeClass("active");
-
-            const cateId = $(this).find('a').data('category-id'); // Lấy category ID
-            console.log('Category ID:', cateId);
-
-            if (currentPath === '/shop-grid') {
-                // Nếu đang ở trang shop-grid, chỉ cần gọi hàm getProductsByCategory
-                getProductsByCategory(cateId);
-            } else {
-                // Nếu ở trang khác, chuyển hướng đến shop-grid và truyền cateId qua URL
-                const shopGridURL = `/shop-grid?category=${cateId}`;
-                console.log('Redirecting to:', shopGridURL);
-                window.location.href = shopGridURL;
-            }
-
-    }
-
-
     // Tách xử lý search khi tải trang
     function handleSearchOnPageLoad() {
         const currentPath = window.location.pathname;

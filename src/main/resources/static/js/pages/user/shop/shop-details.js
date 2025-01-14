@@ -1,18 +1,21 @@
+import {API, Utils, Alerts} from "../../util/utils.js";
 
+document.addEventListener('DOMContentLoaded', init);
 
-(function ($) {
-    const { API, Utils } = App;
-
-    function init() {
-        $("#filterButton").trigger("click");
-        $(document).on('click', '.add-to-cart', handleAddToCart);
+function init() {
+    const filterButton = document.getElementById('filterButton');
+    if (filterButton) {
+        filterButton.click();
     }
-    $(document).ready(init);
+    document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('add-to-cart')) {
+            handleAddToCart(event);
+        }
+    });
+}
 
-    function handleAddToCart(event) {
-        event.preventDefault();
-        const productId = $(this).data('id');
-        Utils.addToCartHandler(productId);
-    }
-
-} (jQuery));
+function handleAddToCart(event) {
+    event.preventDefault();
+    const productId = event.target.dataset.id;
+    Utils.addToCartHandler(productId);
+}

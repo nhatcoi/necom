@@ -92,10 +92,11 @@ function renderCategories(categories) {
 
     categories.forEach(category => {
         categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="/shop-grid">${category.name}</a></li>`);
+        const href = `/shop-grid?category=${encodeURIComponent(category.id)}`;
         slider.insertAdjacentHTML('beforeend', `
             <div class="col-lg-3">
                 <div class="categories__item set-bg" style="background-image: url('${category.imageUrl}');">
-                    <h5><a href="/shop-grid">${category.name}</a></h5>
+                    <h5><a href="${href}">${category.name}</a></h5>
                 </div>
             </div>
         `);
