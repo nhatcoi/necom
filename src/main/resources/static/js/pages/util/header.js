@@ -52,25 +52,6 @@ function handleUserAuthentication() {
         });
 }
 
-function getCountCart() {
-    fetch(`${API.PREFIX}${API.urls.cartCount}`, {
-        method: 'GET',
-        headers: Utils.getAuthHeaders(),
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Cart count fetch failed');
-            return response.json();
-        })
-        .then(response => {
-            quantityInCart.textContent = response.data || 0;
-        })
-        .catch(() => {
-            localStorage.clear();
-            Utils.redirectToLogin();
-        });
-}
-
-
 function attachLogoutHandler() {
     const logoutLink = document.querySelector('.header__top__right__social.auth .logout-icon');
     const logoutLinkMobile = document.querySelector('.header__top__right__social.auth-mobile .logout-icon');
@@ -92,6 +73,25 @@ function attachLogoutHandler() {
         });
     }
 }
+
+function getCountCart() {
+    fetch(`${API.PREFIX}${API.urls.cartCount}`, {
+        method: 'GET',
+        headers: Utils.getAuthHeaders(),
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Cart count fetch failed');
+            return response.json();
+        })
+        .then(response => {
+            quantityInCart.textContent = response.data || 0;
+        })
+        .catch(() => {
+            localStorage.clear();
+            Utils.redirectToLogin();
+        });
+}
+
 
 async function loadCategories() {
     try {
