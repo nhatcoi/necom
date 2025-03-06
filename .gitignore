@@ -34,6 +34,7 @@ build/
 
 ### project ###
 src/main/resources/ecommerce-web-key.json
+.env
 
 ### ignore directories ###
 docs_ignore/
