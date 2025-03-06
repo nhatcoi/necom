@@ -1,0 +1,52 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  devtools:
+    livereload:
+      enabled: true
+
+  datasource:
+    url: ${DATABASE_URL} #mandatory
+    username: ${DATABASE_USERNAME} #mandatory
+    password: ${DATABASE_PASSWORD} #mandatory
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20  # Increase the pool for better performance
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 60000
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false # Turn off show-sql in prod avoid affecting to performance
+    hibernate:
+      ddl-auto: validate # only validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate.SQL: ERROR # Avoid revealing sensitive information
+
+
+# env
+image:
+  base:
+    url: ${IMAGE_BASE_URL}
+
+firebase:
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH} #mandatory
+  storage-bucket: ${FIREBASE_STORAGE_BUCKET}
+
+jwt:
+  signer-key: ${JWT_SIGNER_KEY}
+
+stripe:
+  api: ${API_STRIPE_KEY}
+  webhook: ${API_STRIPE_WEBHOOK_KEY}
