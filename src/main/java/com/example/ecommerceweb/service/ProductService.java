@@ -34,4 +34,5 @@ public interface ProductService {
 
     Page<ProductDTO> searchProducts(Pageable pageable, String keyword);
     Page<ProductDTO> getProducts(Pageable pageable);
+    Page<ProductDTO> getNewProducts(Pageable pageable);
 }

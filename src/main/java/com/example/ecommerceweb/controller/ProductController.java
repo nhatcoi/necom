@@ -7,6 +7,7 @@ import com.example.ecommerceweb.dto.response.Pagination;
 import com.example.ecommerceweb.dto.response.ResponseData;
 import com.example.ecommerceweb.dto.response.product.ProductResponse;
 import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.service.services_impl.ProductImageService;
 import com.example.ecommerceweb.service.services_impl.ProductRatingService;
@@ -44,6 +45,28 @@ public class ProductController {
     private final Translator translator;
     private final ModelMapper modelMapper;
 
+    @GetMapping("")
+    public ResponseData<?> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(defaultValue = "false") boolean sortByNew) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ProductDTO> products = productService.getProducts(pageable);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
+    }
+
+    @GetMapping("/new")
+    public ResponseData<?> getNewProduct(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductDTO> products = productService.getProducts(pageable);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
+    }
+
     @GetMapping("/{id}")
     public ResponseData<?> getProductById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
@@ -60,23 +83,7 @@ public class ProductController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), response);
     }
 
-    @GetMapping("/product/share")
-    public String getProductShare(@RequestParam Long id, Model model) {
-        //get url product
-        String urlProduct = ServletUriComponentsBuilder.fromCurrentContextPath().path("/products/").path(id.toString()).toUriString();
-        model.addAttribute("urlProduct", urlProduct);
-        return "common/share-product";
-    }
 
-    @GetMapping("")
-    public ResponseData<?> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> products = productService.getProducts(pageable);
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
-    }
 
 
     @GetMapping("/category/{cateId}")
