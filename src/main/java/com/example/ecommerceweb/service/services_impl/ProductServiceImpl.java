@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -193,5 +194,17 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductDTO> getProducts(Pageable pageable) {
         return productRepository.findAll(pageable)
                 .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+    @Override
+    public Page<ProductDTO> getNewProducts(Pageable pageable) {
+        Pageable sortedByCreatedAt = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Page<Product> newProducts = productRepository.findAll(sortedByCreatedAt);
+        return newProducts.map(product -> modelMapper.map(product, ProductDTO.class));
     }
 }
