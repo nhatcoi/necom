@@ -4,6 +4,7 @@ package com.example.ecommerceweb.service;
 import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.filter.ProductFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,5 @@ public interface ProductService {
 
     Page<ProductDTO> searchProducts(Pageable pageable, String keyword);
     Page<ProductDTO> getProducts(Pageable pageable);
-    Page<ProductDTO> getNewProducts(Pageable pageable);
+    Page<ProductDTO> getFilteredProducts(ProductFilter filter, Pageable pageable);
 }

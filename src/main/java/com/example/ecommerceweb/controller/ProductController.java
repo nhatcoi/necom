@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -49,11 +50,22 @@ public class ProductController {
     public ResponseData<?> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size,
-            @RequestParam(defaultValue = "false") boolean sortByNew) {
+            @RequestParam(required = false) Boolean sortByNew,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean inStock,
+            @RequestParam(required = false) Integer category
+    ) {
 
         Pageable pageable = PageRequest.of(page, size);
+        ProductFilter filter = new ProductFilter();
+        filter.setSortByNew(sortByNew);
+        filter.setMinPrice(minPrice);
+        filter.setMaxPrice(maxPrice);
+        filter.setInStock(inStock);
+        filter.setCategory(category);
 
-        Page<ProductDTO> products = productService.getProducts(pageable);
+        Page<ProductDTO> products = productService.getFilteredProducts(filter, pageable);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
     }
 
