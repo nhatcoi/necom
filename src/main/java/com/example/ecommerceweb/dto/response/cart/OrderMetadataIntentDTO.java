@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderMetadataIntentResponse {
+public class OrderMetadataIntentDTO {
     private Long orderId;
     private String fullName;
     private String email;

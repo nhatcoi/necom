@@ -29,6 +29,6 @@ public class Blog extends BaseEntity{
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "blog_category_id")
     private Category categoryId;
 }

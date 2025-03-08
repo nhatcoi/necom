@@ -1,7 +1,3 @@
-create sequence products_ratings_id_seq;
-
-alter sequence products_ratings_id_seq owner to postgres;
-
 create table blog_categories
 (
     id   serial
@@ -59,6 +55,9 @@ create table products
 alter table products
     owner to postgres;
 
+create index idx_category_id
+    on products (category_id);
+
 create table flash_sale_items
 (
     id             serial
@@ -68,7 +67,9 @@ create table flash_sale_items
     product_id     integer
         references products,
     sale_price     numeric(10, 2) not null,
-    quantity_limit integer
+    quantity_limit integer,
+    created_at     timestamp default CURRENT_TIMESTAMP,
+    updated_at     timestamp
 );
 
 alter table flash_sale_items
@@ -90,14 +91,14 @@ alter table product_images
 
 create table product_ratings
 (
-    id         bigint    default nextval('products_ratings_id_seq'::regclass) not null
+    id         bigserial
         constraint products_ratings_pkey
             primary key,
-    product_id bigint                                                         not null
+    product_id bigint  not null
         constraint products_ratings_product_id_fkey
             references products
             on delete cascade,
-    rating     integer                                                        not null
+    rating     integer not null
         constraint products_ratings_rating_check
             check ((rating >= 1) AND (rating <= 5)),
     created_at timestamp default CURRENT_TIMESTAMP,
@@ -110,11 +111,6 @@ create table product_ratings
 
 alter table product_ratings
     owner to postgres;
-
-alter sequence products_ratings_id_seq owned by product_ratings.id;
-
-create index idx_category_id
-    on products (category_id);
 
 create table roles
 (
@@ -132,19 +128,22 @@ create table users
         primary key,
     full_name     varchar(255),
     phone_number  varchar(20)  not null,
+    address       varchar(255) default ''::character varying,
     password      varchar(255) not null,
-    created_at    timestamp default CURRENT_TIMESTAMP,
-    updated_at    timestamp default CURRENT_TIMESTAMP,
-    is_active     boolean   default true,
+    created_at    timestamp    default CURRENT_TIMESTAMP,
+    updated_at    timestamp    default CURRENT_TIMESTAMP,
+    is_active     boolean      default true,
     date_of_birth timestamp,
-    facebook_id   integer   default 0,
-    google_id     integer   default 0,
-    username      varchar(255),
-    email         varchar(255)
+    facebook_id   integer      default 0,
+    google_id     integer      default 0,
+    username      varchar(255)
 );
 
 alter table users
     owner to postgres;
+
+create index idx_password
+    on users (password);
 
 create table blogs
 (
@@ -195,6 +194,9 @@ create table orders
 alter table orders
     owner to postgres;
 
+create index idx_user_id
+    on orders (user_id);
+
 create table order_details
 (
     id                 bigserial
@@ -213,7 +215,8 @@ create table order_details
             check (number_of_products > 0),
     total_price        double precision
         constraint order_details_total_price_check
-            check (total_price >= (0)::double precision)
+            check (total_price >= (0)::double precision),
+    color              varchar(255)
 );
 
 alter table order_details
@@ -224,9 +227,6 @@ create index idx_order_id
 
 create index idx_product_id
     on order_details (product_id);
-
-create index idx_user_id
-    on orders (user_id);
 
 create table social_accounts
 (
@@ -262,9 +262,6 @@ create table tokens
 alter table tokens
     owner to postgres;
 
-create index idx_password
-    on users (password);
-
 create table user_roles
 (
     user_id integer not null
@@ -283,13 +280,16 @@ create table carts
 (
     id         serial
         primary key,
-    user_id    integer not null
-        references users,
-    product_id integer not null
-        references products,
+    user_id    integer
+        references users
+            on delete cascade,
+    product_id integer
+        references products
+            on delete cascade,
     quantity   integer not null,
     created_at timestamp default CURRENT_TIMESTAMP,
-    updated_at timestamp default CURRENT_TIMESTAMP
+    updated_at timestamp default CURRENT_TIMESTAMP,
+    unique (user_id, product_id)
 );
 
 alter table carts
@@ -313,3 +313,5 @@ create table user_address
 alter table user_address
     owner to postgres;
 
+
+CREATE INDEX idx_product_name_tsvector ON products USING GIN (to_tsvector('english', name));

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public interface UserMapper {
     @Mapping(target = "roleNames", source = "roles", qualifiedByName = "mapRolesToNames")
     @Mapping(target = "email", source = "email") // if add new field
+    @Mapping(target = "isActive", source = "isActive") // if add new field
     UserResponse toUserResponse(User user);
 
     User toUser(UserRequest request);

@@ -1,5 +1,3 @@
-'use strict';
-
 document.addEventListener('DOMContentLoaded', () => {
     const regexValidators = {
         fullName: /^[A-Za-z\s]{2,50}$/,
@@ -33,30 +31,90 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function submitForm(url, data) {
+        return await makeRequest(url, 'POST', data);
+    }
+
+    async function fetchInfo(url, token) {
+        return await makeRequest(url, 'GET', null, { Authorization: `Bearer ${token}` });
+    }
+
+    async function makeRequest(url, method, data = null, customHeaders = {}) {
         try {
             const response = await fetch(url, {
-                method: 'POST',
+                method,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...customHeaders,
                 },
-                body: JSON.stringify(data)
+                body: data ? JSON.stringify(data) : null,
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(errorText);
+                throw new Error(errorText || `HTTP error! Status: ${response.status}`);
             }
 
             return await response.json();
         } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Account already exists",
-            });
-            console.error(error);
+            handleError("An error occurred", error);
             throw error;
         }
+    }
+
+    function handleError(message, error) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: message,
+        });
+        console.error(error);
+    }
+
+    function redirectToPageBasedOnRole(roles) {
+        const hasAdmin = roles.includes('ADMIN');
+        const hasUser = roles.includes('USER');
+
+        if (hasAdmin && hasUser) {
+            Swal.fire({
+                title: "ADMIN",
+                text: "Shopping or Managing?",
+                icon: "success",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Shopping",
+                cancelButtonColor: "#40a803",
+                cancelButtonText: "Managing",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigateTo('/');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    navigateTo('/admin');
+                }
+            });
+        } else if (hasAdmin) {
+            showTemporaryAlert("ADMIN", '/admin');
+        } else if (hasUser) {
+            showTemporaryAlert("Welcome", '/');
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Access Denied",
+                text: "You don't have permission to access this application.",
+            });
+        }
+    }
+
+    function showTemporaryAlert(title, redirectUrl) {
+        Swal.fire({
+            title,
+            icon: "success",
+            timer: 1500,
+            draggable: true,
+        }).then(() => navigateTo(redirectUrl));
+    }
+
+    function navigateTo(url) {
+        window.location.href = url;
     }
 
     const loginForm = document.getElementById('loginForm');
@@ -64,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const userIdentifier = document.querySelector('input[name="userIdentifier"]').value;
-            const password = document.querySelector('input[name="password"]').value;
+            const userIdentifier = document.querySelector('input[name="userIdentifier"]').value.trim();
+            const password = document.querySelector('input[name="password"]').value.trim();
 
             if (!userIdentifier || !password) {
                 alert("Please fill in all required fields.");
@@ -73,14 +131,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await submitForm(`${PREFIX}/auth/log-in`, { userIdentifier, password });
+                const response = await submitForm(`/auth/log-in`, { userIdentifier, password });
                 localStorage.setItem('token', response.data.token);
-                window.location.href = '/';
+
+                const userInfo = await fetchInfo('/users/my-info', response.data.token);
+                redirectToPageBasedOnRole(userInfo.data.roleNames);
             } catch (error) {
-                // Error is already handled in submitForm
+                // Errors are already handled in individual functions
             }
         });
     }
+
+
 
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {

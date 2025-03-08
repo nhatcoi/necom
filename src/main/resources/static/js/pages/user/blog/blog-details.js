@@ -1,4 +1,4 @@
-'use restrict';
+
 
 (function ($) {
     $(document).ready(function() {

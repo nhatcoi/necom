@@ -1,20 +1,87 @@
-'use strict';
-import {API, Utils, Alerts} from "./utils.js";
+import {API, Utils, Alerts} from "../../util/utils.js";
 
 (function ($) {
 
+    const PROD_IN_PAGE = 6;
+    const PAGINATION_TO_SHOW = 3;
+    const INITIAL_PAGE = 0;
+
     $(document).ready(init);
+
     function init() {
         filterByPrice();
         sortProducts();
         loadCategories();
         handleCategoryClick();
-        $("#filterButton").trigger("click");
+
         $(document).on('click', '.add-to-cart', handleAddToCart);
+
+        handleSearchOnPageLoad();
+        handleSearchFormSubmit();
+        handlePaginationClick();
+        // handleFilterCategory();
     }
 
 
+    // Tách xử lý search khi tải trang
+    function handleSearchOnPageLoad() {
+        const currentPath = window.location.pathname;
+        const searchParams = new URLSearchParams(window.location.search);
+        console.log('Search params:', searchParams);
 
+        const search = searchParams.get('search');
+        const categoryId = searchParams.get('category');
+
+        if (search) {
+            $('.search-results-title').text(`Search results for: "${search}"`);
+            fetchProductsBySearch(search);
+        } else if (categoryId) {
+            if (categoryId) {
+                console.log(`Loading products for category ID: ${categoryId}`);
+                getProductsByCategory(categoryId);
+            } else {
+                console.log('No category selected, loading all products');
+                getProductsByCategory(null);
+            }
+        } else {
+            $("#filterButton").trigger("click");
+        }
+
+
+    }
+
+    // Tách xử lý form submit cho search
+    function handleSearchFormSubmit() {
+        $('.hero__search__form form').on('submit', function (event) {
+            const searchQuery = $(this).find('input[type="text"]').val();
+
+            if (window.location.pathname === '/shop-grid') {
+                event.preventDefault();
+                console.log('Search:', searchQuery);
+
+                const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`;
+                window.history.pushState(null, '', newUrl);
+
+                fetchProductsBySearch(searchQuery);
+            }
+        });
+    }
+
+    // Tách xử lý sự kiện click phân trang
+    function handlePaginationClick() {
+        $(document).on('click', '.pagination-link', function (event) {
+            event.preventDefault();
+            const page = $(this).data('page');
+            const url = $(this).data('url');
+            loadProducts(url, page);
+        });
+    }
+
+    function fetchProductsBySearch(search) {
+        console.log(`${API.urls.products}/search?search=${encodeURIComponent(search)}`);
+        const url = `${API.urls.products}/search?search=${encodeURIComponent(search)}`;
+        loadProducts(url, INITIAL_PAGE);
+    }
 
     function handleAddToCart(event) {
         event.preventDefault();
@@ -23,6 +90,7 @@ import {API, Utils, Alerts} from "./utils.js";
     }
 
     function renderProducts(products) {
+        console.log('Products render:', products);
         const productsContainer = $("#filterProducts");
         productsContainer.empty();
 
@@ -49,9 +117,10 @@ import {API, Utils, Alerts} from "./utils.js";
         });
     }
 
-    function getProductsByCategory(urlCate) {
+    function getProductsByCategory(cateId) {
+        const url = `${API.urls.productsByCategory}/${cateId}`;
         $.ajax({
-            url: urlCate,
+            url: url,
             type: "GET",
             success: (response) => {
                 $("#products-found").text(response.data.length);
@@ -83,22 +152,45 @@ import {API, Utils, Alerts} from "./utils.js";
         maxAmount.val(priceRange.slider("values", 1));
 
         $("#filterButton").click(() => {
-            $.ajax({
-                url: API.urls.shopGrid.filterByPrice,
-                type: "GET",
-                data: {
-                    minamount: minAmount.val(),
-                    maxamount: maxAmount.val(),
-                },
-                success: (data) => {
-                    $("#products-found").text(data.length);
-                    renderProducts(data);
-                    document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
-                },
-                error: () => Alerts.handleError("Error filtering products by price"),
-            });
+            const url = `${API.urls.products}/filter-by-price?minamount=${minAmount.val()}&maxamount=${maxAmount.val()}`;
+            loadProducts(url, INITIAL_PAGE);
         });
     }
+
+    function loadProducts(urlBase, page) {
+        $.ajax({
+            url: urlBase + `&page=${page}&size=${PROD_IN_PAGE}`,
+            type: "GET",
+            success: (response) => {
+                console.log('response:', response);
+                const products = response.data;
+                $("#products-found").text(response.pagination.totalItems);
+                renderProducts(products);
+                renderPagination(response.pagination, urlBase);
+                document.getElementById('slip-cate').scrollIntoView({ behavior: 'smooth' });
+            },
+            error: () => Alerts.handleError("Error loading products"),
+        });
+    }
+
+    function renderPagination({ currentPage, totalPages }, url) {
+        const paginationDiv = document.querySelector('.product__pagination.blog__pagination');
+        paginationDiv.innerHTML = '';
+
+        const startPage = Math.floor(currentPage / PAGINATION_TO_SHOW) * PAGINATION_TO_SHOW;
+        const endPage = Math.min(startPage + PAGINATION_TO_SHOW, totalPages);
+
+        if (startPage > 0) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, startPage - 1, '&laquo;'));
+        for (let i = startPage; i < endPage; i++) {
+            paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, i, i + 1, i === currentPage ? 'active' : ''));
+        }
+        if (endPage < totalPages) paginationDiv.insertAdjacentHTML('beforeend', createPageLink(url, endPage, '&raquo;'));
+    }
+
+    function createPageLink(url, page, text, active = "") {
+        return `<a href="#" class="pagination-link ${active}" data-page="${page}" data-url="${url}">${text}</a>`;
+    }
+
 
     function sortProducts() {
         $('#sortOptions').niceSelect('destroy').change(function () {
@@ -145,8 +237,7 @@ import {API, Utils, Alerts} from "./utils.js";
             $(this).addClass("active").siblings().removeClass("active");
 
             const cateId = $(this).find('a').data('category-id');
-            const urlCate = `/products/category/${cateId}`;
-            getProductsByCategory(urlCate);
+            getProductsByCategory(cateId);
         });
     }
 

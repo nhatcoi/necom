@@ -8,9 +8,9 @@ spring:
       enabled: true
 
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://172.17.0.2:5432/jackie_shop} #mandatory
+    username: ${DATABASE_USERNAME:postgres} #mandatory
+    password: ${DATABASE_PASSWORD:nhatcoi123} #mandatory
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 8
@@ -28,20 +28,17 @@ spring:
 # env
 image:
   base:
-    url: ${IMAGE_BASE_URL:https://firebasestorage.googleapis.com/v0/b/ecommerce-web-18f77.appspot.com/o/}
+    url: ${IMAGE_BASE_URL:IMAGE_BASE_URL}
 
 firebase:
-  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:ecommerce-web-key.json}
-  storage-bucket: ${FIREBASE_STORAGE_BUCKET:ecommerce-web-18f77.appspot.com}
+  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:ecommerce-web-key.json} #mandatory
+  storage-bucket: ${FIREBASE_STORAGE_BUCKET:FIREBASE_STORAGE_BUCKET}
 
 jwt:
-  signer-key: ${JWT_SIGNER_KEY}
-
-admin:
-  username: ${ADMIN_USERNAME}
-  password: ${ADMIN_PASSWORD}
+  signer-key: ${JWT_SIGNER_KEY:JWT_SIGNER_KEY}
 
 stripe:
-  api: ${API_STRIPE_KEY}
-  webhook: ${API_STRIPE_WEBHOOK_KEY}
+  api: ${API_STRIPE_KEY:API_STRIPE_KEY}
+  webhook: ${API_STRIPE_WEBHOOK_KEY:API_STRIPE_WEBHOOK_KEY}
 
+## All Key for dev-test

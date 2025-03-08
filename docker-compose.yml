@@ -1,0 +1,46 @@
+#version: '3.9'
+
+services:
+  db:
+    image: jackie2006/postgres:14.15-alpine3.21
+    container_name: postgres
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-2
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgresdb" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: always
+
+  be:
+    container_name: jackie-shop:0.0.2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jackie-shop:0.0.2
+    env_file:
+      - .env
+    ports:
+      - '8085:8085'
+    depends_on:
+      - db
+    networks:
+      - backend-2
+    restart: always
+
+
+volumes:
+  postgres-data:
+
+networks:
+  backend-2:
+    driver: bridge
+
+

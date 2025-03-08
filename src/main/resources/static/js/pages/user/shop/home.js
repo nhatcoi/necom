@@ -1,6 +1,5 @@
-'use strict';
 
-import {API, Utils, Alerts} from "./utils.js";
+import {API, Utils, Alerts} from "../../util/utils.js";
 
 const PROD_IN_PAGE = 8;
 const PAGINATION_TO_SHOW = 3;
@@ -27,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadProducts(url, page).catch(error => handleError('Error loading products.'));
         }
     });
+
+
 
 });
 
@@ -91,10 +92,11 @@ function renderCategories(categories) {
 
     categories.forEach(category => {
         categoriesContainer.insertAdjacentHTML('beforeend', `<li><a href="/shop-grid">${category.name}</a></li>`);
+        const href = `/shop-grid?category=${encodeURIComponent(category.id)}`;
         slider.insertAdjacentHTML('beforeend', `
             <div class="col-lg-3">
                 <div class="categories__item set-bg" style="background-image: url('${category.imageUrl}');">
-                    <h5><a href="/shop-grid">${category.name}</a></h5>
+                    <h5><a href="${href}">${category.name}</a></h5>
                 </div>
             </div>
         `);
@@ -117,8 +119,9 @@ async function loadProducts(url, page) {
     try {
         const response = await fetch(url + `?page=${page}&size=${PROD_IN_PAGE}`);
         const data = await response.json();
-        renderProducts(data.content);
-        renderPagination(data.totalPages, data.currentPage, url);
+        const pagination = data.pagination;
+        renderProducts(data.data);
+        renderPagination(pagination.totalPages, pagination.currentPage, url);
     } catch (error) {
         handleError('Error loading products.');
     }

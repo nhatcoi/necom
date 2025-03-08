@@ -1,6 +1,7 @@
 package com.example.ecommerceweb.service.services_impl;
 
 import com.example.ecommerceweb.dto.request.user.UserRequest;
+import com.example.ecommerceweb.dto.request.user.UserUpdateRequest;
 import com.example.ecommerceweb.dto.response.user.UserResponse;
 import com.example.ecommerceweb.entity.Address;
 import com.example.ecommerceweb.entity.Role;
@@ -13,7 +14,8 @@ import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userRequest);
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setIsActive(true);
 
         List<Address> addresses = userRequest.getAddresses().stream()
                 .map(addressRequest -> Address.builder()
@@ -90,20 +93,60 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public List<UserResponse> getUsers() {
-        log.info("Get all users");
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(userMapper::toUserResponse)
-                .collect(Collectors.toList());
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+        userRepository.delete(user);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public Page<UserResponse> getUsers(int page, int size) {
+        Page<User> users = userRepository.findAll(PageRequest.of(page, size));
+        return users.map(userMapper::toUserResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public UserResponse getUserById(Long userId) {
-        log.info("Get user by id: {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public UserResponse updateUserByAdmin(Long userId, UserUpdateRequest userUpdateRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+
+        if(userUpdateRequest.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
+        }
+        if (userUpdateRequest.getPhoneNumber() != null) {
+            user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+        }
+        if (userUpdateRequest.getFullName() != null) {
+            user.setFullName(userUpdateRequest.getFullName());
+        }
+        if (userUpdateRequest.getEmail() != null) {
+            user.setEmail(userUpdateRequest.getEmail());
+        }
+        if (userUpdateRequest.getDateOfBirth() != null) {
+            user.setDateOfBirth(userUpdateRequest.getDateOfBirth());
+        }
+        if (userUpdateRequest.getIsActive() != null) {
+            user.setIsActive(userUpdateRequest.getIsActive());
+        }
+        userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    public Page<UserResponse> searchUsers(String decodedSearch, int page, int size) {
+        Page<User> users = userRepository.searchUsers(PageRequest.of(page, size), decodedSearch);
+        return users.map(userMapper::toUserResponse);
+    }
+
 }

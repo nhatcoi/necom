@@ -22,4 +22,7 @@ public class Category {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "parent_id")
+    private Integer parentId;
 }

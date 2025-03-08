@@ -1,4 +1,3 @@
-'use strict';
 
 (function ($, App) {
     const { API, Utils , REGEX_VALIDATORS} = App;

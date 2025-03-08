@@ -72,7 +72,6 @@ public class AuthenticationService {
                 .token(token)
                 .isAuthenticated(true)
                 .build();
-
     }
 
     private boolean isNumeric(String str) {

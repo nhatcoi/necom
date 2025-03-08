@@ -13,4 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Transactional
     @Query("UPDATE Order o SET o.status = :status WHERE o.id = :orderId")
     void updateOrderStatusById(@Param("orderId") Long orderId, @Param("status") String status);
+
+    @Query("SELECT COUNT(o) FROM Order o")
+    Integer countOrders();
 }

@@ -4,16 +4,20 @@ import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
 import com.example.ecommerceweb.entity.Category;
 import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.repository.CategoryRepository;
 import com.example.ecommerceweb.repository.ProductRatingRepository;
 import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.service.ProductService;
+import com.example.ecommerceweb.specification.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -107,8 +111,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
     @Override
@@ -142,10 +149,19 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
-    public List<Product> getProductByPriceRange(int minAmount, int maxAmount) {
-        return productRepository.findByPriceBetween(minAmount, maxAmount);
+    @Override
+    public List<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount) {
+        List<Product> products = productRepository.findByPriceBetween(minAmount, maxAmount);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
     }
 
+    @Override
+    public Page<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount, Pageable pageable) {
+        return productRepository.findByPriceBetween(minAmount, maxAmount, pageable)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
 
 
     @Override
@@ -171,4 +187,34 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Override
+    public Page<ProductDTO> searchProducts(Pageable pageable, String keyword) {
+        Page<Product> products = productRepository.findByNameContaining(pageable, keyword);
+        return products.map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+    @Override
+    public Page<ProductDTO> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+    @Override
+    public Page<ProductDTO> getFilteredProducts(ProductFilter filter, Pageable pageable) {
+        Specification<Product> specQuery = ProductSpecifications.withFilters(filter);
+        Page<Product> products = productRepository.findAll(specQuery, pageable);
+        return products.map(product -> modelMapper.map(product, ProductDTO.class));
+    }
+
+//    @Override
+//    public Page<ProductDTO> getNewProducts(Pageable pageable) {
+//        Pageable sortedByCreatedAt = PageRequest.of(
+//                pageable.getPageNumber(),
+//                pageable.getPageSize(),
+//                Sort.by(Sort.Direction.DESC, "createdAt")
+//        );
+//
+//        Page<Product> newProducts = productRepository.findAll(sortedByCreatedAt);
+//        return newProducts.map(product -> modelMapper.map(product, ProductDTO.class));
+//    }
 }

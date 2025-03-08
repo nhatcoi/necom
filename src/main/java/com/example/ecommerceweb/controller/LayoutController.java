@@ -8,49 +8,64 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("")
 public class LayoutController {
 
+    @GetMapping("")
+    public String index() {
+        return "index";
+    }
+
     @GetMapping("/shop-grid")
     public String getShopGrid() {
-        return "/shop-grid";
+        return "shop-grid";
     }
 
     @GetMapping("/login-form")
     public String loginForm() {
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/register-form")
     public String registerForm() {
-        return "/register";
+        return "register";
     }
 
     @GetMapping("/blog")
     public String blog() {
-        return "/blog";
+        return "blog";
     }
 
     @GetMapping("/blog-details")
     public String blogDetail() {
-        return "/blog-details";
+        return "blog-details";
     }
 
     @GetMapping("/checkout")
     public String checkOut() {
-        return "/checkout";
+        return "checkout";
     }
 
     @GetMapping("/contact")
     public String contact() {
-        return "/contact";
+        return "contact";
     }
 
     @GetMapping("/shop-details")
     public String shopDetail() {
-        return "/shop-details";
+        return "shop-details";
     }
 
     @GetMapping("/shopping-cart")
     public String shoppingCart() {
-        return "/shopping-cart";
+        return "shopping-cart";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin/admin";
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "pages/user";
     }
 
 }
