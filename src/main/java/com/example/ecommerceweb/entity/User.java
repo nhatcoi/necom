@@ -49,6 +49,14 @@ public class User extends BaseEntity {
     @Column(name = "google_id")
     private Integer googleId;
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private List<Address> addresses;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -57,12 +65,4 @@ public class User extends BaseEntity {
     )
     @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JsonManagedReference
-    private List<Address> addresses;
 }
