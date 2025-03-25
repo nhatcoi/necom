@@ -4,9 +4,12 @@ import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
 import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
 import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
 import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
+import com.example.ecommerceweb.entity.Token;
 import com.example.ecommerceweb.entity.User;
+import com.example.ecommerceweb.enums.TokenType;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
+import com.example.ecommerceweb.repository.TokenRepository;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -34,6 +37,8 @@ import java.util.StringJoiner;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @NonFinal
     @Value("${jwt.signer-key}")
@@ -66,10 +71,21 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated)
             throw new ResourceException(ErrorCode.UNAUTHENTICATED);
-        var token = generateToken(user);
+
+        String accessToken = generateToken(user, 1, ChronoUnit.HOURS);
+        String refreshToken = generateToken(user, 7, ChronoUnit.DAYS);
+
+        Token token = Token.builder()
+                .token(refreshToken)
+                .expirationDate(Instant.now().plus(7, ChronoUnit.DAYS))
+                .tokenType(TokenType.REFRESH)
+                .user(user)
+                .build();
+        tokenRepository.save(token);
 
         return AuthenticationResponse.builder()
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .isAuthenticated(true)
                 .build();
     }
@@ -79,16 +95,14 @@ public class AuthenticationService {
     }
 
 
-    private String generateToken(User user) {
+    private String generateToken(User user, int amountToAdd, ChronoUnit unit) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
                 .issuer("jackieshop.dev")
                 .issueTime(new Date())
-                .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-                ))
+                .expirationTime(Date.from(Instant.now().plus(amountToAdd, unit)))
                 .claim("scope", buildScope(user))
                 .build();
 
