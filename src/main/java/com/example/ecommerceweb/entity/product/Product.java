@@ -1,12 +1,17 @@
-package com.example.ecommerceweb.entity;
+package com.example.ecommerceweb.entity.product;
 
+import com.example.ecommerceweb.entity.BaseEntity;
+import com.example.ecommerceweb.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+import java.util.List;
+import java.util.Set;
+
+
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "products")
@@ -33,10 +38,16 @@ public class Product extends BaseEntity {
     @Column(name = "quantity_in_stock")
     private Integer quantityInStock;
 
-    @Column(name = "weight")
-    private Float weight;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category categoryId;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<ProductSpecification> specifications;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<ProductAttribute> attributes;
+
 }
