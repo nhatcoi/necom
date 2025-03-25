@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.repository;
 
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +10,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+
+    @Query("SELECT p FROM Product p " +
+            "LEFT JOIN FETCH p.specifications s " +
+            "LEFT JOIN FETCH p.attributes a " +
+            "WHERE p.id = :productId")
+    Product findProductWithDetails(@Param("productId") Long productId);
+
 
     @Query("SELECT p FROM Product p JOIN FETCH p.categoryId")
     Page<Product> findAllProductsByPage(Pageable pageable);

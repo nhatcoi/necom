@@ -6,7 +6,7 @@ import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
 import com.example.ecommerceweb.dto.response.cart.OrderMetadataIntentDTO;
 import com.example.ecommerceweb.entity.Order;
 import com.example.ecommerceweb.entity.OrderDetail;
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.StatusEnum;
 import com.example.ecommerceweb.exception.ErrorCode;

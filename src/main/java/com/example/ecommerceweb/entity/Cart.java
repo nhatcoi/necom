@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.entity;
 
+import com.example.ecommerceweb.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
