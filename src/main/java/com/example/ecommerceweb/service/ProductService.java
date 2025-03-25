@@ -3,7 +3,8 @@ package com.example.ecommerceweb.service;
 
 import com.example.ecommerceweb.dto.response.PaginatedResponse;
 import com.example.ecommerceweb.dto.ProductDTO;
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.dto.response.product.ProductDetailResponse;
+import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.filter.ProductFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +19,7 @@ public interface ProductService {
     Product createProduct(ProductDTO productDTO) throws IOException, InterruptedException;
     Product updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
-    Product getProductById(Long id);
-    List<ProductDTO> getAllProducts();
-    Page<Product> getAllProducts(PageRequest pageRequest);
-    boolean isProductExist(Long id);
+    ProductDetailResponse getProductById(Long id);
 
     List<ProductDTO> getLatestProducts(int limit);
     List<ProductDTO> getTopRatedProducts(int limit);
