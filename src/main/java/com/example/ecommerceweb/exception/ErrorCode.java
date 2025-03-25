@@ -29,7 +29,10 @@ public enum ErrorCode {
     CART_NOT_FOUND(1012, "Cart item not found", HttpStatus.NOT_FOUND),
     CART_QUANTITY_LIMIT(1013, "Limit the quantity of a product in the shopping cart", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(1014, "Product does not exist", HttpStatus.NOT_FOUND),
-    CART_QUANTITY_NOT_VALID(1015, "Cart in quantity not valid", HttpStatus.BAD_REQUEST);
+    CART_QUANTITY_NOT_VALID(1015, "Cart in quantity not valid", HttpStatus.BAD_REQUEST),
+
+    // common
+    RESOURCE_NOT_FOUND(1016, "Resource not found", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;
