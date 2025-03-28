@@ -4,6 +4,7 @@ import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
 import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
 import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
 import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
+import com.example.ecommerceweb.dto.response.auth.TokenResponse;
 import com.example.ecommerceweb.entity.Token;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.TokenType;
@@ -11,6 +12,8 @@ import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.repository.TokenRepository;
 import com.example.ecommerceweb.repository.UserRepository;
+import com.example.ecommerceweb.service.AuthenticationService;
+import com.example.ecommerceweb.service.RedisService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -25,25 +28,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
+import java.util.Date;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.StringJoiner;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    private final RedisService redisService;
 
     @NonFinal
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
 
+    @Override
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
 
@@ -57,6 +62,7 @@ public class AuthenticationService {
                 .build();
     }
 
+    @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         User user;
@@ -83,6 +89,8 @@ public class AuthenticationService {
                 .build();
         tokenRepository.save(token);
 
+        redisService.saveAccessToken(accessToken, user.getId().toString(), 3600); // 1 hour
+
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -90,10 +98,71 @@ public class AuthenticationService {
                 .build();
     }
 
+    @Override
+    public TokenResponse refreshAccessToken(String refreshToken) {
+        Token token = tokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new ResourceException(ErrorCode.TOKEN_NOT_FOUND));
+        if (token.getExpirationDate().isBefore(Instant.now())) {
+            token.setExpired(true);
+            tokenRepository.save(token);
+            throw new ResourceException(ErrorCode.TOKEN_EXPIRED);
+        }
+        return TokenResponse.builder()
+                .accessToken(generateToken(token.getUser(), 1, ChronoUnit.HOURS))
+                .build();
+    }
+
+    @Override
+    public void revokeToken(String refreshToken) {
+        try {
+            Token token = tokenRepository.findByToken(refreshToken)
+                    .orElseThrow(() -> new ResourceException(ErrorCode.TOKEN_NOT_FOUND));
+
+            if (token.getExpirationDate().isBefore(Instant.now())) {
+                throw new ResourceException(ErrorCode.TOKEN_EXPIRED);
+            }
+
+            // Set token as revoked in database
+            token.setRevoked(true);
+            tokenRepository.save(token);
+
+            // Add to Redis blacklist with remaining TTL
+            long ttl = Duration.between(Instant.now(), token.getExpirationDate()).getSeconds();
+            redisService.saveRevokedToken(refreshToken, ttl);
+
+            log.info("Successfully revoked refresh token for user: {}", token.getUser().getUsername());
+        } catch (Exception e) {
+            log.error("Error revoking refresh token: {}", e.getMessage());
+            throw new ResourceException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public void revokeAccessToken(String accessToken) {
+        try {
+            // Decode the access token to get expiration time
+            SignedJWT signedJWT = SignedJWT.parse(accessToken);
+            Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            
+            // Calculate remaining TTL
+            long ttl = Duration.between(Instant.now(), expirationTime.toInstant()).getSeconds();
+            
+            // Add to Redis blacklist
+            redisService.saveRevokedToken(accessToken, ttl);
+            
+            log.info("Successfully revoked access token");
+        } catch (ParseException e) {
+            log.error("Invalid access token format: {}", e.getMessage());
+            throw new ResourceException(ErrorCode.TOKEN_INVALID);
+        } catch (Exception e) {
+            log.error("Error revoking access token: {}", e.getMessage());
+            throw new ResourceException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private boolean isNumeric(String str) {
         return str != null && str.matches("\\d+");
     }
-
 
     private String generateToken(User user, int amountToAdd, ChronoUnit unit) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -119,7 +188,6 @@ public class AuthenticationService {
         }
     }
 
-
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles())) {
@@ -128,4 +196,5 @@ public class AuthenticationService {
 
         return stringJoiner.toString();
     }
+
 }
