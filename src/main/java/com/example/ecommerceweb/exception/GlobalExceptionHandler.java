@@ -2,6 +2,7 @@ package com.example.ecommerceweb.exception;
 
 import com.example.ecommerceweb.dto.response.ResponseError;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,8 +12,18 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler({ResourceException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseError handleResourceException(ResourceException ex, WebRequest request) {
+        log.error("Resource error: {}", ex.getMessage());
+        ResponseError responseError = new ResponseError(request, ex.getErrorCode().getStatus().value());
+        responseError.setMessage(ex.getMessage());
+        return responseError;
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -53,9 +64,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseError handleException(Exception ex, WebRequest request) {
+        log.error("Unexpected error: {}", ex.getMessage(), ex);
         ResponseError responseError = new ResponseError(request, HttpStatus.INTERNAL_SERVER_ERROR.value());
-        responseError.setMessage(ex.getMessage());
+        responseError.setMessage("An unexpected error occurred");
         return responseError;
     }
-
 }
