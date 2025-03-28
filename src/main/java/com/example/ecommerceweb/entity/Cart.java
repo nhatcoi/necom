@@ -1,6 +1,5 @@
 package com.example.ecommerceweb.entity;
 
-import com.example.ecommerceweb.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,23 +7,15 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "carts")
 @Entity
-@Builder
-public class Cart extends BaseEntity {
+@Table(name = "cart")
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
-
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
 }
