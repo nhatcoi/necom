@@ -1,9 +1,11 @@
 package com.example.ecommerceweb.dto.request.user;
 
+import com.example.ecommerceweb.enums.RoleEnum;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -17,4 +19,6 @@ public class UserRequest {
     private String fullName;
     private LocalDate dateOfBirth;
     private List<AddressRequest> addresses;
+
+    private Set<RoleEnum> roles;
 }

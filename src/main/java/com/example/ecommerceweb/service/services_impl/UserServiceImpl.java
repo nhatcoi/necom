@@ -11,9 +11,11 @@ import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.mapper.UserMapper;
 import com.example.ecommerceweb.repository.UserRepository;
+import com.example.ecommerceweb.security.SecurityUtils;
 import com.example.ecommerceweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,9 +33,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityUtils securityUtils;
 
     @Override
     public UserResponse getUserByPhoneNumberAndPassword(String phoneNumber, String password) {
@@ -51,12 +53,20 @@ public class UserServiceImpl implements UserService {
             throw new ResourceException(ErrorCode.USER_EXISTED);
         }
 
-        Set<Role> roles = Set.of(
-                Role.builder()
-                        .id(RoleEnum.USER.getValue())
-                        .name(RoleEnum.USER.name())
-                        .build()
-        );
+        Set<Role> roles;
+        if (userRequest.getRoles() == null || userRequest.getRoles().isEmpty()) {
+            roles = Set.of(
+                    Role.builder()
+                            .id(RoleEnum.USER.getValue())
+                            .name(RoleEnum.USER.name())
+                            .build()
+            );
+        } else {
+            if (!securityUtils.hasAdminPermission()) {
+                throw new ResourceException(ErrorCode.FORBIDDEN, "You can not set role for user");
+            }
+            roles = setRolesForUser(userRequest);
+        }
 
         User user = userMapper.toUser(userRequest);
         user.setRoles(roles);
@@ -79,6 +89,19 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toUserResponse(user);
     }
+
+
+    private @NotNull Set<Role> setRolesForUser(UserRequest userRequest) {
+        return userRequest.getRoles().stream()
+                .map(roleEnum -> Role.builder()
+                        .id(roleEnum.getValue())
+                        .name(roleEnum.name())
+                        .build())
+                .collect(Collectors.toSet());
+    }
+
+
+
 
     @Override
     public UserResponse getMyInfo() {
