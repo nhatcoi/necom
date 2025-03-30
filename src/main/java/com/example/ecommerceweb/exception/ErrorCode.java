@@ -62,6 +62,7 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access denied"),
     INSUFFICIENT_PERMISSIONS(HttpStatus.FORBIDDEN, "Insufficient permissions"),
     OPERATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "Operation not allowed"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
 
     // Conflict Errors (409)
     USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username already exists"),
@@ -71,9 +72,15 @@ public enum ErrorCode {
     // Unsupported Media Type (415)
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported media type"),
 
+    // Data common existed
+    DATA_EXISTED(HttpStatus.CONFLICT, "Data existed"),
+
     // Not Found Errors (404)
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Category not found"),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found");
+
+
+
 
     private final int code;
     private final String message;
