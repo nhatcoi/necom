@@ -1,5 +1,8 @@
 package com.example.ecommerceweb.configuration;
 
+import com.example.ecommerceweb.repository.UserRepository;
+import com.example.ecommerceweb.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-
 
     @Value("${jwt.signer-key}")
     private String jwtSignerKey;
@@ -72,6 +74,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public SecurityUtils securityUtils(UserRepository userRepository) {
+        return new SecurityUtils(userRepository);
     }
 
 }
