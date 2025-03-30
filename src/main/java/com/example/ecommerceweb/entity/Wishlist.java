@@ -2,11 +2,9 @@ package com.example.ecommerceweb.entity;
 
 import com.example.ecommerceweb.entity.product.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,7 +13,6 @@ import lombok.Setter;
 @Table(name = "wishlist", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "product_id"})
 })
-
 public class Wishlist {
 
     @Id

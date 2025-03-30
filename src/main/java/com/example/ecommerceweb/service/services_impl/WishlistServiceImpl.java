@@ -1,47 +1,58 @@
 package com.example.ecommerceweb.service.services_impl;
 
+import com.example.ecommerceweb.dto.WishlistResponse;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.entity.Wishlist;
 import com.example.ecommerceweb.entity.product.Product;
+import com.example.ecommerceweb.exception.ErrorCode;
+import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.repository.WishlistRepository;
+import com.example.ecommerceweb.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class WishlistServiceImpl {
 
     private final WishlistRepository wishlistRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
 
-    public List<Wishlist> getWishlistByUser(Long userId) {
-        return wishlistRepository.findByUserId(userId);
+    public List<WishlistResponse> getWishlistByUser() {
+        User user = securityUtils.getCurrentUser();
+        return wishlistRepository.findByUserId(user.getId()).stream()
+                .map(wishlist -> WishlistResponse.builder()
+                        .id(wishlist.getId())
+                        .productId(wishlist.getProduct().getId())
+                        .name(wishlist.getProduct().getName())
+                        .price(wishlist.getProduct().getPrice())
+                        .thumbnail(wishlist.getProduct().getThumbnail())
+                        .build())
+                .toList();
     }
 
-    // Thêm sản phẩm vào wishlist
     @Transactional
-    public Wishlist addToWishlist(Long userId, Product product) {
-        // Kiểm tra xem sản phẩm đã có trong wishlist chưa
-        Optional<Wishlist> existingWishlist = wishlistRepository.findByUserIdAndProductId(userId, product.getId());
-
-        if (existingWishlist.isPresent()) {
-            throw new RuntimeException("Sản phẩm đã có trong wishlist!");
+    public void addToWishlist(Long productId) {
+        User user = securityUtils.getCurrentUser();
+        if (wishlistRepository.findByUserIdAndProductId(user.getId(), productId).isPresent()) {
+            throw new ResourceException(ErrorCode.DATA_EXISTED);
         }
 
-        Wishlist wishlist = new Wishlist();
+        Wishlist wishlist = Wishlist.builder()
+                .user(user)
+                .product(Product.builder().id(productId).build())
+                .build();
 
-        wishlist.setProduct(product);
-        return wishlistRepository.save(wishlist);
+        wishlistRepository.save(wishlist);
     }
 
-    // Xóa sản phẩm khỏi wishlist
     @Transactional
-    public void removeFromWishlist(Long userId, Long productId) {
-        wishlistRepository.deleteByUserIdAndProductId(userId, productId);
+    public void removeFromWishlist(Long productId) {
+        User user = securityUtils.getCurrentUser();
+        wishlistRepository.deleteByUserIdAndProductId(user.getId(), productId);
     }
 }
