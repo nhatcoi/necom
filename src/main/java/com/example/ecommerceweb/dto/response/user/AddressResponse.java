@@ -14,4 +14,5 @@ public class AddressResponse {
     private String district;
     private String postcode;
     private String country;
+    private Boolean isMain;
 }

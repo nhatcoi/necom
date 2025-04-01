@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AddressRequest {
+    private Long id;
     private String addressLine;
     private String city;
     private String district;
     private String postcode;
     private String country;
+    private Boolean isMain;
 }
