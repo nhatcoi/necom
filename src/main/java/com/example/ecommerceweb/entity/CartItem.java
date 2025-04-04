@@ -1,14 +1,16 @@
 package com.example.ecommerceweb.entity;
 
 import com.example.ecommerceweb.entity.product.Product;
-import com.example.ecommerceweb.entity.product.ProductAttribute;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "cart_item")
 public class CartItem {
@@ -25,21 +27,12 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "product_attribute_id")
-    private ProductAttribute productAttribute;
+    @OneToMany(mappedBy = "cartItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItemAttribute> attributes;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
-    private double price;
-
-    @PrePersist
-    @PreUpdate
-    private void validateProduct() {
-        if ((product == null && productAttribute == null) || (product != null && productAttribute != null)) {
-            throw new IllegalArgumentException("Cart and/or product attributes are both null");
-        }
-    }
+    private Float price;
 }
