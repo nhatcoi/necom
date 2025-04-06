@@ -14,4 +14,5 @@ public class UserUpdateRequest {
     private String fullName;
     private LocalDate dateOfBirth;
     private Boolean isActive;
+
 }

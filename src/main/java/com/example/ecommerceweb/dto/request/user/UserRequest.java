@@ -19,6 +19,5 @@ public class UserRequest {
     private String fullName;
     private LocalDate dateOfBirth;
     private List<AddressRequest> addresses;
-
     private Set<RoleEnum> roles;
 }

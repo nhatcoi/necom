@@ -38,7 +38,7 @@ public class User extends BaseEntity {
     private String email;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -51,8 +51,7 @@ public class User extends BaseEntity {
 
     @OneToMany(
             mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     @JsonManagedReference
     private List<Address> addresses;
