@@ -65,13 +65,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        User user;
-        if (isNumeric(request.getUserIdentifier())) {
-            user = userRepository.findByPhoneNumber(request.getUserIdentifier())
-                    .orElseThrow(() -> new ResourceException(ErrorCode.PHONE_NUMBER_NOT_EXISTED));
-        } else {
-            user = userRepository.findByUsername(request.getUserIdentifier())
-                    .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+        User user = new User();
+        if (request.getUserIdentifier() != null) {
+            user = userRepository.findByEmail(request.getUserIdentifier())
+                    .orElseThrow(() -> new ResourceException(ErrorCode.EMAIL_NOT_EXISTED));
+        }
+        if (user.getIsActive().equals(Boolean.FALSE)) {
+            throw new ResourceException(ErrorCode.ACCOUNT_LOCKED);
         }
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
