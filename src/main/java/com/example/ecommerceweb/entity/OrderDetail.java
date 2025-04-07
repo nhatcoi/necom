@@ -37,4 +37,7 @@ public class OrderDetail {
 
     @Column(name = "total_price")
     private Float totalPrice;
+
+    @Column(name = "attributes")
+    private String attributes;
 }

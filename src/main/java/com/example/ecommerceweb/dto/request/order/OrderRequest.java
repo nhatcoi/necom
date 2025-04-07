@@ -15,4 +15,9 @@ import java.util.List;
 public class OrderRequest {
     private List<ProductOrderRequest> products;
     private OrderInfoRequest orderInfo;
+
+    private String discountCode;
+    private String paymentMethod;
+    private Double totalPrice;
+
 }
