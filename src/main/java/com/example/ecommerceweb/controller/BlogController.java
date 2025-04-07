@@ -4,6 +4,7 @@ import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.BlogDTO;
 import com.example.ecommerceweb.dto.response.Pagination;
 import com.example.ecommerceweb.dto.response.ResponseData;
+import com.example.ecommerceweb.filter.BlogFilter;
 import com.example.ecommerceweb.service.BlogCategoryService;
 import com.example.ecommerceweb.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,24 @@ public class BlogController {
 
     @GetMapping("/categories")
     public ResponseData<List<?>> getCategories() {
-        List<?> categories = blogCategoryService.findAll();
+        List<?> categories = blogCategoryService.getAllBlogCategories();
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response success"), categories);
+    }
+
+    @GetMapping("/categories/count")
+    public ResponseData<?> getCountBlogs() {
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("blogs.count.success"), blogCategoryService.getTopBlogCategories());
     }
 
     @GetMapping("/blogs")
     public ResponseData<?> getBlogs(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size) {
+            @RequestParam(defaultValue = "4") int size,
+            @ModelAttribute BlogFilter filter
+    ) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<BlogDTO> blogPage = blogService.getAllBlogs(pageable);
+        Page<BlogDTO> blogPage = blogService.getAllBlogs(pageable, filter);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("blogs.get.success"), blogPage.getContent(), new Pagination(blogPage));
     }
 
