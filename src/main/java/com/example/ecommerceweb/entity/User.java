@@ -37,6 +37,9 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @Column(name = "is_active")
     private Boolean isActive = true;
 

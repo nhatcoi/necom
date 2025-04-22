@@ -1,8 +1,8 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.request.cart.CartRequest;
-import com.example.ecommerceweb.dto.response.cart.CartResponse;
-import com.example.ecommerceweb.dto.response.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.cart.CartRequest;
+import com.example.ecommerceweb.dto.cart.CartResponse;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
 import com.example.ecommerceweb.entity.Cart;
 import com.example.ecommerceweb.entity.CartItem;
 import com.example.ecommerceweb.entity.CartItemAttribute;

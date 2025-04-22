@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.controller;
 
-import com.example.ecommerceweb.dto.request.order.CheckoutRequest;
-import com.example.ecommerceweb.dto.response.order.StripeResponse;
+import com.example.ecommerceweb.dto.order.CheckoutRequest;
+import com.example.ecommerceweb.dto.order.StripeResponse;
 import com.example.ecommerceweb.service.services_impl.PaymentService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -32,6 +32,7 @@ public class CheckOutController {
                 .status(HttpStatus.OK)
                 .body(stripeResponse);
     }
+
 
 
 

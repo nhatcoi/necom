@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.controller;
 
-import com.example.ecommerceweb.dto.ProductDTO;
+import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.service.CategoryService;
 import com.example.ecommerceweb.service.services_impl.FirebaseStorageService;

@@ -3,8 +3,8 @@ package com.example.ecommerceweb.controller;
 
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
 import com.example.ecommerceweb.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

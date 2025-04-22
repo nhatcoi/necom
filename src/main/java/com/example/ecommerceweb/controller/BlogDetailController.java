@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.controller;
 
-import com.example.ecommerceweb.dto.BlogDTO;
+import com.example.ecommerceweb.dto.blog.BlogDTO;
 import com.example.ecommerceweb.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

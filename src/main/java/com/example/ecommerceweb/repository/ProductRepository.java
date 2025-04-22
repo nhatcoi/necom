@@ -40,6 +40,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("SELECT p FROM Product p JOIN FETCH p.categoryId WHERE p.categoryId.id = :categoryId")
     Page<Product> findAllByCategoryId(Pageable pageable, Long categoryId);
 
+    Optional<Product> findBySlug(String slug);
 
     @Query(value = """
     SELECT * FROM products
@@ -47,5 +48,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
        OR name ILIKE '%' || :keyword || '%'
     """, nativeQuery = true)
     Page<Product> findByNameContaining(Pageable pageable, @Param("keyword") String keyword);
+
 
 }

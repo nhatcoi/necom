@@ -7,32 +7,17 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-    // System errors
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
-
-    // Validation errors
-    INVALID_KEY(1001, "Invalid key provided", HttpStatus.BAD_REQUEST),
-    USERNAME_INVALID(1003, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    INVALID_PASSWORD(1004, "Password must be at least {min} characters", HttpStatus.BAD_REQUEST),
-    INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
 
     // Authentication and Authorization errors
-    UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Invalid username or password"),
-    UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
+    UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Invalid email or password"),
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "You do not have permission"),
 
     // User-related errors
-    USER_EXISTED(1002, "User already exists", HttpStatus.BAD_REQUEST),
-    PHONE_NUMBER_EXISTED(1010, "Phone number already exists", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(HttpStatus.BAD_REQUEST, "User already exists"),
     USER_NOT_EXISTED(HttpStatus.NOT_FOUND, "User does not exist"),
-    PHONE_NUMBER_NOT_EXISTED(HttpStatus.NOT_FOUND, "Phone number does not exist"),
-    UNAUTHENTICATED_USER(1011, "Unauthenticated user", HttpStatus.UNAUTHORIZED),
-    CART_NOT_FOUND(1012, "Cart item not found", HttpStatus.NOT_FOUND),
-    CART_QUANTITY_LIMIT(1013, "Limit the quantity of a product in the shopping cart", HttpStatus.BAD_REQUEST),
-    PRODUCT_NOT_EXISTED(HttpStatus.NOT_FOUND, "Product not found"),
-    CART_QUANTITY_NOT_VALID(1015, "Cart in quantity not valid", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_EXISTED(HttpStatus.NOT_FOUND, "Email does not exist"),
 
-    // common
-    RESOURCE_NOT_FOUND(1016, "Resource not found", HttpStatus.NOT_FOUND),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not found"),
 
     // Token
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Token not found"),
@@ -42,6 +27,8 @@ public enum ErrorCode {
 
     // SERVER ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+
+    PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "Password does not match"),
 
     // Authentication errors
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid credentials"),
@@ -63,6 +50,7 @@ public enum ErrorCode {
     INSUFFICIENT_PERMISSIONS(HttpStatus.FORBIDDEN, "Insufficient permissions"),
     OPERATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "Operation not allowed"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
+    ACCOUNT_LOCKED(HttpStatus.FORBIDDEN, "Account is locked"),
 
     // Conflict Errors (409)
     USERNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "Username already exists"),

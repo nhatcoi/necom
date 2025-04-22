@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.BlogCategoryDTO;
+import com.example.ecommerceweb.dto.blog.BlogCategoryDTO;
 import com.example.ecommerceweb.entity.BlogCategory;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.BlogDTO;
-import com.example.ecommerceweb.dto.response.Pagination;
-import com.example.ecommerceweb.dto.response.ResponseData;
+import com.example.ecommerceweb.dto.blog.BlogDTO;
+import com.example.ecommerceweb.dto.response_data.Pagination;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
 import com.example.ecommerceweb.filter.BlogFilter;
 import com.example.ecommerceweb.service.BlogCategoryService;
 import com.example.ecommerceweb.service.BlogService;

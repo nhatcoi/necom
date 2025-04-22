@@ -1,11 +1,11 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
-import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
-import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
-import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
-import com.example.ecommerceweb.dto.response.ResponseData;
+import com.example.ecommerceweb.dto.auth.AuthenticationRequest;
+import com.example.ecommerceweb.dto.auth.IntrospectRequest;
+import com.example.ecommerceweb.dto.auth.AuthenticationResponse;
+import com.example.ecommerceweb.dto.auth.IntrospectResponse;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
 import com.example.ecommerceweb.service.services_impl.AuthenticationServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.tags.Tag;

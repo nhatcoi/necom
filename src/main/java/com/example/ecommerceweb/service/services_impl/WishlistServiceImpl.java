@@ -1,12 +1,11 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.WishlistResponse;
+import com.example.ecommerceweb.dto.wishlist.WishlistResponse;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.entity.Wishlist;
 import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
-import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.repository.WishlistRepository;
 import com.example.ecommerceweb.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;

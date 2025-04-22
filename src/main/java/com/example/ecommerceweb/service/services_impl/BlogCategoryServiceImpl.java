@@ -1,13 +1,12 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.BlogCategoryDTO;
+import com.example.ecommerceweb.dto.blog.BlogCategoryDTO;
 import com.example.ecommerceweb.entity.BlogCategory;
 import com.example.ecommerceweb.repository.BlogCategoryRepository;
 import com.example.ecommerceweb.service.BlogCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

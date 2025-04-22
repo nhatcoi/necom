@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.PasswordDTO;
-import com.example.ecommerceweb.dto.request.user.UserRequest;
-import com.example.ecommerceweb.dto.request.user.UserUpdateRequest;
-import com.example.ecommerceweb.dto.response.user.UserResponse;
+import com.example.ecommerceweb.dto.auth.PasswordDTO;
+import com.example.ecommerceweb.dto.user.UserRequest;
+import com.example.ecommerceweb.dto.user.UserUpdateRequest;
+import com.example.ecommerceweb.dto.user.UserResponse;
 import com.example.ecommerceweb.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;

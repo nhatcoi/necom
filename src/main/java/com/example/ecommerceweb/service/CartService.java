@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.request.cart.CartRequest;
-import com.example.ecommerceweb.dto.response.cart.CartResponse;
+import com.example.ecommerceweb.dto.cart.CartRequest;
+import com.example.ecommerceweb.dto.cart.CartResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.controller;
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.WishlistRequest;
-import com.example.ecommerceweb.dto.response.ResponseData;
+import com.example.ecommerceweb.dto.wishlist.WishlistRequest;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
 import com.example.ecommerceweb.service.services_impl.WishlistServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

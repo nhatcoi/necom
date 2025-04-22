@@ -1,8 +1,10 @@
 package com.example.ecommerceweb.exception;
 
-import com.example.ecommerceweb.dto.response.ResponseError;
+import com.example.ecommerceweb.dto.response_data.ResponseError;
+import com.google.api.gax.rpc.UnauthenticatedException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,11 +18,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({ResourceException.class})
+    @ExceptionHandler({UnauthenticatedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleResourceException(ResourceException ex, WebRequest request) {
-        log.error("Resource error: {}", ex.getMessage());
-        ResponseError responseError = new ResponseError(request, ex.getErrorCode().getStatus().value());
+    public ResponseError handleUnauthorized(UnauthenticatedException ex, WebRequest request) {
+        ResponseError responseError = new ResponseError(request, HttpStatus.UNAUTHORIZED.value());
         responseError.setMessage(ex.getMessage());
         return responseError;
     }
@@ -57,6 +58,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseError handleException(IllegalArgumentException ex, WebRequest request) {
         ResponseError responseError = new ResponseError(request, HttpStatus.BAD_REQUEST.value());
+        responseError.setMessage(ex.getMessage());
+        return responseError;
+    }
+
+    @ExceptionHandler(ResourceException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseError handleResourceException(ResourceException ex, WebRequest request) {
+        ResponseError responseError = new ResponseError(request, HttpStatus.NOT_FOUND.value());
         responseError.setMessage(ex.getMessage());
         return responseError;
     }

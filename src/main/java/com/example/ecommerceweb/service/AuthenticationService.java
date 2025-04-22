@@ -1,10 +1,10 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.request.auth.AuthenticationRequest;
-import com.example.ecommerceweb.dto.request.auth.IntrospectRequest;
-import com.example.ecommerceweb.dto.response.auth.AuthenticationResponse;
-import com.example.ecommerceweb.dto.response.auth.IntrospectResponse;
-import com.example.ecommerceweb.dto.response.auth.TokenResponse;
+import com.example.ecommerceweb.dto.auth.AuthenticationRequest;
+import com.example.ecommerceweb.dto.auth.IntrospectRequest;
+import com.example.ecommerceweb.dto.auth.AuthenticationResponse;
+import com.example.ecommerceweb.dto.auth.IntrospectResponse;
+import com.example.ecommerceweb.dto.auth.TokenResponse;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.stereotype.Service;
 

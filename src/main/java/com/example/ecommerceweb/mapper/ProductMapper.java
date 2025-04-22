@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.mapper;
-import com.example.ecommerceweb.dto.response.product.ProductAttributeDTO;
-import com.example.ecommerceweb.dto.response.product.ProductDetailResponse;
-import com.example.ecommerceweb.dto.response.product.ProductSpecificationDTO;
+import com.example.ecommerceweb.dto.product.ProductAttributeDTO;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.product.ProductSpecificationDTO;
 import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.entity.product.ProductAttribute;
 import com.example.ecommerceweb.entity.product.ProductSpecification;
@@ -15,6 +15,7 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     @Mapping(source = "categoryId.id", target = "categoryId")
+    @Mapping(source = "categoryId.name", target = "categoryName")
     ProductDetailResponse productToProductDetailResponse(Product product);
 
 

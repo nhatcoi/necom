@@ -1,11 +1,10 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.response.PaginatedResponse;
-import com.example.ecommerceweb.dto.ProductDTO;
-import com.example.ecommerceweb.dto.response.product.*;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.response_data.PaginatedResponse;
+import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.entity.Category;
 import com.example.ecommerceweb.entity.product.Product;
-import com.example.ecommerceweb.entity.product.ProductSpecification;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.filter.ProductFilter;
@@ -14,7 +13,6 @@ import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.service.CategoryService;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.specification.ProductSpecifications;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -27,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.example.ecommerceweb.util.Static.convertToSlug;
 
 @Slf4j
 @Service
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
     public Product createProduct(ProductDTO productDTO) throws IOException, InterruptedException {
         Category cate = categoryService.getCategoryById(productDTO.getCategoryId());
         Product newProduct = Product.builder()
-                .name(productDTO.getName())
+                .name(convertToSlug(productDTO.getName()))
                 .price(productDTO.getPrice())
                 .thumbnail(productDTO.getThumbnail())
                 .description(productDTO.getDescription())
@@ -111,6 +111,17 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailResponse productDetailResponse = productMapper.productToProductDetailResponse(product);
         productDetailResponse.setAvgRating(ratingService.avgRating(idProduct));
         productDetailResponse.setProductImages(productImageService.getImageListUrl(idProduct));
+
+        return productDetailResponse;
+    }
+
+    @Override
+    public ProductDetailResponse getProductBySlug(String slug) {
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceException(ErrorCode.RESOURCE_NOT_FOUND));
+        ProductDetailResponse productDetailResponse = productMapper.productToProductDetailResponse(product);
+        productDetailResponse.setAvgRating(ratingService.avgRating(product.getId()));
+        productDetailResponse.setProductImages(productImageService.getImageListUrl(product.getId()));
 
         return productDetailResponse;
     }

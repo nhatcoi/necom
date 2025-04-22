@@ -1,11 +1,10 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.ProductDTO;
-import com.example.ecommerceweb.dto.response.Pagination;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.product.ProductDetailResponse;
-import com.example.ecommerceweb.entity.product.Product;
+import com.example.ecommerceweb.dto.product.ProductDTO;
+import com.example.ecommerceweb.dto.response_data.Pagination;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
 import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.service.services_impl.ProductImageService;
@@ -93,6 +92,12 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseData<?> getProductById(@PathVariable Long id) {
         ProductDetailResponse productDetailResponse = productService.getProductById(id);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), productDetailResponse);
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseData<?> getProductBySlug(@PathVariable String slug) {
+        ProductDetailResponse productDetailResponse = productService.getProductBySlug(slug);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), productDetailResponse);
     }
 

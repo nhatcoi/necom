@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - backend-2
+      - backend
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgresdb" ]
       interval: 30s
@@ -19,8 +19,8 @@ services:
       retries: 3
     restart: always
 
-  be:
-    container_name: jackie-shop:0.0.2
+  jackieshop:
+    container_name: jackie-shop
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,15 +32,18 @@ services:
     depends_on:
       - db
     networks:
-      - backend-2
+      - backend
     restart: always
 
 
 volumes:
   postgres-data:
+    external: true
+    name: jackie-postgres
 
 networks:
-  backend-2:
+  backend:
     driver: bridge
+    name: jackie-shop
 
 

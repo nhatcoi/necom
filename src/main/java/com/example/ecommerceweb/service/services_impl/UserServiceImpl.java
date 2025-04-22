@@ -1,12 +1,11 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.PasswordDTO;
-import com.example.ecommerceweb.dto.request.user.AddressRequest;
-import com.example.ecommerceweb.dto.request.user.UserRequest;
-import com.example.ecommerceweb.dto.request.user.UserUpdateRequest;
-import com.example.ecommerceweb.dto.response.user.UserResponse;
+import com.example.ecommerceweb.dto.auth.PasswordDTO;
+import com.example.ecommerceweb.dto.user.AddressRequest;
+import com.example.ecommerceweb.dto.user.UserRequest;
+import com.example.ecommerceweb.dto.user.UserUpdateRequest;
+import com.example.ecommerceweb.dto.user.UserResponse;
 import com.example.ecommerceweb.entity.Address;
-import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.enums.RoleEnum;
 import com.example.ecommerceweb.exception.ErrorCode;
@@ -17,7 +16,6 @@ import com.example.ecommerceweb.security.SecurityUtils;
 import com.example.ecommerceweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;

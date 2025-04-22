@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.BlogDTO;
+import com.example.ecommerceweb.dto.blog.BlogDTO;
 import com.example.ecommerceweb.entity.Blog;
 import com.example.ecommerceweb.filter.BlogFilter;
 import com.example.ecommerceweb.repository.BlogRepository;

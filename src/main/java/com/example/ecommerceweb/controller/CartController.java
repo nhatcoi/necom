@@ -1,10 +1,10 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.cart.CartRequest;
-import com.example.ecommerceweb.dto.request.cart.UpdateCartItemRequest;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.cart.CartResponse;
+import com.example.ecommerceweb.dto.cart.CartRequest;
+import com.example.ecommerceweb.dto.cart.UpdateCartItemRequest;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.cart.CartResponse;
 import com.example.ecommerceweb.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

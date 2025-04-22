@@ -1,18 +1,16 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.order.OrderRequest;
-import com.example.ecommerceweb.dto.response.Pagination;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.order.OrderResponse;
+import com.example.ecommerceweb.dto.order.OrderRequest;
+import com.example.ecommerceweb.dto.response_data.Pagination;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.order.OrderResponse;
 import com.example.ecommerceweb.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -45,6 +43,11 @@ public class OrderController {
                 orders.getContent(),
                 new Pagination(orders)
         );
+    }
+
+    @GetMapping("/order-details/{orderId}")
+    public ResponseData<?> getOrderById(@PathVariable Long orderId) {
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), orderService.getOrderById(orderId));
     }
 
 }

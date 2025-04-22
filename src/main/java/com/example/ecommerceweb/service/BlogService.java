@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.dto.BlogDTO;
+import com.example.ecommerceweb.dto.blog.BlogDTO;
 import com.example.ecommerceweb.filter.BlogFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
