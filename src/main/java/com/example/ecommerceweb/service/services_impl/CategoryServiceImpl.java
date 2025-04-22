@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.CategoryDTO;
+import com.example.ecommerceweb.dto.category.CategoryDTO;
 import com.example.ecommerceweb.entity.Category;
 import com.example.ecommerceweb.repository.CategoryRepository;
 import com.example.ecommerceweb.service.CategoryService;

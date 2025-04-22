@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.entity.Product;
-import com.example.ecommerceweb.entity.ProductImage;
+import com.example.ecommerceweb.entity.product.Product;
+import com.example.ecommerceweb.entity.product.ProductImage;
 import com.example.ecommerceweb.repository.ProductImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductImageService {
+
     private final ProductImageRepository productImageRepository;
 
     public void saveProductImage(Product product, String imageUrl) {

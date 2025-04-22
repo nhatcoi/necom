@@ -1,9 +1,9 @@
 package com.example.ecommerceweb.service.services_impl;
 
 
-import com.example.ecommerceweb.dto.request.order.CheckoutRequest;
-import com.example.ecommerceweb.dto.request.product.ProductOrderRequest;
-import com.example.ecommerceweb.dto.response.order.StripeResponse;
+import com.example.ecommerceweb.dto.order.CheckoutRequest;
+import com.example.ecommerceweb.dto.product.ProductOrderRequest;
+import com.example.ecommerceweb.dto.order.StripeResponse;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private static final String SUCCESS_URL = "http://localhost:8085";
-    private static final String CANCEL_URL = "http://localhost:8085";
+    private static final String SUCCESS_URL = "http://localhost:5173/checkout";
+    private static final String CANCEL_URL = "http://localhost:5173/checkout";
     private static final String DEFAULT_CURRENCY = "usd";
 
     public PaymentIntent createPaymentIntent(Long amount, String currency) throws StripeException {
@@ -46,7 +46,7 @@ public class PaymentService {
         Session session = createPaymentSession(checkoutRequest, lineItems, productIdsAsString, username);
 
         if (session == null) {
-            return buildErrorResponse("Failed to create payment session");
+            return buildErrorResponse();
         }
 
         return buildSuccessResponse(session);
@@ -73,7 +73,7 @@ public class PaymentService {
         SessionCreateParams.LineItem.PriceData priceData =
                 SessionCreateParams.LineItem.PriceData.builder()
                         .setCurrency(Optional.ofNullable(product.getCurrency()).map(String::toLowerCase).orElse(DEFAULT_CURRENCY))
-                        .setUnitAmount(product.getAmount() * 100L)
+                        .setUnitAmount(product.getAmount())
                         .setProductData(productData)
                         .build();
 
@@ -125,10 +125,10 @@ public class PaymentService {
                 .build();
     }
 
-    private StripeResponse buildErrorResponse(String message) {
+    private StripeResponse buildErrorResponse() {
         return StripeResponse.builder()
                 .status("FAILED")
-                .message(message)
+                .message("Failed to create payment session")
                 .build();
     }
 

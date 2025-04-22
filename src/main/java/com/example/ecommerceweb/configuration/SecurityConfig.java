@@ -1,5 +1,8 @@
 package com.example.ecommerceweb.configuration;
 
+import com.example.ecommerceweb.repository.UserRepository;
+import com.example.ecommerceweb.security.SecurityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,45 +25,29 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final String[] POST_PUBLIC_ENDPOINTS = {
-            "/blog/public/**",
-            "/auth/log-in",
-            "/auth/introspect",
-            "/users/create-user",
-            "/checkout/**",
-            "/checkout/checkout-order",
-            "/webhook"
-    };
-
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/",
-            "/**"
-    };
-
 
     @Value("${jwt.signer-key}")
     private String jwtSignerKey;
 
+
+    /* OAuth2 Resource Server */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, POST_PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
-                        .anyRequest().authenticated()
+        httpSecurity
+                .authorizeHttpRequests(request ->
+                    request.requestMatchers("/**").permitAll()
+                            .anyRequest().authenticated()
         );
-
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
+        httpSecurity
+                .oauth2ResourceServer(oauth2 ->
+                    oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                            .decoder(jwtDecoder())
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                    )
         );
-
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
         return httpSecurity.build();
     }
 
@@ -87,6 +74,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public SecurityUtils securityUtils(UserRepository userRepository) {
+        return new SecurityUtils(userRepository);
     }
 
 }

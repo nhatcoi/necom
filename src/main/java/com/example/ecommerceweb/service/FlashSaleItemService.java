@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.service;
 
-import com.example.ecommerceweb.entity.FlashSaleItem;
+import com.example.ecommerceweb.entity.product.FlashSaleItem;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

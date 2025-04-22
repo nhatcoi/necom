@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.specification;
 
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.filter.ProductFilter;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;

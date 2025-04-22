@@ -1,56 +1,57 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.response.PaginatedResponse;
-import com.example.ecommerceweb.dto.ProductDTO;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.response_data.PaginatedResponse;
+import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.entity.Category;
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.entity.product.Product;
+import com.example.ecommerceweb.exception.ErrorCode;
+import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.filter.ProductFilter;
-import com.example.ecommerceweb.repository.CategoryRepository;
-import com.example.ecommerceweb.repository.ProductRatingRepository;
+import com.example.ecommerceweb.mapper.ProductMapper;
 import com.example.ecommerceweb.repository.ProductRepository;
+import com.example.ecommerceweb.service.CategoryService;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.specification.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
 
+import static com.example.ecommerceweb.util.Static.convertToSlug;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final ProductRatingRepository productRatingRepository;
+    private final CategoryService categoryService;
+    private final ProductImageService productImageService;
+    private final RatingService ratingService;
     private final ModelMapper modelMapper;
+
+    private final ProductMapper productMapper;
 
     @Value("${image.base.url}")
     private String imageBaseurl;
 
-    private static final Logger logger = Logger.getLogger(ProductServiceImpl.class.getName());
-
     @Override
     public Product createProduct(ProductDTO productDTO) throws IOException, InterruptedException {
-        Optional<Category> cate = categoryRepository
-                .findById(productDTO.getCategoryId());
-        if (cate.isEmpty()) {
-            return null;
-        }
+        Category cate = categoryService.getCategoryById(productDTO.getCategoryId());
         Product newProduct = Product.builder()
-                .name(productDTO.getName())
+                .name(convertToSlug(productDTO.getName()))
                 .price(productDTO.getPrice())
                 .thumbnail(productDTO.getThumbnail())
                 .description(productDTO.getDescription())
-                .categoryId(cate.get())
+                .categoryId(cate)
                 .build();
         return productRepository.save(newProduct);
     }
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long id, ProductDTO productDTO) {
-        Product productToUpdate = getProductById(id);
+        Product productToUpdate = productRepository.findById(id).orElse(null);
         assert productToUpdate != null;
         // copy data from productDTO to productToUpdate
         // co the su dung ModelMapper
@@ -94,8 +95,7 @@ public class ProductServiceImpl implements ProductService {
                 .name(productDTO.getName())
                 .price(productDTO.getPrice())
                 .thumbnail(productDTO.getThumbnail())
-                .categoryId(categoryRepository.findById(productDTO.getCategoryId())
-                        .orElse(null))
+                .categoryId(categoryService.getCategoryById(productDTO.getCategoryId()))
                 .build();
         return productRepository.save(productToUpdate);
     }
@@ -105,28 +105,27 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
+    public ProductDetailResponse getProductById(Long idProduct) {
+        Product product = productRepository.findById(idProduct)
+                .orElseThrow(() -> new ResourceException(ErrorCode.RESOURCE_NOT_FOUND));
+        ProductDetailResponse productDetailResponse = productMapper.productToProductDetailResponse(product);
+        productDetailResponse.setAvgRating(ratingService.avgRating(idProduct));
+        productDetailResponse.setProductImages(productImageService.getImageListUrl(idProduct));
+
+        return productDetailResponse;
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
+    public ProductDetailResponse getProductBySlug(String slug) {
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceException(ErrorCode.RESOURCE_NOT_FOUND));
+        ProductDetailResponse productDetailResponse = productMapper.productToProductDetailResponse(product);
+        productDetailResponse.setAvgRating(ratingService.avgRating(product.getId()));
+        productDetailResponse.setProductImages(productImageService.getImageListUrl(product.getId()));
+
+        return productDetailResponse;
     }
 
-    @Override
-    public Page<Product> getAllProducts(PageRequest pageRequest) {
-        return productRepository.findAllProductsByPage(pageRequest);
-    }
-
-    @Override
-    public boolean isProductExist(Long id) {
-        return false;
-    }
 
     @Override
     public List<ProductDTO> getLatestProducts(int limit) {

@@ -1,16 +1,14 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.response.PaginatedResponse;
-import com.example.ecommerceweb.dto.ProductDTO;
-import com.example.ecommerceweb.dto.response.Pagination;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.product.ProductResponse;
-import com.example.ecommerceweb.entity.Product;
+import com.example.ecommerceweb.dto.product.ProductDTO;
+import com.example.ecommerceweb.dto.response_data.Pagination;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.product.ProductDetailResponse;
 import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.service.services_impl.ProductImageService;
-import com.example.ecommerceweb.service.services_impl.ProductRatingService;
+import com.example.ecommerceweb.service.services_impl.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,17 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.ecommerceweb.util.DivideList.divideList;
@@ -42,7 +38,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductImageService productImageService;
-    private final ProductRatingService productRatingService;
+    private final RatingService ratingService;
     private final Translator translator;
     private final ModelMapper modelMapper;
 
@@ -69,6 +65,20 @@ public class ProductController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
     }
 
+    @GetMapping("/ratings/average")
+    public ResponseData<?> getAverageRating(@RequestParam(required = false) String ids) {
+        List<Long> productIds = new ArrayList<>();
+
+        if (ids != null && !ids.isEmpty()) {
+            productIds = Arrays.stream(ids.split(","))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+        }
+
+        Map<Long, Double> averageRatings = ratingService.getAverageRatings(productIds);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), averageRatings);
+    }
+
     @GetMapping("/new")
     public ResponseData<?> getNewProduct(
             @RequestParam(defaultValue = "0") int page,
@@ -81,11 +91,14 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseData<?> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-        ProductResponse response = modelMapper.map(product, ProductResponse.class);
-        response.setProductImages(productImageService.getImageListUrl(id));
-        response.setAvgRating(productRatingService.avgRating(id));
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), response);
+        ProductDetailResponse productDetailResponse = productService.getProductById(id);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), productDetailResponse);
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseData<?> getProductBySlug(@PathVariable String slug) {
+        ProductDetailResponse productDetailResponse = productService.getProductBySlug(slug);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), productDetailResponse);
     }
 
     @GetMapping("/list-image/{id}")

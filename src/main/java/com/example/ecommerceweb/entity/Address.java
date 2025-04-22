@@ -2,13 +2,11 @@ package com.example.ecommerceweb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,7 +18,7 @@ public class Address {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Một địa chỉ chỉ thuộc về một User
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
@@ -39,4 +37,7 @@ public class Address {
 
     @Column(name = "country")
     private String country;
+
+    @Column(name = "is_main")
+    private Boolean isMain;
 }

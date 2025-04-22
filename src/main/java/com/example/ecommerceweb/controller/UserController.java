@@ -1,12 +1,14 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
-import com.example.ecommerceweb.dto.request.user.UserUpdateRequest;
-import com.example.ecommerceweb.dto.response.Pagination;
-import com.example.ecommerceweb.dto.response.ResponseData;
-import com.example.ecommerceweb.dto.response.user.UserResponse;
+import com.example.ecommerceweb.dto.auth.PasswordDTO;
+import com.example.ecommerceweb.dto.user.UserUpdateRequest;
+import com.example.ecommerceweb.dto.response_data.Pagination;
+import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.dto.user.UserResponse;
 import com.example.ecommerceweb.service.UserService;
-import com.example.ecommerceweb.dto.request.user.UserRequest;
+import com.example.ecommerceweb.dto.user.UserRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -64,11 +66,23 @@ public class UserController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getMyInfo());
     }
 
+    @PutMapping("/update-password")
+    public ResponseData<?> updatePassword(@Valid @RequestBody PasswordDTO request) {
+        userService.updateUserPassword(request);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), "OK");
+    }
+
 
     @PostMapping("/create-user")
     public ResponseData<?> register(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.createUser(userRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(), translator.toLocated("response.success"), userResponse);
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseData<?> updateProfile(@RequestBody UserRequest userUpdateRequest) {
+        UserResponse userResponse = userService.updateUser(userUpdateRequest);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userResponse);
     }
 
     @DeleteMapping("/{userId}")

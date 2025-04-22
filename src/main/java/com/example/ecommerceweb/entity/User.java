@@ -37,8 +37,11 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -49,6 +52,13 @@ public class User extends BaseEntity {
     @Column(name = "google_id")
     private Integer googleId;
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL
+    )
+    @JsonManagedReference
+    private List<Address> addresses;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -57,12 +67,4 @@ public class User extends BaseEntity {
     )
     @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JsonManagedReference
-    private List<Address> addresses;
 }

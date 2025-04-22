@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum StatusEnum {
     INITIATED("Order has been created, awaiting further action"),
-    PENDING_PAYMENT("Awaiting payment from the customer"),
+    PENDING("Awaiting payment from the customer"),
     SUCCESS("Payment completed successfully"),
     PAYMENT_FAILED("Payment failed"),
     CANCELED("Order has been canceled"),

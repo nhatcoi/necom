@@ -1,7 +1,7 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.entity.FlashSale;
-import com.example.ecommerceweb.entity.FlashSaleItem;
+import com.example.ecommerceweb.entity.product.FlashSale;
+import com.example.ecommerceweb.entity.product.FlashSaleItem;
 import com.example.ecommerceweb.repository.FlashSaleItemRepository;
 import com.example.ecommerceweb.repository.FlashSaleRepository;
 import com.example.ecommerceweb.service.FlashSaleItemService;

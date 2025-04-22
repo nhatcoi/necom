@@ -1,6 +1,6 @@
 package com.example.ecommerceweb.repository;
 
-import com.example.ecommerceweb.entity.FlashSaleItem;
+import com.example.ecommerceweb.entity.product.FlashSaleItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

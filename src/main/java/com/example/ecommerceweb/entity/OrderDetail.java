@@ -1,6 +1,7 @@
 package com.example.ecommerceweb.entity;
 
 
+import com.example.ecommerceweb.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,4 +37,7 @@ public class OrderDetail {
 
     @Column(name = "total_price")
     private Float totalPrice;
+
+    @Column(name = "attributes")
+    private String attributes;
 }

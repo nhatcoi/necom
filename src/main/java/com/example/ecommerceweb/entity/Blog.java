@@ -19,16 +19,23 @@ public class Blog extends BaseEntity{
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "excerpt", columnDefinition = "TEXT")
+    private String excerpt;
+
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "thumbnail")
     private String thumbnail;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "views")
+    private Integer views;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "blog_category_id")
-    private Category categoryId;
+    private BlogCategory blogCategory;
 }
