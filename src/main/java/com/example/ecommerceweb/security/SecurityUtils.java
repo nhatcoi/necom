@@ -26,7 +26,7 @@ public class SecurityUtils {
     public User getCurrentUser() {
         String username = getCurrentUsername();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new ResourceException(ErrorCode.UNAUTHORIZED));
     }
 
 

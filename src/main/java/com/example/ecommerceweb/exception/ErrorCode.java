@@ -10,7 +10,7 @@ public enum ErrorCode {
 
     // Authentication and Authorization errors
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Invalid email or password"),
-    UNAUTHORIZED(HttpStatus.FORBIDDEN, "You do not have permission"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "You do not have permission"),
 
     // User-related errors
     USER_EXISTED(HttpStatus.BAD_REQUEST, "User already exists"),

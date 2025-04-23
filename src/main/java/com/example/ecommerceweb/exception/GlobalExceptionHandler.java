@@ -6,11 +6,13 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,24 +20,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UnauthenticatedException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseError handleUnauthorized(UnauthenticatedException ex, WebRequest request) {
-        ResponseError responseError = new ResponseError(request, HttpStatus.UNAUTHORIZED.value());
-        responseError.setMessage(ex.getMessage());
-        return responseError;
-    }
+    @ExceptionHandler(ResourceException.class)
+    public ResponseEntity<ResponseError> handleUnauthorized(ResourceException ex, WebRequest request) {
+        // Kiểm tra mã lỗi từ ErrorCode
+        HttpStatus status = ex.getErrorCode().getStatus();
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseError handleException(MethodArgumentNotValidException ex, WebRequest request) {
-        ResponseError responseError = new ResponseError(request, HttpStatus.BAD_REQUEST.value());
-        Map<String, String> errorMap = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errorMap.put(error.getField(), error.getDefaultMessage())
-        );
-        responseError.setErrorMap(errorMap);
-        return responseError;
+        // Tạo ResponseError chứa thông tin lỗi
+        ResponseError responseError = new ResponseError(request, status.value());
+        responseError.setMessage(ex.getMessage());
+
+        // Trả về ResponseEntity với status đúng
+        return new ResponseEntity<>(responseError, status);
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
@@ -58,14 +53,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseError handleException(IllegalArgumentException ex, WebRequest request) {
         ResponseError responseError = new ResponseError(request, HttpStatus.BAD_REQUEST.value());
-        responseError.setMessage(ex.getMessage());
-        return responseError;
-    }
-
-    @ExceptionHandler(ResourceException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseError handleResourceException(ResourceException ex, WebRequest request) {
-        ResponseError responseError = new ResponseError(request, HttpStatus.NOT_FOUND.value());
         responseError.setMessage(ex.getMessage());
         return responseError;
     }
