@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,4 +26,5 @@ public class ProductDTO {
     private Integer quantity;
     private BigDecimal originalPrice;
     private BigDecimal sellingPrice;
+    private LocalDateTime createdAt;
 }

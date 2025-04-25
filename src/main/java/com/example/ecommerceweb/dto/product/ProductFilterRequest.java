@@ -1,6 +1,5 @@
-package com.example.ecommerceweb.filter;
+package com.example.ecommerceweb.dto.product;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class ProductFilter {
+public class ProductFilterRequest {
     private Boolean sortByNew;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
