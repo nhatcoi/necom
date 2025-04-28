@@ -46,8 +46,14 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseData<?> getUserById(@PathVariable Long userId) {
+        log.info("User: {}", userId);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUserById(userId));
     }
+
+//    @GetMapping("/{email}")
+//    public ResponseData<?> getUserByEmail(@PathVariable String email) {
+//        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), userService.getUserByEmail(email));
+//    }
 
     @GetMapping("/search")
     public ResponseData<?> searchUsers(
