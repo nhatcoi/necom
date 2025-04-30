@@ -24,10 +24,11 @@ public interface UserService {
     // delete user by id
     void deleteUser(Long userId);
 
-    @PreAuthorize("hasRole('ADMIN')")
     UserResponse updateUserByAdmin(Long userId, UserUpdateRequest userUpdateRequest);
 
     Page<UserResponse> searchUsers(String decodedSearch, int page, int size);
 
     User getUserByUsername(String username);
+
+    UserResponse getUserByEmail(String email);
 }

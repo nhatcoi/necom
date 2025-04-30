@@ -2,6 +2,7 @@ package com.example.ecommerceweb.entity.product;
 
 import com.example.ecommerceweb.entity.BaseEntity;
 import com.example.ecommerceweb.entity.Category;
+import com.example.ecommerceweb.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,6 +41,9 @@ public class Product extends BaseEntity {
 
     @Column(name = "slug")
     private String slug;
+
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

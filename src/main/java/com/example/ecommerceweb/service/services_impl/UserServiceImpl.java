@@ -119,6 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getMyInfo() {
         User user = securityUtils.getCurrentUser();
+        user.setId(null);
         return userMapper.toUserResponse(user);
     }
 
@@ -174,6 +175,13 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    @Override
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(user);
     }
 
 }

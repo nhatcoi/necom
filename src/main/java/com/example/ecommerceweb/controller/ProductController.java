@@ -2,6 +2,7 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.product.ProductDTO;
+import com.example.ecommerceweb.dto.product.ProductFilterRequest;
 import com.example.ecommerceweb.dto.response_data.Pagination;
 import com.example.ecommerceweb.dto.response_data.ResponseData;
 import com.example.ecommerceweb.dto.product.ProductDetailResponse;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.ecommerceweb.specification.ProductSpecifications.resolveSort;
 import static com.example.ecommerceweb.util.DivideList.divideList;
 import static com.example.ecommerceweb.util.Static.*;
 
@@ -44,23 +47,12 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseData<?> getProducts(
+            @ModelAttribute ProductFilter filter,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "9") int size,
-            @RequestParam(required = false) Boolean sortByNew,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            @RequestParam(required = false) Boolean inStock,
-            @RequestParam(required = false) Integer category
+            @RequestParam(defaultValue = "8") int size
     ) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        ProductFilter filter = new ProductFilter();
-        filter.setSortByNew(sortByNew);
-        filter.setMinPrice(minPrice);
-        filter.setMaxPrice(maxPrice);
-        filter.setInStock(inStock);
-        filter.setCategory(category);
-
+        Sort sort = resolveSort(filter.getSortBy());
+        Pageable pageable = PageRequest.of(page, size, sort);
         Page<ProductDTO> products = productService.getFilteredProducts(filter, pageable);
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
     }
