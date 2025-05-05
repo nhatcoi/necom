@@ -41,7 +41,7 @@ image:
     url: ${IMAGE_BASE_URL}
 
 firebase:
-  service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH} #mandatory
+  service-account-path: /app/config/ecommerce-web-key.json
   storage-bucket: ${FIREBASE_STORAGE_BUCKET}
 
 jwt:
