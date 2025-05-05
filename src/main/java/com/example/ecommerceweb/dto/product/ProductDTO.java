@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ProductDTO {
     private Long id;
     private String name;
-    private Float price;
+    private BigDecimal price;
     private String thumbnail;
     private String description;
     @JsonProperty("quantity_in_stock")

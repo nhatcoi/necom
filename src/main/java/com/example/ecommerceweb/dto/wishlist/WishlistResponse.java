@@ -2,6 +2,8 @@ package com.example.ecommerceweb.dto.wishlist;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,6 +13,6 @@ public class WishlistResponse {
     private Long id;
     private Long productId;
     private String name;
-    private Float price;
+    private BigDecimal price;
     private String thumbnail;
 }

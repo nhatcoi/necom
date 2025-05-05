@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -30,13 +32,13 @@ public class OrderDetail {
     private Product product;
 
     @Column(name = "price")
-    private Float price;
+    private BigDecimal price;
 
     @Column(name = "number_of_products")
     private Integer numberOfProducts;
 
     @Column(name = "total_price")
-    private Float totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(name = "attributes")
     private String attributes;

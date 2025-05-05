@@ -4,6 +4,7 @@ import com.example.ecommerceweb.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -34,5 +35,5 @@ public class CartItem {
     private Integer quantity;
 
     @Column(nullable = false)
-    private Float price;
+    private BigDecimal price;
 }

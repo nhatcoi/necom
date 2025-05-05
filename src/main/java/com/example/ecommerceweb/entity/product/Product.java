@@ -6,6 +6,7 @@ import com.example.ecommerceweb.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class Product extends BaseEntity {
     private String name;
 
     @Column(name = "price", nullable = false)
-    private Float price;
+    private BigDecimal price;
 
     @Column(name = "thumbnail")
     private String thumbnail;

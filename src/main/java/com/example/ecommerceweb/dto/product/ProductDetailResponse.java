@@ -3,6 +3,7 @@ package com.example.ecommerceweb.dto.product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class ProductDetailResponse {
 
     private Long id;
     private String name;
-    private Float price;
+    private BigDecimal price;
     private String thumbnail;
     private String description;
     @JsonProperty("quantity_in_stock")
@@ -24,7 +25,7 @@ public class ProductDetailResponse {
     private String categoryName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Float avgRating;
+    private BigDecimal avgRating;
     private List<String> productImages;
     private List<ProductSpecificationDTO> specifications;
     private List<ProductAttributeDTO> attributes;

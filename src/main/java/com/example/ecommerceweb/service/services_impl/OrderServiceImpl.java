@@ -95,11 +95,11 @@ public class OrderServiceImpl implements OrderService {
                             .description(product.getDescription())
                             .attributes(item.getAttributes())
                             .quantity(item.getNumberOfProducts())
-                            .originalPrice(BigDecimal.valueOf(product.getPrice()))
-                            .sellingPrice(BigDecimal.valueOf(item.getPrice()))
+                            .originalPrice(product.getPrice())
+                            .sellingPrice(item.getPrice())
                             .build();
                 }).toList())
-                .total(BigDecimal.valueOf(order.getTotalPrice()))
+                .total(order.getTotalPrice())
                 .build());
     }
 
@@ -181,11 +181,11 @@ public class OrderServiceImpl implements OrderService {
                             .description(product.getDescription())
                             .attributes(item.getAttributes())
                             .quantity(item.getNumberOfProducts())
-                            .originalPrice(BigDecimal.valueOf(product.getPrice()))
-                            .sellingPrice(BigDecimal.valueOf(item.getPrice()))
+                            .originalPrice(product.getPrice())
+                            .sellingPrice(item.getPrice())
                             .build();
                 }).toList())
-                .total(BigDecimal.valueOf(order.getTotalPrice()))
+                .total(order.getTotalPrice())
                 .build());
     }
 
@@ -209,11 +209,11 @@ public class OrderServiceImpl implements OrderService {
                             .description(product.getDescription())
                             .attributes(item.getAttributes())
                             .quantity(item.getNumberOfProducts())
-                            .originalPrice(BigDecimal.valueOf(product.getPrice()))
-                            .sellingPrice(BigDecimal.valueOf(item.getPrice()))
+                            .originalPrice(product.getPrice())
+                            .sellingPrice(item.getPrice())
                             .build();
                 }).toList())
-                .total(BigDecimal.valueOf(order.getTotalPrice()))
+                .total(order.getTotalPrice())
                 .active(true)
                 .build();
             
@@ -274,7 +274,7 @@ public class OrderServiceImpl implements OrderService {
 
 
             // check if the product has the same attributes
-            Float priceWithAttribute = product.getPrice();
+            BigDecimal priceWithAttribute = product.getPrice();
 
             for (ProductAttribute pa : product.getAttributes()) {
                 String attributeName = pa.getAttributeValue().getAttribute().getName();
@@ -282,7 +282,7 @@ public class OrderServiceImpl implements OrderService {
 
                 if (attributeMap.containsKey(attributeName) &&
                     attributeMap.get(attributeName).equals(attributeValue)) {
-                    priceWithAttribute += pa.getPrice();
+                    priceWithAttribute = priceWithAttribute.add(pa.getPrice());
                 }
             }
 
@@ -295,7 +295,7 @@ public class OrderServiceImpl implements OrderService {
                     .product(product)
                     .price(priceWithAttribute)
                     .numberOfProducts(pod.getQuantity())
-                    .totalPrice(priceWithAttribute * pod.getQuantity())
+                    .totalPrice(priceWithAttribute.multiply(BigDecimal.valueOf(pod.getQuantity())))
                     .attributes(pod.getAttributes())
                     .build();
             orderDetails.add(orderDetail);

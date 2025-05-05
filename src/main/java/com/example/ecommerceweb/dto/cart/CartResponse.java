@@ -3,6 +3,7 @@ package com.example.ecommerceweb.dto.cart;
 import com.example.ecommerceweb.dto.product.ProductDetailResponse;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -14,9 +15,9 @@ public class CartResponse {
     private Long id;
     private ProductDetailResponse product;
     private Integer quantity;
-    private Float price;
+    private BigDecimal price;
     private List<SelectedAttributeDTO> selectedAttributes;
-    private Float totalPrice;
+    private BigDecimal totalPrice;
 
     @Builder
     @Getter
@@ -27,7 +28,7 @@ public class CartResponse {
         private Long id;
         private String attributeName;
         private String attributeValue;
-        private Float price;
+        private BigDecimal price;
         private Integer quantity;
     }
 
