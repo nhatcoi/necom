@@ -4,6 +4,7 @@ import com.example.ecommerceweb.repository.RatingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class RatingService {
 
     private final RatingRepository ratingRepository;
 
-    public Float avgRating(Long productId) {
+    public BigDecimal avgRating(Long productId) {
         return ratingRepository.avgRating(productId);
     }
 

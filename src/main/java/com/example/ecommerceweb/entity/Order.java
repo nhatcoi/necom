@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class Order {
     private String status;
 
     @Column(name = "total_price")
-    private Float totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(name = "shipping_method")
     private String shippingMethod;

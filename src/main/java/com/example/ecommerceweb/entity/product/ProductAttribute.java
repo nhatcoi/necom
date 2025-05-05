@@ -29,7 +29,7 @@ public class ProductAttribute {
     private AttributeValue attributeValue;
 
     @Column(name = "price")
-    private Float price;
+    private BigDecimal price;
 
     @Column(name = "stock_quantity")
     private Integer stockQuantity;

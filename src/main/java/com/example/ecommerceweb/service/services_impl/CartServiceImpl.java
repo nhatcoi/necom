@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,9 +103,9 @@ public class CartServiceImpl implements CartService {
 
 
         // Tính giá dựa trên sản phẩm + thuộc tính
-        float totalPrice = product.getPrice();
+        BigDecimal totalPrice = product.getPrice();
         for (ProductAttribute attr : attributes) {
-            totalPrice += attr.getPrice();
+            totalPrice = totalPrice.add(attr.getPrice());
         }
 
 

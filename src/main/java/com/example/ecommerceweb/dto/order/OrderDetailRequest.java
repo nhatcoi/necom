@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class OrderDetailRequest {
     private Long orderId;
     private Long productId;
-    private Float price;
+    private BigDecimal price;
     private Integer numberOfProducts;
-    private Float totalPrice;
+    private BigDecimal totalPrice;
 }

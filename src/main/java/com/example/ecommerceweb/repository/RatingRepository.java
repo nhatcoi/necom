@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +18,7 @@ public interface RatingRepository extends JpaRepository<ProductRating, Long> {
     List<Product> fetchTopRatedProducts(Pageable pageable);
 
     @Query("SELECT AVG(pr.rating) FROM ProductRating pr WHERE pr.product.id = :productId")
-    Float avgRating(Long productId);
+    BigDecimal avgRating(Long productId);
 
 
     @Query("SELECT r.product.id, AVG(r.rating) FROM ProductRating r WHERE r.product.id IN :productIds GROUP BY r.product.id")

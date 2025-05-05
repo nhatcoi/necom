@@ -2,6 +2,8 @@ package com.example.ecommerceweb.dto.order;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,6 @@ public class OrderInfoRequest {
     private String city;
     private String addressLine;
     private String postcode;
-    private Float totalPrice;
+    private BigDecimal totalPrice;
     private String note;
 }

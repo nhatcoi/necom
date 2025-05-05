@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @ToString(callSuper = true)
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class FlashSaleItem  {
     private Product productSale;
 
     @Column(name = "sale_price", nullable = false)
-    private Float salePrice;
+    private BigDecimal salePrice;
 
     @Column(name = "quantity_limit", nullable = false)
     private Integer quantityLimit;
