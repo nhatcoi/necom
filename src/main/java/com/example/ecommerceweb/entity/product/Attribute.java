@@ -3,8 +3,6 @@ package com.example.ecommerceweb.entity.product;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -15,7 +13,7 @@ public class Attribute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
 }
