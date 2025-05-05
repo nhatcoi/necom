@@ -4,6 +4,7 @@ import com.example.ecommerceweb.configuration.Translator;
 import com.example.ecommerceweb.dto.order.OrderRequest;
 import com.example.ecommerceweb.dto.response_data.Pagination;
 import com.example.ecommerceweb.dto.response_data.ResponseData;
+import com.example.ecommerceweb.filter.OrderFilter;
 import com.example.ecommerceweb.dto.order.OrderResponse;
 import com.example.ecommerceweb.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,8 @@ public class OrderController {
     public ResponseData<?> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "ALL") String status
+            @RequestParam(defaultValue = "ALL") String status,
+            @ModelAttribute OrderFilter orderFilter
     ) {
         Page<OrderResponse> orders = orderService.getAllOrders(page-1, size, status);
         return new ResponseData<>(
@@ -44,6 +46,7 @@ public class OrderController {
                 new Pagination(orders)
         );
     }
+    
 
     @GetMapping("/order-details/{orderId}")
     public ResponseData<?> getOrderById(@PathVariable Long orderId) {
