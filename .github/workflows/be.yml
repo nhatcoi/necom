@@ -60,3 +60,4 @@ jobs:
               -v /home/jackie/ENV/ecommerce-be/ecommerce-web-key.json:/app/config/ecommerce-web-key.json \
               -p 8085:8085 \
               ${{ secrets.DOCKER_USERNAME }}/ecommerce-be:latest
+# ci cd
