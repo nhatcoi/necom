@@ -39,6 +39,15 @@ spring:
       timeout: 2000
       database: 0
       connect-timeout: 2000
+      # Redis connection retry settings
+      retry:
+        max-attempts: 3
+        delay: 1000
+        multiplier: 2
+      # Health check settings
+      health-check:
+        enabled: true
+        interval: 30000
 
 # env
 image:
@@ -46,7 +55,7 @@ image:
     url: ${IMAGE_BASE_URL:IMAGE_BASE_URL}
 
 firebase:
-  service-account-path: /app/config/ecommerce-web-key.json
+  service-account-path: ecommerce-web-key.json
   storage-bucket: ${FIREBASE_STORAGE_BUCKET:FIREBASE_STORAGE_BUCKET}
 
 jwt:

@@ -41,6 +41,15 @@ spring:
       timeout: 2000
       database: 0
       connect-timeout: 2000
+      # Redis connection retry settings
+      retry:
+        max-attempts: 3
+        delay: 1000
+        multiplier: 2
+      # Health check settings
+      health-check:
+        enabled: true
+        interval: 30000
 
 # Logging
 logging:
