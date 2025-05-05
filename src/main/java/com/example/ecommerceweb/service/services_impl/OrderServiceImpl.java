@@ -14,6 +14,7 @@ import com.example.ecommerceweb.entity.product.ProductAttribute;
 import com.example.ecommerceweb.enums.StatusEnum;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
+import com.example.ecommerceweb.filter.OrderFilter;
 import com.example.ecommerceweb.repository.OrderDetailRepository;
 import com.example.ecommerceweb.repository.OrderRepository;
 import com.example.ecommerceweb.security.SecurityUtils;
@@ -25,9 +26,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -99,13 +103,120 @@ public class OrderServiceImpl implements OrderService {
                 .build());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public String getOrderById(Long orderId) {
+    public Page<OrderResponse> getOrders(OrderFilter orderFilter, Pageable pageable) {
+        Specification<Order> spec = Specification.where(null);
+
+        if (orderFilter.getSearch() != null && !orderFilter.getSearch().trim().isEmpty()) {
+            String searchPattern = "%" + orderFilter.getSearch().toLowerCase() + "%";
+            spec = spec.and((root, query, cb) -> 
+                cb.or(
+                    cb.like(cb.lower(root.get("id").as(String.class)), searchPattern),
+                    cb.like(cb.lower(root.get("fullName")), searchPattern),
+                    cb.like(cb.lower(root.get("email")), searchPattern)
+                )
+            );
+        }
+
+        if (orderFilter.getStatus() != null && !orderFilter.getStatus().trim().isEmpty()) {
+            spec = spec.and((root, query, cb) -> 
+                cb.equal(root.get("status"), orderFilter.getStatus())
+            );
+        }
+
+        if (orderFilter.getPaymentStatus() != null && !orderFilter.getPaymentStatus().trim().isEmpty()) {
+            spec = spec.and((root, query, cb) -> 
+                cb.equal(root.get("paymentStatus"), orderFilter.getPaymentStatus())
+            );
+        }
+
+        if (orderFilter.getFromDate() != null) {
+            spec = spec.and((root, query, cb) ->
+                cb.greaterThanOrEqualTo(root.get("orderDate"), orderFilter.getFromDate().atStartOfDay())
+            );
+        }
+
+        if (orderFilter.getToDate() != null) {
+            spec = spec.and((root, query, cb) ->
+                cb.lessThanOrEqualTo(root.get("orderDate"), orderFilter.getToDate().plusDays(1).atStartOfDay())
+            );
+        }
+
+        // Apply sorting if provided
+        if (orderFilter.getSortBy() != null && !orderFilter.getSortBy().trim().isEmpty()) {
+            spec = spec.and((root, query, cb) -> {
+                if (query.getResultType() != Long.class) {
+                    String[] sortParts = orderFilter.getSortBy().split("_");
+                    if (sortParts.length == 2) {
+                        String field = sortParts[0];
+                        String direction = sortParts[1];
+                        
+                        if ("desc".equalsIgnoreCase(direction)) {
+                            query.orderBy(cb.desc(root.get(field)));
+                        } else {
+                            query.orderBy(cb.asc(root.get(field)));
+                        }
+                    }
+                }
+                return null;
+            });
+        }
+
+        Page<Order> orders = orderRepository.findAll(spec, pageable);
+        
+        return orders.map(order -> OrderResponse.builder()
+                .id(order.getId())
+                .userId(order.getUser().getId())
+                .email(order.getEmail())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .items(order.getOrderDetails().stream().map(item -> {
+                    Product product = item.getProduct();
+                    return ProductDTO.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .price(product.getPrice())
+                            .thumbnail(product.getThumbnail())
+                            .description(product.getDescription())
+                            .attributes(item.getAttributes())
+                            .quantity(item.getNumberOfProducts())
+                            .originalPrice(BigDecimal.valueOf(product.getPrice()))
+                            .sellingPrice(BigDecimal.valueOf(item.getPrice()))
+                            .build();
+                }).toList())
+                .total(BigDecimal.valueOf(order.getTotalPrice()))
+                .build());
+    }
+
+    @Override
+    public OrderResponse getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Order not found"));
-
-        return null;
-
+        return OrderResponse.builder()
+                .id(order.getId())
+                .userId(order.getUser().getId())
+                .email(order.getEmail())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .items(order.getOrderDetails().stream().map(item -> {
+                    Product product = item.getProduct();
+                    return ProductDTO.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .price(product.getPrice())
+                            .thumbnail(product.getThumbnail())
+                            .description(product.getDescription())
+                            .attributes(item.getAttributes())
+                            .quantity(item.getNumberOfProducts())
+                            .originalPrice(BigDecimal.valueOf(product.getPrice()))
+                            .sellingPrice(BigDecimal.valueOf(item.getPrice()))
+                            .build();
+                }).toList())
+                .total(BigDecimal.valueOf(order.getTotalPrice()))
+                .active(true)
+                .build();
+            
     }
 
     private Order createOrderFromRequest(OrderRequest orderRequest, User user) {

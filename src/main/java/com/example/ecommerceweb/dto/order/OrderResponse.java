@@ -11,13 +11,11 @@ import java.util.List;
 @Builder
 public class OrderResponse {
     private Long id;
+    private Long userId;
+    private String email;
     private LocalDateTime orderDate;
     private String status;
-
     private List<ProductDTO> items;
-
     private BigDecimal total;
     private Boolean active;
-
-
 }
