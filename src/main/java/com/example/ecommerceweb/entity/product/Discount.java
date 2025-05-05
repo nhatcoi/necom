@@ -26,7 +26,6 @@ public class Discount {
     @Column(name = "code", nullable = false, unique = true, length = 50)
     private String code;
 
-    @Lob
     @Column(name = "description")
     private String description;
 
