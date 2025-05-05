@@ -25,6 +25,21 @@ spring:
       ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password:
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1
+      timeout: 2000
+      database: 0
+      connect-timeout: 2000
+
 # env
 image:
   base:
@@ -42,3 +57,4 @@ stripe:
   webhook: ${API_STRIPE_WEBHOOK_KEY:API_STRIPE_WEBHOOK_KEY}
 
 ## All Key for dev-test
+  # Redis Configuration
