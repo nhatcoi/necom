@@ -20,4 +20,6 @@ logging:
     org.apache: OFF
     kafka: OFF
 
+frontend:
+  origin: ${FRONTEND_ORIGIN}
 
