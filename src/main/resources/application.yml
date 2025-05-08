@@ -1,15 +1,17 @@
 server:
   port: ${SERVER_PORT:8085}
   address: ${SERVER_ADDRESS:0.0.0.0}
-#  servlet:
-#    context-path: /api
 
 
 spring:
+  mvc:
+    servlet:
+      path: /api
   application:
     name: ecommerce-web
   profiles:
     active: dev
+
 
 
 logging:
