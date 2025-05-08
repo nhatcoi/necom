@@ -17,8 +17,10 @@ import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.filter.OrderFilter;
 import com.example.ecommerceweb.repository.OrderDetailRepository;
 import com.example.ecommerceweb.repository.OrderRepository;
+import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.security.SecurityUtils;
 import com.example.ecommerceweb.service.OrderService;
+import com.example.ecommerceweb.service.ProductService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -42,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final SecurityUtils securityUtils;
+    private final ProductRepository productRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -50,12 +53,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderMetadataIntentDTO createOrder(OrderRequest orderRequest) {
         User user = securityUtils.getCurrentUser();
+        // Tạo order
         Order order = createOrderFromRequest(orderRequest, user);
         orderRepository.save(order);
 
+        // Validate job và tạo order details cho order
         List<OrderDetail> orderDetails = createOrderDetails(orderRequest, order);
-        orderDetailRepository.saveAll(orderDetails);
 
+        orderDetailRepository.saveAll(orderDetails);
         return buildOrderMetadataResponse(order);
     }
 
@@ -253,13 +258,15 @@ public class OrderServiceImpl implements OrderService {
 
     private List<OrderDetail> createOrderDetails(OrderRequest orderRequest, Order order) {
         List<OrderDetail> orderDetails = new ArrayList<>();
-        for (ProductOrderRequest pod : orderRequest.getProducts()) {
-            Product product = entityManager.getReference(Product.class, pod.getId());
 
-            // example: orderRequest.getProducts().getAttributes() == "Color: Red; Capacity: 128GB"
+        for (ProductOrderRequest pod : orderRequest.getProducts()) {
+            Product product = productRepository.findById(pod.getId()).orElseThrow(() ->
+                    new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Product not found"));
+
+            // Định dạng variants từ request, ex: "Color: Red, Capacity: 128GB"
             String[] attributePairs = pod.getAttributes().split(",");
 
-            // Create a map to store the attributes
+            // Map để trữ variants
             Map<String, String> attributeMap = new HashMap<>();
 
             for (String pair : attributePairs) {
@@ -271,11 +278,8 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 
-
-
-            // check if the product has the same attributes
+            // Tính giá thêm với các variants
             BigDecimal priceWithAttribute = product.getPrice();
-
             for (ProductAttribute pa : product.getAttributes()) {
                 String attributeName = pa.getAttributeValue().getAttribute().getName();
                 String attributeValue = pa.getAttributeValue().getValue();
@@ -286,10 +290,12 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 
-            if (!Objects.equals(priceWithAttribute, pod.getPrice())) {
+            // Check giá trị sản phẩm chuẩn khớp
+            if (priceWithAttribute.compareTo(pod.getPrice()) != 0) {
                 throw new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Price not match");
             }
 
+            // Tạo OrderDetail job
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .product(product)
