@@ -79,12 +79,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderResponse> getAllOrders(int page, int size, String status) {
+    public Page<OrderResponse> getAllOrders(int page, int size, String status, String search) {
         User user = securityUtils.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Order> orders;
-        orders = orderRepository.findAllByStatus(user.getId(), status.toUpperCase(Locale.ROOT), pageable);
+        orders = orderRepository.findAllByStatus(
+                user.getId(),
+                status.toUpperCase(Locale.ROOT),
+                search,
+                pageable
+        );
 
         return orders.map(order -> OrderResponse.builder()
                 .id(order.getId())
