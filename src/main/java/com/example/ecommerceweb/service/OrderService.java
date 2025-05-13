@@ -12,11 +12,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface OrderService {
+
     OrderMetadataIntentDTO createOrder(OrderRequest orderRequest);
+
     void updateOrderStatus(Long orderId, StatusEnum statusEnum);
+
     String getPaymentStatus(Long orderId);
 
-    Page<OrderResponse> getAllOrders(int page, int size, String status);
+    Page<OrderResponse> getAllOrders(int page, int size, String status, String search);
+
     Page<OrderResponse> getOrders(OrderFilter orderFilter, Pageable pageable);
 
     OrderResponse getOrderById(Long orderId);

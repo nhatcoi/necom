@@ -33,12 +33,13 @@ public class OrderController {
 
     @GetMapping
     public ResponseData<?> getAllOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "100") int size,
+            @RequestParam(value = "status", defaultValue = "ALL") String status,
+            @RequestParam(value = "search", defaultValue = "") String search,
             @ModelAttribute OrderFilter orderFilter
     ) {
-        Page<OrderResponse> orders = orderService.getAllOrders(page-1, size, status);
+        Page<OrderResponse> orders = orderService.getAllOrders(page, size, status, search);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 translator.toLocated("response.success"),

@@ -19,11 +19,20 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
     void updateOrderStatusById(@Param("orderId") Long orderId, @Param("status") String status);
 
     @Query("""
-        SELECT o FROM Order o\s
-        WHERE o.user.id = :userId\s
-        AND (:status IS NULL OR :status = 'ALL' OR o.status = :status)
-        ORDER BY o.orderDate DESC""")
+        SELECT DISTINCT o FROM Order o
+            JOIN o.orderDetails oi
+            JOIN oi.product p
+        WHERE o.user.id = :userId
+          AND (:status IS NULL OR :status = 'ALL' OR o.status = :status)
+          AND (
+            :search IS NULL OR :search = '' OR
+            CAST(o.id AS string) LIKE CONCAT('%', :search, '%') OR
+            LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+          )
+        ORDER BY o.orderDate DESC
+    """)
     Page<Order> findAllByStatus(@Param("userId") Long userId,
                                 @Param("status") String status,
+                                @Param("search") String search,
                                 Pageable pageable);
 }
