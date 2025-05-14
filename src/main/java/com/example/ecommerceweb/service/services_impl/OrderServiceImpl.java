@@ -8,9 +8,11 @@ import com.example.ecommerceweb.dto.cart.OrderMetadataIntentDTO;
 import com.example.ecommerceweb.dto.order.OrderResponse;
 import com.example.ecommerceweb.entity.Order;
 import com.example.ecommerceweb.entity.OrderDetail;
+import com.example.ecommerceweb.entity.Role;
 import com.example.ecommerceweb.entity.product.Product;
 import com.example.ecommerceweb.entity.User;
 import com.example.ecommerceweb.entity.product.ProductAttribute;
+import com.example.ecommerceweb.enums.RoleEnum;
 import com.example.ecommerceweb.enums.StatusEnum;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
@@ -20,7 +22,6 @@ import com.example.ecommerceweb.repository.OrderRepository;
 import com.example.ecommerceweb.repository.ProductRepository;
 import com.example.ecommerceweb.security.SecurityUtils;
 import com.example.ecommerceweb.service.OrderService;
-import com.example.ecommerceweb.service.ProductService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -28,12 +29,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -79,8 +78,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderResponse> getAllOrders(int page, int size, String status, String search) {
+    public Page<OrderResponse> getAllOrders(int page, int size, String status, String search, OrderFilter orderFilter) {
         User user = securityUtils.getCurrentUser();
+
+        for (Role role : user.getRoles()) {
+            if (role.getName().equals(RoleEnum.ADMIN.name())) {
+                return getOrders(orderFilter, PageRequest.of(page, size));
+            }
+        }
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Order> orders;
@@ -93,6 +98,8 @@ public class OrderServiceImpl implements OrderService {
 
         return orders.map(order -> OrderResponse.builder()
                 .id(order.getId())
+                .customerName(user.getFullName())
+                .email(user.getEmail())
                 .orderDate(order.getOrderDate())
                 .status(order.getStatus())
                 .items(order.getOrderDetails().stream().map(item -> {
@@ -113,7 +120,6 @@ public class OrderServiceImpl implements OrderService {
                 .build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public Page<OrderResponse> getOrders(OrderFilter orderFilter, Pageable pageable) {
         Specification<Order> spec = Specification.where(null);
@@ -131,31 +137,32 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderFilter.getStatus() != null && !orderFilter.getStatus().trim().isEmpty()) {
             spec = spec.and((root, query, cb) -> 
-                cb.equal(root.get("status"), orderFilter.getStatus())
+                cb.equal(root.get("status"), orderFilter.getStatus().toUpperCase(Locale.ROOT))
             );
         }
 
         if (orderFilter.getPaymentStatus() != null && !orderFilter.getPaymentStatus().trim().isEmpty()) {
             spec = spec.and((root, query, cb) -> 
-                cb.equal(root.get("paymentStatus"), orderFilter.getPaymentStatus())
+                cb.equal(root.get("paymentStatus"), orderFilter.getPaymentStatus().toUpperCase(Locale.ROOT))
             );
         }
 
-        if (orderFilter.getFromDate() != null) {
+        if (orderFilter.getDateFrom() != null) {
             spec = spec.and((root, query, cb) ->
-                cb.greaterThanOrEqualTo(root.get("orderDate"), orderFilter.getFromDate().atStartOfDay())
+                cb.greaterThanOrEqualTo(root.get("orderDate"), orderFilter.getDateFrom().atStartOfDay())
             );
         }
 
-        if (orderFilter.getToDate() != null) {
+        if (orderFilter.getDateTo() != null) {
             spec = spec.and((root, query, cb) ->
-                cb.lessThanOrEqualTo(root.get("orderDate"), orderFilter.getToDate().plusDays(1).atStartOfDay())
+                cb.lessThanOrEqualTo(root.get("orderDate"), orderFilter.getDateTo().plusDays(1).atStartOfDay())
             );
         }
 
         // Apply sorting if provided
         if (orderFilter.getSortBy() != null && !orderFilter.getSortBy().trim().isEmpty()) {
             spec = spec.and((root, query, cb) -> {
+                assert query != null;
                 if (query.getResultType() != Long.class) {
                     String[] sortParts = orderFilter.getSortBy().split("_");
                     if (sortParts.length == 2) {
@@ -178,6 +185,7 @@ public class OrderServiceImpl implements OrderService {
         return orders.map(order -> OrderResponse.builder()
                 .id(order.getId())
                 .userId(order.getUser().getId())
+                .customerName(order.getFullName())
                 .email(order.getEmail())
                 .orderDate(order.getOrderDate())
                 .status(order.getStatus())
