@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -122,6 +123,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderResponse> getOrders(OrderFilter orderFilter, Pageable pageable) {
+
+
         Specification<Order> spec = Specification.where(null);
 
         if (orderFilter.getSearch() != null && !orderFilter.getSearch().trim().isEmpty()) {
@@ -159,7 +162,17 @@ public class OrderServiceImpl implements OrderService {
             );
         }
 
-        // Apply sorting if provided
+        if (orderFilter.getSortBy() == null) {
+            // default desc
+            spec = spec.and((root, query, cb) -> {
+                assert query != null;
+                if (query.getResultType() != Long.class) {
+                    query.orderBy(cb.desc(root.get("orderDate")));
+                }
+                return null;
+            });
+        }
+
         if (orderFilter.getSortBy() != null && !orderFilter.getSortBy().trim().isEmpty()) {
             spec = spec.and((root, query, cb) -> {
                 assert query != null;
@@ -277,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
                     new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Product not found"));
 
             // Định dạng variants từ request, ex: "Color: Red, Capacity: 128GB"
-            String[] attributePairs = pod.getAttributes().split(",");
+            String[] attributePairs = pod.getAttributes().split(";");
 
             // Map để trữ variants
             Map<String, String> attributeMap = new HashMap<>();
@@ -291,20 +304,30 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
 
-            // Tính giá thêm với các variants
-            BigDecimal priceWithAttribute = product.getPrice();
+            // Tính giá cuối cùng từ các attributes được chọn
+            BigDecimal totalAttributePrice = BigDecimal.ZERO;
+            int matchedAttributeCount = 0;
+
             for (ProductAttribute pa : product.getAttributes()) {
                 String attributeName = pa.getAttributeValue().getAttribute().getName();
                 String attributeValue = pa.getAttributeValue().getValue();
 
                 if (attributeMap.containsKey(attributeName) &&
-                    attributeMap.get(attributeName).equals(attributeValue)) {
-                    priceWithAttribute = priceWithAttribute.add(pa.getPrice());
+                        attributeMap.get(attributeName).equals(attributeValue)) {
+
+                    totalAttributePrice = totalAttributePrice.add(pa.getPrice());
+                    matchedAttributeCount++;
                 }
             }
 
-            // Check giá trị sản phẩm chuẩn khớp
-            if (priceWithAttribute.compareTo(pod.getPrice()) != 0) {
+            BigDecimal expectedPrice = totalAttributePrice;
+            if (matchedAttributeCount > 1) {
+                BigDecimal deduction = product.getPrice().multiply(BigDecimal.valueOf(matchedAttributeCount - 1));
+                expectedPrice = expectedPrice.subtract(deduction);
+            }
+
+            // So sánh với giá với client
+            if (expectedPrice.compareTo(pod.getPrice()) != 0) {
                 throw new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Price not match");
             }
 
@@ -312,9 +335,9 @@ public class OrderServiceImpl implements OrderService {
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .product(product)
-                    .price(priceWithAttribute)
+                    .price(totalAttributePrice)
                     .numberOfProducts(pod.getQuantity())
-                    .totalPrice(priceWithAttribute.multiply(BigDecimal.valueOf(pod.getQuantity())))
+                    .totalPrice(totalAttributePrice.multiply(BigDecimal.valueOf(pod.getQuantity())))
                     .attributes(pod.getAttributes())
                     .build();
             orderDetails.add(orderDetail);

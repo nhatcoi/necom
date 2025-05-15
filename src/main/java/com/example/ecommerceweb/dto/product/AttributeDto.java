@@ -1,16 +1,16 @@
 package com.example.ecommerceweb.dto.product;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class SpecificationResponse {
+public class AttributeDto {
     private Long id;
     private String name;
     private String value;
+    private BigDecimal price;
+    private Integer stockQuantity;
 }

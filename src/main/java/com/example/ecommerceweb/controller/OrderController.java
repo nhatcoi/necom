@@ -66,7 +66,7 @@ public class OrderController {
     }
     
 
-    @GetMapping("/order-details/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseData<?> getOrderById(@PathVariable Long orderId) {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), orderService.getOrderById(orderId));
     }

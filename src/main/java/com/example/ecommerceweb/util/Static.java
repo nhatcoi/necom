@@ -1,16 +1,22 @@
 package com.example.ecommerceweb.util;
 
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
 public class Static {
-    public static int PAGINATION_LIMIT = 8;
-    public static int LATEST_LIMIT = 5;
-    public static int TOP_RATING_LIMIT = 5;
-    public static int PAGE_SLIDE = 3;
 
     public static String convertToSlug(String input) {
+
+        // Bỏ dấu tiếng Việt
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        input = pattern.matcher(normalized).replaceAll("");
+
         input = input.trim().toLowerCase();
         input = input.replaceAll("[^a-z0-9\\s-]", "");
         input = input.replaceAll("[\\s-]+", "-");
         input = input.replaceAll("^-+|-+$", "");
+
         return input;
     }
 }
