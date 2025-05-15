@@ -10,6 +10,7 @@ import com.example.ecommerceweb.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class OrderController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), orderService.getPaymentStatus(orderId));
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseData<?> getAllOrders(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size",defaultValue = "100") int size,
@@ -39,7 +40,23 @@ public class OrderController {
             @RequestParam(value = "search", defaultValue = "") String search,
             @ModelAttribute OrderFilter orderFilter
     ) {
-        Page<OrderResponse> orders = orderService.getAllOrders(page, size, status, search);
+        Page<OrderResponse> orders = orderService.getAllOrders(page, size, status, search, orderFilter);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                translator.toLocated("response.success"),
+                orders.getContent(),
+                new Pagination(orders)
+        );
+    }
+
+    @GetMapping("/managed")
+    public ResponseData<?> getAllOrders(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "100") int size,
+            @ModelAttribute OrderFilter orderFilter
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<OrderResponse> orders = orderService.getOrders(orderFilter, pageRequest);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 translator.toLocated("response.success"),
@@ -49,7 +66,7 @@ public class OrderController {
     }
     
 
-    @GetMapping("/order-details/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseData<?> getOrderById(@PathVariable Long orderId) {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), orderService.getOrderById(orderId));
     }

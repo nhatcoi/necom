@@ -1,6 +1,7 @@
 package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.configuration.Translator;
+import com.example.ecommerceweb.dto.product.ProductCreateRequest;
 import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.dto.product.ProductFilterRequest;
 import com.example.ecommerceweb.dto.response_data.Pagination;
@@ -10,6 +11,8 @@ import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.service.services_impl.ProductImageService;
 import com.example.ecommerceweb.service.services_impl.RatingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,7 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -71,16 +76,6 @@ public class ProductController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), averageRatings);
     }
 
-    @GetMapping("/new")
-    public ResponseData<?> getNewProduct(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> products = productService.getProducts(pageable);
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products.getContent(), new Pagination(products));
-    }
-
     @GetMapping("/{id}")
     public ResponseData<?> getProductById(@PathVariable Long id) {
         ProductDetailResponse productDetailResponse = productService.getProductById(id);
@@ -101,72 +96,26 @@ public class ProductController {
     }
 
 
+    @PostMapping("")
+    public ResponseData<?> createProduct(
+            @RequestPart("data") String data,
+            @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+            @RequestPart(value = "productImages", required = false) List<MultipartFile> images
+    ) throws IOException, InterruptedException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductCreateRequest request = objectMapper.convertValue(objectMapper.readTree(data), ProductCreateRequest.class);
+        request.setThumbnail(thumbnail);
+        request.setProductImages(images);
 
+        log.info("Product request: " + request);
+        log.info("Product thumbnail: " + thumbnail);
+        log.info("Product images: " + images);
 
-    @GetMapping("/category/{cateId}")
-    public ResponseData<?> getProductsByCategory(
-            @PathVariable Long cateId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productsPage = productService.getProductsByCategory(pageable, cateId);
-        List<ProductDTO> products = productsPage.getContent();
-
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), products);
+        productService.createProduct(request);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), null);
     }
 
 
-    @GetMapping("/latest")
-    public ResponseData<?> getLatestProducts() {
-        List<List<ProductDTO>> latestProducts = divideList(
-                productService.getLatestProducts(LATEST_LIMIT),
-                PAGE_SLIDE
-        );
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), latestProducts);
-    }
-
-    @GetMapping("/top-rated")
-    public ResponseData<?> getTopRatedProducts() {
-        List<List<ProductDTO>> topRatedProducts = divideList(
-                productService.getTopRatedProducts(TOP_RATING_LIMIT),
-                PAGE_SLIDE
-        );
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), topRatedProducts);
-    }
-
-    @GetMapping("/filter-by-price")
-    public ResponseData<?> filterProducts(
-            @RequestParam(value = "minamount", required = false) String minAmount,
-            @RequestParam(value = "maxamount", required = false) String maxAmount,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size) {
-        int min, max;
-        try {
-            min = minAmount != null ? Integer.parseInt(minAmount) : 0;
-            max = maxAmount != null ? Integer.parseInt(maxAmount) : Integer.MAX_VALUE;
-        } catch (NumberFormatException e) {
-            min = 0;
-            max = Integer.MAX_VALUE;
-        }
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> products = productService.getProductByPriceRange(min, max, pageable);
-        return new ResponseData<>(HttpStatus.OK.value(),
-                translator.toLocated("response.success"),
-                products.getContent(),
-                new Pagination(products));
-    }
-
-
-    @GetMapping("/search")
-    public ResponseData<?> searchProducts(@RequestParam(value = "search", required = false) String keyword,
-                                          @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "8") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        String decodedSearch = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
-        Page<ProductDTO> products = productService.searchProducts(pageable, decodedSearch);
-        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated(keyword + " search successful"), products.getContent(), new Pagination(products));
-    }
 
 
 

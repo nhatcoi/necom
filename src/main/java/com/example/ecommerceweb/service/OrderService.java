@@ -19,7 +19,7 @@ public interface OrderService {
 
     String getPaymentStatus(Long orderId);
 
-    Page<OrderResponse> getAllOrders(int page, int size, String status, String search);
+    Page<OrderResponse> getAllOrders(int page, int size, String status, String search, OrderFilter orderFilter);
 
     Page<OrderResponse> getOrders(OrderFilter orderFilter, Pageable pageable);
 

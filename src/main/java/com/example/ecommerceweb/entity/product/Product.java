@@ -31,6 +31,9 @@ public class Product extends BaseEntity {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Column(name = "original_price")
+    private BigDecimal originalPrice;
+
     @Column(name = "thumbnail")
     private String thumbnail;
 

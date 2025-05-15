@@ -1,6 +1,7 @@
 package com.example.ecommerceweb.service;
 
 
+import com.example.ecommerceweb.dto.product.ProductCreateRequest;
 import com.example.ecommerceweb.dto.response_data.PaginatedResponse;
 import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.dto.product.ProductDetailResponse;
@@ -15,17 +16,14 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    Product createProduct(ProductDTO productDTO) throws IOException, InterruptedException;
+
+    long createProduct(ProductCreateRequest request) throws IOException, InterruptedException;
+
     Product updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
     ProductDetailResponse getProductById(Long id);
 
     ProductDetailResponse getProductBySlug(String slug);
-
-    List<ProductDTO> getLatestProducts(int limit);
-    List<ProductDTO> getTopRatedProducts(int limit);
-    List<ProductDTO> getProductByPriceRange(int min, int max);
-    Page<ProductDTO> getProductByPriceRange(int min, int max, Pageable pageable);
 
 
     Page<ProductDTO> getAllProducts(Pageable pageable);

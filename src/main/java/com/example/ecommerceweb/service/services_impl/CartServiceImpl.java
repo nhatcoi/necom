@@ -103,9 +103,21 @@ public class CartServiceImpl implements CartService {
 
 
         // Tính giá dựa trên sản phẩm + thuộc tính
-        BigDecimal totalPrice = product.getPrice();
+//        BigDecimal totalPrice = product.getPrice();
+//        for (ProductAttribute attr : attributes) {
+//            totalPrice = totalPrice.add(attr.getPrice());
+//        }
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
         for (ProductAttribute attr : attributes) {
             totalPrice = totalPrice.add(attr.getPrice());
+        }
+
+        int count = attributes.size();
+        if (count > 1) {
+            BigDecimal deduction = product.getPrice().multiply(BigDecimal.valueOf(count - 1));
+            totalPrice = totalPrice.subtract(deduction);
         }
 
 

@@ -9,7 +9,7 @@ public class OrderFilter {
     private String search;
     private String status;
     private String paymentStatus;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private String SortBy;
 }

@@ -1,30 +1,34 @@
 package com.example.ecommerceweb.service.services_impl;
 
-import com.example.ecommerceweb.dto.product.ProductDetailResponse;
+import com.example.ecommerceweb.dto.product.*;
 import com.example.ecommerceweb.dto.response_data.PaginatedResponse;
-import com.example.ecommerceweb.dto.product.ProductDTO;
 import com.example.ecommerceweb.entity.Category;
-import com.example.ecommerceweb.entity.product.Product;
+import com.example.ecommerceweb.entity.product.*;
+import com.example.ecommerceweb.enums.ProductStatus;
 import com.example.ecommerceweb.exception.ErrorCode;
 import com.example.ecommerceweb.exception.ResourceException;
 import com.example.ecommerceweb.filter.ProductFilter;
 import com.example.ecommerceweb.mapper.ProductMapper;
-import com.example.ecommerceweb.repository.ProductRepository;
+import com.example.ecommerceweb.repository.*;
 import com.example.ecommerceweb.service.CategoryService;
 import com.example.ecommerceweb.service.ProductService;
 import com.example.ecommerceweb.specification.ProductSpecifications;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.example.ecommerceweb.util.Static.convertToSlug;
 
@@ -32,28 +36,149 @@ import static com.example.ecommerceweb.util.Static.convertToSlug;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+    private final SpecificationRepository specificationRepository;
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ProductImageService productImageService;
     private final RatingService ratingService;
     private final ModelMapper modelMapper;
-
     private final ProductMapper productMapper;
+    private final AttributeRepository attributeRepository;
+    private final AttributeValueRepository attributeValueRepository;
+    private final FirebaseStorageService firebaseStorageService;
 
     @Value("${image.base.url}")
     private String imageBaseurl;
 
+
     @Override
-    public Product createProduct(ProductDTO productDTO) throws IOException, InterruptedException {
-        Category cate = categoryService.getCategoryById(productDTO.getCategoryId());
-        Product newProduct = Product.builder()
-                .name(convertToSlug(productDTO.getName()))
-                .price(productDTO.getPrice())
-                .thumbnail(productDTO.getThumbnail())
-                .description(productDTO.getDescription())
-                .categoryId(cate)
-                .build();
-        return productRepository.save(newProduct);
+    @Transactional
+    public long createProduct(ProductCreateRequest request) {
+        try {
+            Category cate = categoryService.getCategoryById(request.getCategoryId());
+
+            Product newProduct = Product.builder()
+                    .name(request.getName())
+                    .price(request.getPrice())
+                    .originalPrice(request.getOriginalPrice())
+                    .quantityInStock(request.getStock())
+                    .status(request.getStock() > 0 ? ProductStatus.IN_STOCK : ProductStatus.OUT_OF_STOCK)
+                    .slug(convertToSlug(request.getName()))
+                    .categoryId(cate)
+                    .description(request.getDescription())
+                    .build();
+
+            // Handle specifications
+            List<SpecificationDto> specDtos = request.getSpecifications();
+            if (specDtos != null && !specDtos.isEmpty()) {
+                List<String> specNames = specDtos.stream()
+                        .map(SpecificationDto::getName)
+                        .distinct()
+                        .toList();
+                List<com.example.ecommerceweb.entity.product.Specification> existingSpecs
+                        = specificationRepository.findByNameIn(specNames);
+
+                Map<String, com.example.ecommerceweb.entity.product.Specification> specMap = existingSpecs.stream()
+                        .collect(Collectors.toMap(com.example.ecommerceweb.entity.product.Specification::getName, Function.identity()));
+
+                for (String name : specNames) {
+                    if (!specMap.containsKey(name)) {
+                        com.example.ecommerceweb.entity.product.Specification newSpec = new com.example.ecommerceweb.entity.product.Specification();
+                        newSpec.setName(name);
+                        specificationRepository.save(newSpec);
+                        specMap.put(name, newSpec);
+                    }
+                }
+
+                List<ProductSpecification> productSpecifications = new ArrayList<>();
+                for (SpecificationDto dto : specDtos) {
+                    com.example.ecommerceweb.entity.product.Specification spec = specMap.get(dto.getName());
+
+                    ProductSpecification ps = new ProductSpecification();
+                    ps.setProduct(newProduct);
+                    ps.setSpecification(spec);
+                    ps.setValue(dto.getValue());
+
+                    productSpecifications.add(ps);
+                }
+
+                newProduct.setSpecifications(productSpecifications);
+            }
+
+            // Handle attributes
+            List<AttributeDto> attributeDtos = request.getAttributes();
+            if (attributeDtos != null && !attributeDtos.isEmpty()) {
+                List<String> attributeNames = attributeDtos.stream()
+                        .map(AttributeDto::getName)
+                        .distinct()
+                        .toList();
+
+                List<Attribute> existingAttributes = attributeRepository.findByNameIn(attributeNames);
+                Map<String, Attribute> attributeMap = existingAttributes.stream()
+                        .collect(Collectors.toMap(Attribute::getName, Function.identity()));
+
+                // Create new attributes if they don't exist
+                for (String name : attributeNames) {
+                    if (!attributeMap.containsKey(name)) {
+                        Attribute newAttr = new Attribute();
+                        newAttr.setName(name);
+                        attributeRepository.save(newAttr);
+                        attributeMap.put(name, newAttr);
+                    }
+                }
+
+                List<ProductAttribute> productAttributes = new ArrayList<>();
+                for (AttributeDto dto : attributeDtos) {
+                    Attribute attribute = attributeMap.get(dto.getName());
+                    
+                    // Create AttributeValue
+                    AttributeValue attrValue = new AttributeValue();
+                    attrValue.setAttribute(attribute);
+                    attrValue.setValue(dto.getValue());
+                    attributeValueRepository.save(attrValue);
+
+                    // Create ProductAttribute
+                    ProductAttribute pa = new ProductAttribute();
+                    pa.setProduct(newProduct);
+                    pa.setAttributeValue(attrValue);
+                    pa.setPrice(dto.getPrice());
+                    pa.setStockQuantity(dto.getStockQuantity() != null ? dto.getStockQuantity() : 0);
+                    
+                    productAttributes.add(pa);
+                }
+
+                newProduct.setAttributes(productAttributes);
+            }
+
+            // Save the product first to get its ID
+            Product savedProduct = productRepository.save(newProduct);
+
+            // Handle thumbnail and product images after product is saved
+            try {
+                // Handle thumbnail
+                if (request.getThumbnail() != null) {
+                    String thumbnailUrl = firebaseStorageService.uploadImage(request.getThumbnail());
+                    savedProduct.setThumbnail(thumbnailUrl);
+                    savedProduct = productRepository.save(savedProduct);
+                }
+
+                // Handle product images
+                if (request.getProductImages() != null && !request.getProductImages().isEmpty()) {
+                    for (MultipartFile image : request.getProductImages()) {
+                        String imageUrl = firebaseStorageService.uploadImage(image);
+                        productImageService.saveProductImage(savedProduct, imageUrl);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Error uploading images for product {}: {}", savedProduct.getId(), e.getMessage());
+                // Continue with the product creation even if image upload fails
+            }
+
+            return savedProduct.getId();
+        } catch (Exception e) {
+            log.error("Error creating product: {}", e.getMessage());
+            throw new ResourceException(ErrorCode.RESOURCE_NOT_FOUND, "Error creating product: " + e.getMessage());
+        }
     }
 
     // get token if not access permission
@@ -124,42 +249,6 @@ public class ProductServiceImpl implements ProductService {
         productDetailResponse.setProductImages(productImageService.getImageListUrl(product.getId()));
 
         return productDetailResponse;
-    }
-
-
-    @Override
-    public List<ProductDTO> getLatestProducts(int limit) {
-        Pageable pageable = PageRequest.of(0, limit);
-
-        List<Product>  productsLatest = productRepository.fetchLatestProducts(pageable);
-
-        return productsLatest.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
-    }
-
-    @Override
-    public List<ProductDTO> getTopRatedProducts(int limit) {
-        Pageable pageable = PageRequest.of(0, limit);
-        List<Product>  productsLatest = productRepository.fetchLatestProducts(pageable);
-
-        return productsLatest.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
-    }
-
-    @Override
-    public List<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount) {
-        List<Product> products = productRepository.findByPriceBetween(minAmount, maxAmount);
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
-    }
-
-    @Override
-    public Page<ProductDTO> getProductByPriceRange(int minAmount, int maxAmount, Pageable pageable) {
-        return productRepository.findByPriceBetween(minAmount, maxAmount, pageable)
-                .map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
 

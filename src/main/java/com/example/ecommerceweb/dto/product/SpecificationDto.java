@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AttributeResponse {
+public class SpecificationDto {
     private Long id;
     private String name;
     private String value;
