@@ -19,18 +19,15 @@ public interface ProductService {
 
     long createProduct(ProductCreateRequest request) throws IOException, InterruptedException;
 
-    Product updateProduct(Long id, ProductDTO productDTO);
     void deleteProduct(Long id);
+
     ProductDetailResponse getProductById(Long id);
 
     ProductDetailResponse getProductBySlug(String slug);
 
-
-    Page<ProductDTO> getAllProducts(Pageable pageable);
-    Page<ProductDTO> getProductsByCategory(Pageable pageable, Long categoryId);
-    PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs);
-
-    Page<ProductDTO> searchProducts(Pageable pageable, String keyword);
     Page<ProductDTO> getProducts(Pageable pageable);
+
     Page<ProductDTO> getFilteredProducts(ProductFilter filter, Pageable pageable);
+
+    Product updateProduct(Long id, ProductDTO productDTO);
 }
