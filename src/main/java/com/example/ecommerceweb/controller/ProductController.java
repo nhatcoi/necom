@@ -115,7 +115,11 @@ public class ProductController {
         return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), null);
     }
 
-
+    @DeleteMapping("/{productId}")
+    public ResponseData<?> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+        return new ResponseData<>(HttpStatus.OK.value(), translator.toLocated("response.success"), null);
+    }
 
 
 

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -225,9 +226,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(productToUpdate);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceException(ErrorCode.RESOURCE_NOT_FOUND));
+        productRepository.delete(product);
     }
 
     public ProductDetailResponse getProductById(Long idProduct) {
@@ -252,34 +255,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @Override
-    public Page<ProductDTO> getAllProducts(Pageable pageable) {
-        return productRepository.findAllProducts(pageable)
-                .map(product -> modelMapper.map(product, ProductDTO.class));
-    }
 
-    @Override
-    public Page<ProductDTO> getProductsByCategory(Pageable pageable, Long categoryId) {
-        return productRepository.findAllByCategoryId(pageable, categoryId)
-                .map(product -> modelMapper.map(product, ProductDTO.class));
-    }
-
-    @Override
-    public PaginatedResponse<ProductDTO> createPaginatedResponse(Page<ProductDTO> productDTOs) {
-        return new PaginatedResponse<>(
-                productDTOs.getContent(),
-                productDTOs.getTotalPages(),
-                productDTOs.getTotalElements(),
-                productDTOs.getNumber(),
-                productDTOs.getSize()
-        );
-    }
-
-    @Override
-    public Page<ProductDTO> searchProducts(Pageable pageable, String keyword) {
-        Page<Product> products = productRepository.findByNameContaining(pageable, keyword);
-        return products.map(product -> modelMapper.map(product, ProductDTO.class));
-    }
 
     @Override
     public Page<ProductDTO> getProducts(Pageable pageable) {
@@ -294,15 +270,4 @@ public class ProductServiceImpl implements ProductService {
         return products.map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
-//    @Override
-//    public Page<ProductDTO> getNewProducts(Pageable pageable) {
-//        Pageable sortedByCreatedAt = PageRequest.of(
-//                pageable.getPageNumber(),
-//                pageable.getPageSize(),
-//                Sort.by(Sort.Direction.DESC, "createdAt")
-//        );
-//
-//        Page<Product> newProducts = productRepository.findAll(sortedByCreatedAt);
-//        return newProducts.map(product -> modelMapper.map(product, ProductDTO.class));
-//    }
 }
