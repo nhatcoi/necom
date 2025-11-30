@@ -52,7 +52,7 @@ function ClientHomeBanner() {
       <Grid.Col md={7} lg={8}>
         <ClientCarousel>
           <Box className={classes.leftHero}
-               sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.indigo[6], theme.colors.cyan[5]) }}>
+            sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.indigo[6], theme.colors.cyan[5]) }}>
             <Stack spacing={12} sx={{ maxWidth: 520 }}>
               <Title order={2} color={theme.white} sx={{ lineHeight: 1.15 }}>
                 Khám phá thiết bị điện tử mới nhất
@@ -90,7 +90,7 @@ function ClientHomeBanner() {
           </Box>
 
           <Box className={classes.leftHero}
-               sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.violet[6], theme.colors.pink[5]) }}>
+            sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.violet[6], theme.colors.pink[5]) }}>
             <Stack spacing={12} sx={{ maxWidth: 520 }}>
               <Title order={2} color={theme.white} sx={{ lineHeight: 1.15 }}>
                 Siêu ưu đãi phụ kiện công nghệ
@@ -106,7 +106,7 @@ function ClientHomeBanner() {
           </Box>
 
           <Box className={classes.leftHero}
-               sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.teal[6], theme.colors.lime[5]) }}>
+            sx={{ backgroundImage: theme.fn.linearGradient(110, theme.colors.teal[6], theme.colors.lime[5]) }}>
             <Stack spacing={12} sx={{ maxWidth: 520 }}>
               <Title order={2} color={theme.white} sx={{ lineHeight: 1.15 }}>
                 Nâng cấp không gian làm việc
