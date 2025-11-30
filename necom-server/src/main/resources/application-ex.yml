@@ -6,8 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: ""
+    url: jdbc:mysql://localhost:3306/necom?createDatabaseIfNotExist=true&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
   jpa:
     properties:
       hibernate:
@@ -31,10 +32,10 @@ spring:
       enabled: true
       force: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: electroshopnlu2022@gmail.com
-    password: khbaelkdpcibkrcd
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-app-password}
     properties:
       mail:
         smtp:
@@ -42,7 +43,7 @@ spring:
           starttls:
             enable: true
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 logging:
   level:
@@ -65,15 +66,16 @@ springdoc:
 
 necom:
   app:
-    jwtSecret: necomSecretKey
-    jwtExpirationMs: 10080000
-    jwtRefreshExpirationMs: 86400000
+    jwtSecret: ${JWT_SECRET:your-jwt-secret-key}
+    jwtExpirationMs: ${JWT_EXPIRATION_MS:10080000}
+    jwtRefreshExpirationMs: ${JWT_REFRESH_EXPIRATION_MS:86400000}
     shipping:
-      ghnToken: cee52cd3-8a9d-11ed-9ccc-a2c11deda90c
-      ghnShopId: 121327
-      ghnApiPath: https://dev-online-gateway.ghn.vn/shiip/public-api/v2
+      ghnToken: ${GHN_TOKEN:your-ghn-token}
+      ghnShopId: ${GHN_SHOP_ID:your-ghn-shop-id}
+      ghnApiPath: ${GHN_API_PATH:https://dev-online-gateway.ghn.vn/shiip/public-api/v2}
 
 paypal:
-  baseUrl: https://api-m.sandbox.paypal.com
-  clientId: ATg9Fx-qiFDopw6uZVdGQN2AOgx_vr0RsDNvrN5hViup8c2BZ6WaDYQPzkZd5DZGW-PsJic3scUdwqCd
-  secret: EGOakP0-AkdLfVx6r5vP9paSUggilXd2tAiuMrpKFU_59A9jzWiGnyY_J56Jcok9KVqzHFzwahZAq5XE
+  baseUrl: ${PAYPAL_BASE_URL:https://api-m.sandbox.paypal.com}
+  clientId: ${PAYPAL_CLIENT_ID:your-paypal-client-id}
+  secret: ${PAYPAL_SECRET:your-paypal-secret}
+
