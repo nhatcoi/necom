@@ -35,3 +35,8 @@ build/
 ### Custom ###
 /image-dir/
 /src/main/java/com/necom/Test.java
+
+
+src/main/resources/application.yml
+src/main/resources/application-dev.yml
+src/main/resources/application-ci.yml
