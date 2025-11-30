@@ -1,0 +1,79 @@
+server:
+  port: 8085
+  error:
+    include-stacktrace: never
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ""
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        connection:
+          CharSet: UTF-8
+          characterEncoding: UTF-8
+          useUnicode: true
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:address.sql, classpath:schema.sql
+      continue-on-error: true
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: electroshopnlu2022@gmail.com
+    password: khbaelkdpcibkrcd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  profiles:
+    active: dev
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE
+      springframework:
+        web: TRACE
+    web: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings
+
+springdoc:
+  show-actuator: false
+
+necom:
+  app:
+    jwtSecret: necomSecretKey
+    jwtExpirationMs: 10080000
+    jwtRefreshExpirationMs: 86400000
+    shipping:
+      ghnToken: cee52cd3-8a9d-11ed-9ccc-a2c11deda90c
+      ghnShopId: 121327
+      ghnApiPath: https://dev-online-gateway.ghn.vn/shiip/public-api/v2
+
+paypal:
+  baseUrl: https://api-m.sandbox.paypal.com
+  clientId: ATg9Fx-qiFDopw6uZVdGQN2AOgx_vr0RsDNvrN5hViup8c2BZ6WaDYQPzkZd5DZGW-PsJic3scUdwqCd
+  secret: EGOakP0-AkdLfVx6r5vP9paSUggilXd2tAiuMrpKFU_59A9jzWiGnyY_J56Jcok9KVqzHFzwahZAq5XE
