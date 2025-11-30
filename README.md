@@ -1,65 +1,81 @@
-
-
-# Ecommerce Jackie Shop
+# Necom - E-commerce Platform
 
 ## Overview
-`ecommerce-shop` is a Spring Boot application designed to manage an e-commerce platform. It includes features such as user management, product catalog, order processing, and more.
+Necom (Jackie Shop) is a full-stack e-commerce platform built with Spring Boot backend and React frontend. It provides comprehensive features for managing products, orders, inventory, customers, and business operations.
 
-## Prerequisites
-- Java 17
-- Maven 3.6+
-- PostgreSQL
+## Tech Stack
 
-## Setup
+### Backend
+- **Framework**: Spring Boot
+- **Language**: Java
+- **Database**: MySQL
+- **Security**: Spring Security with JWT authentication
+- **API Documentation**: SpringDoc OpenAPI
+- **Real-time**: WebSocket for chat and notifications
+- **Mapping**: MapStruct
+- **Query**: RSQL for dynamic filtering
 
-### Database Configuration
-Ensure PostgreSQL is installed and running. Update the database configuration in `src/main/resources/application.yml` if necessary.
+### Frontend
+- **Framework**: React 17 with TypeScript
+- **UI Library**: Mantine UI
+- **State Management**: Zustand, React Query
+- **Routing**: React Router DOM
+- **Build Tool**: Create React App
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/jackie_shop
-    username: postgres
-    password: postgres
-```
+## Features
 
-### Build and Run
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/yourusername/ecommerce-shop.git
-    cd ecommerce-shop
-    ```
+### Product Management
+- Product catalog with variants, specifications, and properties
+- Category, brand, supplier, and tag management
+- Product images and media handling
+- Inventory tracking and limits
 
-2. Build the project using Maven:
-    ```sh
-    mvn clean install
-    ```
+### Inventory Management
+- Warehouse management
+- Purchase orders and variants
+- Stock dockets (in/out)
+- Inventory transfers between warehouses
+- Stock counting and adjustments
+- Storage location tracking
 
-3. Run the application:
-    ```sh
-    mvn spring-boot:run
-    ```
+### Order Management
+- Order processing and fulfillment
+- Order variants tracking
+- Order cancellation reasons
+- Waybill and shipping management
+- Order resources tracking
 
-The application will be accessible at `http://localhost:8080/api`.
+### Customer & User Management
+- User authentication and authorization
+- Role-based access control (RBAC)
+- Customer groups, status, and resources
+- Employee management with offices, departments, job titles
+- Address management (provinces, districts, wards)
 
-## Dependencies
-The project uses the following dependencies:
-- Spring Boot Starter Data JPA
-- Spring Boot Starter Thymeleaf
-- Spring Boot Starter Web
-- PostgresSQL JDBC Driver
-- Lombok
-- Spring Boot DevTools
-- Spring Boot Starter Test
+### E-commerce Features
+- Shopping cart
+- Wishlist
+- Product reviews and ratings
+- Preorders
+- Promotions and vouchers
+- Payment methods
+- Reward system and loyalty points
 
-## Configuration
-Configuration files are located in `src/main/resources`:
-- `application.properties`
-- `application.yml`
+### Communication
+- Real-time chat with WebSocket
+- Notification system
+- Email integration
 
-## License
-This project is licensed under the MIT License.
+### Administration
+- Admin dashboard for managing all entities
+- Statistics and reporting
+- Image upload and management
 
-## Authors
+## Project Structure
+- `necom-server/` - Spring Boot backend application
+- `necom-client/` - React frontend application
+- `docker-compose.yml` - Docker containerization setup
+
+
+## Author
 - [nhatcoi aka jackie](https://github.com/nhatcoi)
-```

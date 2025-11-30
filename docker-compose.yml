@@ -1,49 +1,72 @@
-#version: '3.9'
+version: '3.9'
 
 services:
-  db:
-    image: jackie2006/postgres:14.15-alpine3.21
-    container_name: postgres
-    env_file:
-      - .env
+  necom-database:
+    image: mysql:8.0
+    container_name: necom-database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-necom}
+      MYSQL_USER: ${MYSQL_USER:-necom}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-necom}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - mysql-data:/var/lib/mysql
+      - ./necom-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./necom-server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/address.sql
+      - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
     ports:
-      - "5432:5432"
+      - "3306:3306"
     networks:
       - backend
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres_user -d postgresdb" ]
-      interval: 30s
-      timeout: 30s
-      retries: 3
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: always
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  jackieshop:
-    container_name: jackie-shop
+  necom-server:
+    container_name: necom-server
     build:
-      context: .
+      context: ./necom-server
       dockerfile: Dockerfile
-    image: jackie-shop:0.0.2
-    env_file:
-      - .env
+    image: necom-server:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://necom-database:3306/necom?createDatabaseIfNotExist=true&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-necom}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-necom}
+      SPRING_PROFILES_ACTIVE: ci
     ports:
-      - '8085:8085'
+      - "8085:8085"
     depends_on:
-      - db
+      necom-database:
+        condition: service_healthy
     networks:
       - backend
     restart: always
 
+  necom-client:
+    container_name: necom-client
+    build:
+      context: ./necom-client
+      dockerfile: Dockerfile
+    image: necom-client:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - necom-server
+    networks:
+      - backend
+    restart: always
 
 volumes:
-  postgres-data:
-    external: true
-    name: jackie-postgres
+  mysql-data:
+    driver: local
 
 networks:
   backend:
     driver: bridge
-    name: jackie-shop
+    name: necom-network
 
 
