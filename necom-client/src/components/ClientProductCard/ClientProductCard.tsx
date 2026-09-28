@@ -55,19 +55,20 @@ const useStyles = createStyles((theme) => ({
     position: 'relative',
     borderRadius: theme.radius.md,
     overflow: 'hidden',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : '#f8faf9',
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : '#f8f9fa',
     aspectRatio: '1 / 1',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 8,
   },
   productImage: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit: 'contain',
     transition: 'transform 0.35s ease',
     '&:hover': {
-      transform: 'scale(1.04)',
+      transform: 'scale(1.05)',
     },
   },
   wishlistBtn: {

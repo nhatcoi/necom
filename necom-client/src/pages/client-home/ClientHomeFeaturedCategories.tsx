@@ -17,32 +17,32 @@ const featuredCategoriesData = [
   {
     name: 'Bàn ghế',
     slug: 'ban-ghe',
-    image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/ban-ghe.jpg',
   },
   {
     name: 'Đèn trang trí',
     slug: 'den-chieu-sang',
-    image: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/den-trang-tri.jpg',
   },
   {
     name: 'Kệ tủ',
     slug: 'tu-ke',
-    image: 'https://images.unsplash.com/photo-1594671581674-5c9b5d271312?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/ke-tu.jpg',
   },
   {
     name: 'Đồ bếp',
     slug: 'do-bep',
-    image: 'https://images.unsplash.com/photo-1584990347449-3997d81a9540?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/do-bep.jpg',
   },
   {
     name: 'Decor',
     slug: 'decor',
-    image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/decor.jpg',
   },
   {
     name: 'Văn phòng tại nhà',
     slug: 'van-phong-tai-nha',
-    image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&auto=format&fit=crop&q=80',
+    image: '/images/categories/van-phong.jpg',
   },
 ];
 
@@ -69,22 +69,23 @@ const useStyles = createStyles((theme) => ({
     },
   },
   categoryCard: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : '#f4f7f4',
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : '#f3f6f3',
     borderRadius: theme.radius.lg,
     border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : 'rgba(0,0,0,0.03)'}`,
-    padding: '20px 14px 16px',
+    padding: '16px 12px 14px',
+    height: 175,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     textDecoration: 'none',
     transition: 'all 0.25s ease',
     cursor: 'pointer',
     '&:hover': {
       transform: 'translateY(-4px)',
-      boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : '#edf4ed',
-      borderColor: 'rgba(5, 150, 105, 0.2)',
+      boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : '#edf3ed',
+      borderColor: 'rgba(5, 150, 105, 0.25)',
     },
   },
   imageWrapper: {
@@ -93,20 +94,25 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    overflow: 'hidden',
   },
   categoryImage: {
-    maxHeight: 100,
-    maxWidth: '85%',
+    maxHeight: 105,
+    maxWidth: '100%',
     objectFit: 'contain',
     borderRadius: theme.radius.md,
-    mixBlendMode: theme.colorScheme === 'dark' ? 'normal' : 'multiply',
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.05)',
+    },
   },
   categoryName: {
     fontSize: 14,
     fontWeight: 600,
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : '#1f2937',
     textAlign: 'center',
+    lineHeight: 1.25,
+    marginTop: 6,
   },
 }));
 

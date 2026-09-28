@@ -2,7 +2,7 @@ SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET CHARACTER SET utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- 1. CLEANUP OLD ELECTRONICS DATA
+-- 1. CLEANUP OLD DATA
 TRUNCATE TABLE review;
 TRUNCATE TABLE wish;
 TRUNCATE TABLE preorder;
@@ -25,15 +25,15 @@ TRUNCATE TABLE brand;
 -- 2. CATEGORIES (Home & Living)
 INSERT INTO category (id, created_at, updated_at, created_by, updated_by, name, slug, description, thumbnail, category_id, status)
 VALUES
-(1, NOW(), NOW(), null, null, 'Bàn ghế', 'ban-ghe', 'Bàn ăn, ghế gỗ sồi, ghế thư giãn phong cách tối giản', 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&auto=format&fit=crop&q=80', null, 1),
-(2, NOW(), NOW(), null, null, 'Sofa', 'sofa', 'Sofa băng, sofa góc, sofa nỉ cao cấp cho phòng khách', 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&auto=format&fit=crop&q=80', null, 1),
-(3, NOW(), NOW(), null, null, 'Tủ kệ', 'tu-ke', 'Kệ sách, tủ đầu giường, kệ tivi và tủ lưu trữ', 'https://images.unsplash.com/photo-1594671581674-5c9b5d271312?w=400&auto=format&fit=crop&q=80', null, 1),
-(4, NOW(), NOW(), null, null, 'Đèn & chiếu sáng', 'den-chieu-sang', 'Đèn thả trần Japandi, đèn cây đứng, đèn ngủ để bàn', 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&auto=format&fit=crop&q=80', null, 1),
-(5, NOW(), NOW(), null, null, 'Đồ decor', 'decor', 'Bình hoa gốm, tranh treo tường, đồng hồ và phụ kiện decor', 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?w=400&auto=format&fit=crop&q=80', null, 1),
-(6, NOW(), NOW(), null, null, 'Đồ bếp & ăn uống', 'do-bep', 'Nồi gang, bộ bát đĩa gốm mộc, ly cốc và dụng cụ nhà bếp', 'https://images.unsplash.com/photo-1584990347449-3997d81a9540?w=400&auto=format&fit=crop&q=80', null, 1),
-(7, NOW(), NOW(), null, null, 'Đồ lưu trữ', 'do-luu-tru', 'Hộp vải lưu trữ, giỏ mây tre đan, kệ mini đa năng', 'https://images.unsplash.com/photo-1589365278144-c9e705f843ba?w=400&auto=format&fit=crop&q=80', null, 1),
-(8, NOW(), NOW(), null, null, 'Văn phòng tại nhà', 'van-phong-tai-nha', 'Bàn làm việc gỗ sồi, kệ nâng màn hình, setup góc làm việc', 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&auto=format&fit=crop&q=80', null, 1),
-(9, NOW(), NOW(), null, null, 'Cây xanh trang trí', 'cay-canh', 'Cây cảnh lọc không khí trong nhà, chậu gốm sứ tinh tế', 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&auto=format&fit=crop&q=80', null, 1);
+(1, NOW(), NOW(), null, null, 'Bàn ghế', 'ban-ghe', 'Bàn ăn, ghế gỗ sồi, ghế thư giãn phong cách tối giản', '/images/categories/ban-ghe.jpg', null, 1),
+(2, NOW(), NOW(), null, null, 'Sofa', 'sofa', 'Sofa băng, sofa góc, sofa nỉ cao cấp cho phòng khách', '/images/products/sofa-vang.jpg', null, 1),
+(3, NOW(), NOW(), null, null, 'Tủ kệ', 'tu-ke', 'Kệ sách, tủ đầu giường, kệ tivi và tủ lưu trữ', '/images/categories/ke-tu.jpg', null, 1),
+(4, NOW(), NOW(), null, null, 'Đèn & chiếu sáng', 'den-chieu-sang', 'Đèn thả trần Japandi, đèn cây đứng, đèn ngủ để bàn', '/images/categories/den-trang-tri.jpg', null, 1),
+(5, NOW(), NOW(), null, null, 'Đồ decor', 'decor', 'Bình hoa gốm, tranh treo tường, đồng hồ và phụ kiện decor', '/images/categories/decor.jpg', null, 1),
+(6, NOW(), NOW(), null, null, 'Đồ bếp & ăn uống', 'do-bep', 'Nồi gang, bộ bát đĩa gốm mộc, ly cốc và dụng cụ nhà bếp', '/images/categories/do-bep.jpg', null, 1),
+(7, NOW(), NOW(), null, null, 'Đồ lưu trữ', 'do-luu-tru', 'Hộp vải lưu trữ, giỏ mây tre đan, kệ mini đa năng', '/images/products/hop-vai.jpg', null, 1),
+(8, NOW(), NOW(), null, null, 'Văn phòng tại nhà', 'van-phong-tai-nha', 'Bàn làm việc gỗ sồi, kệ nâng màn hình, setup góc làm việc', '/images/categories/van-phong.jpg', null, 1),
+(9, NOW(), NOW(), null, null, 'Cây xanh trang trí', 'cay-canh', 'Cây cảnh lọc không khí trong nhà, chậu gốm sứ tinh tế', '/images/products/cay-canh.jpg', null, 1);
 
 -- 3. BRANDS (Top Home & Living Brands)
 INSERT INTO brand (id, created_at, updated_at, name, code, description, status)
@@ -82,11 +82,11 @@ VALUES
  'Kệ sách đứng 5 ngăn gỗ sồi phủ Melamine chống trầy xước, phong cách tối giản thanh lịch.',
  'Kệ sách Scandinavian 5 tầng với các ô lưu trữ so le tinh tế, vừa để sách vừa trưng bày decor, chậu cây nhỏ. Cấu trúc liên kết ngàm chắc chắn, đế chân tăng chỉnh chống nghiêng ngả trên mọi bề mặt sàn.',
  1, 3, 2, 3, 1,
- '{"content":[{"id":1,"code":"material","name":"Chất liệu","value":"Gỗ công nghiệp lõi xanh chống ẩm MDF"},{"id":2,"code":"layers","name":"Số tầng","value":"5 tầng phân ngăn"},{"id":3,"code":"dimension","name":"Kích thước","value":"80 x 28 x 160 cm"}],"totalElements":3}',
+ '{"content":[{"id":1,"code":"material","name":"Chất liệu","value":"Gỗ sồi tự nhiên, phủ Melamine cao cấp"},{"id":2,"code":"layers","name":"Số tầng","value":"5 tầng phân ngăn"},{"id":3,"code":"dimension","name":"Kích thước","value":"80 x 28 x 160 cm"}],"totalElements":3}',
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Vân sồi sáng","Trắng Bắc Âu"]}],"totalElements":1}',
  18500, 2),
 
--- Product 5: Cây bàng Singapore để bàn & chậu gốm
+-- Product 5: Cây xanh trang trí để bàn
 (5, NOW(), NOW(), null, null, 'Cây bàng Singapore để bàn & chậu gốm', 'NEST-PL-01', 'cay-bang-singapore-de-ban-chau-gom',
  'Cây cảnh lọc không khí trong nhà trồng chậu gốm sứ mờ tinh tế, mang sinh khí thiên nhiên vào tổ ấm.',
  'Cây bàng Singapore để bàn có lá bản to xanh mướt, dáng đứng khỏe khoắn mang ý nghĩa phong thủy tốt lành về sự tài lộc và bình an. Chậu gốm sứ vuốt tay tráng men mờ theo phong cách tối giản, có đĩa hứng nước bên dưới sạch sẽ.',
@@ -95,7 +95,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Chậu Trắng","Chậu Xám tro"]}],"totalElements":1}',
  3200, 1),
 
--- Product 6: Bàn làm việc gỗ sồi tự nhiên Home Office
+-- Product 6: Bàn làm việc gỗ sồi Home Office
 (6, NOW(), NOW(), null, null, 'Bàn làm việc gỗ sồi Home Office', 'NEST-DK-01', 'ban-lam-viec-go-soi-home-office',
  'Bàn làm việc chữ nhật gỗ sồi bo viền mềm mại, có ngăn kéo trượt êm và lỗ luồn dây điện thông minh.',
  'Chiếc bàn làm việc lý tưởng cho không gian Home Office tinh gọn. Mặt bàn dày 25mm gia công từ gỗ sồi tự nhiên với vân gỗ mộc mạc, sơn phủ gốc nước an toàn không mùi độc hại. 2 ngăn kéo âm lưu trữ tài liệu tiện lợi.',
@@ -122,7 +122,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Đá trắng vân mây","Đá đen tia chớp"]}],"totalElements":1}',
  16500, 2),
 
--- Product 9: Đèn ngủ để bàn chân gốm chao vải lanh
+-- Product 9: Đèn ngủ để bàn chân gốm Wabi-Sabi
 (9, NOW(), NOW(), null, null, 'Đèn ngủ để bàn chân gốm Wabi-Sabi', 'NEST-LP-02', 'den-ngu-de-ban-chan-gom-wabi-sabi',
  'Đèn bàn phong cách Wabi-Sabi mộc mạc, thân gốm thô vuốt tay kết hợp chao vải lanh khuếch tán ánh sáng êm dịu.',
  'Đèn ngủ để bàn với dáng bầu tròn mộc mạc từ gốm nung nhiệt độ cao, giữ nguyên chất men thô tự nhiên. Chao đèn bọc vải lanh dệt sợi thưa cho ánh sáng vàng tỏa đều nhẹ nhàng, tạo cảm giác thư giãn tuyệt đối cho phòng ngủ.',
@@ -131,7 +131,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Gốm be mộc","Gốm đất nung"]}],"totalElements":1}',
  2100, 1),
 
--- Product 10: Hộp vải đựng đồ đa năng gấp gọn
+-- Product 10: Hộp vải lưu trữ đa năng gấp gọn
 (10, NOW(), NOW(), null, null, 'Hộp vải lưu trữ đa năng gấp gọn', 'NEST-BX-01', 'hop-vai-luu-tru-da-nang-gap-gon',
  'Hộp đựng quần áo, đồ chơi vải Oxford tráng chống thấm, khung thép chịu lực có quai xách hai bên.',
  'Giải pháp sắp xếp không gian sống ngăn nắp, gọn gàng. Hộp có nắp đậy chống bụi, quai xách chắc chắn chịu lực 20kg. Khi không sử dụng có thể gấp phẳng gọn nhẹ chỉ dày 2cm cất vào ngăn kéo.',
@@ -140,7 +140,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Xám ghi","Be sữa","Xanh rêu"]}],"totalElements":1}',
  950, 1),
 
--- Product 11: Gối tựa lưng & ném sofa bông microfiber
+-- Product 11: Gối tựa sofa vỏ dệt thô Cotton Linen
 (11, NOW(), NOW(), null, null, 'Gối tựa sofa vỏ dệt thô Cotton Linen', 'NEST-PLW-01', 'goi-tua-sofa-vo-det-tho-cotton-linen',
  'Gối tựa vuông 45x45cm vỏ vải dệt thô cao cấp, ruột bông gòn vi sợi phồng êm và đàn hồi tốt.',
  'Điểm xuyết màu sắc ấm cúng cho bộ sofa phòng khách hoặc giường ngủ. Vỏ gối dệt sợi Cotton Linen bền chắc thấm hút mồ hôi, khóa kéo ẩn thẩm mỹ dễ tháo giặt máy.',
@@ -149,7 +149,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Vàng mù tạt","Xanh rêu","Nâu gạch","Ghi xám"]}],"totalElements":1}',
  500, 1),
 
--- Product 12: Bình hoa gốm sứ mờ nghệ thuật
+-- Product 12: Bình hoa gốm sứ mờ dáng điêu khắc
 (12, NOW(), NOW(), null, null, 'Bình hoa gốm sứ mờ dáng điêu khắc', 'NEST-VS-01', 'binh-hoa-gom-su-mo-dang-dieu-khac',
  'Bình hoa dáng trừu tượng tối giản phủ men nhám mờ, điểm nhấn nghệ thuật độc đáo cho tổ ấm.',
  'Bình hoa gốm thủ công với những đường cong uốn lượn lấy cảm hứng từ thiên nhiên. Thích hợp cắm cành hoa tươi, hoa khô hoặc đơn giản là một tác phẩm điêu khắc decor đứng độc lập.',
@@ -158,7 +158,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Trắng sữa","Đất nung Terracotta"]}],"totalElements":1}',
  1200, 1),
 
--- Product 13: Ghế bành thư giãn bọc nỉ cao cấp
+-- Product 13: Ghế bành thư giãn phong cách Bắc Âu
 (13, NOW(), NOW(), null, null, 'Ghế bành thư giãn phong cách Bắc Âu', 'NEST-AR-01', 'ghe-banh-thu-gian-phong-cach-bac-au',
  'Ghế bành thư giãn lưng ngả 105 độ công thái học, nệm mút đúc dày dặn ôm trọn cơ thể khi đọc sách.',
  'Thiết kế sang trọng mang đậm dấu ấn Scandinavian. Khung chân thép sơn tĩnh điện đen mờ kết hợp tay vịn ốp gỗ óc chó ấm áp. Ghế cho cảm giác ngồi thư thái tối đa sau ngày dài làm việc.',
@@ -176,7 +176,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Gỗ tự nhiên","Trắng"]}],"totalElements":1}',
  4800, 1),
 
--- Product 15: Bộ 4 cốc gốm uống trà cà phê thủ công
+-- Product 15: Bộ 4 cốc gốm thủ công men hỏa biến
 (15, NOW(), NOW(), null, null, 'Bộ 4 cốc gốm thủ công men hỏa biến', 'NEST-MG-01', 'bo-4-coc-gom-thu-cong-men-hoa-bien',
  'Bộ cốc sứ men hỏa biến dày dặn giữ nhiệt tốt, dung tích 320ml cho cà phê sáng hoặc trà chiều.',
  'Mỗi chiếc cốc mang một vân men độc bản nhờ kỹ thuật nung hỏa biến ở nhiệt độ 1300 độ C. Quai cầm dày vừa vặn tay, viền miệng cốc được bo tròn êm ái khi thưởng thức đồ uống.',
@@ -185,7 +185,7 @@ VALUES
  '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":["Bộ 4 màu Pastel","Bộ 4 màu Đất"]}],"totalElements":1}',
  1400, 1),
 
--- Product 16: Kệ nâng màn hình gỗ sồi & khay phụ kiện
+-- Product 16: Kệ nâng màn hình máy tính gỗ sồi
 (16, NOW(), NOW(), null, null, 'Kệ nâng màn hình máy tính gỗ sồi', 'NEST-MR-01', 'ke-nang-man-hinh-may-tinh-go-soi',
  'Kệ nâng màn hình giúp điều chỉnh tầm nhìn công thái học, tích hợp khay chứa bàn phím và rãnh để điện thoại.',
  'Vật dụng không thể thiếu cho góc làm việc công thái học. Nâng màn hình cao thêm 9cm giúp cổ và lưng thẳng tự nhiên. Khoảng trống dưới kệ chứa gọn bàn phím fullsize và chuột khi không làm việc.',
@@ -255,59 +255,25 @@ VALUES
 -- Product 16 variants
 (26, NOW(), NOW(), null, null, 16, 'NEST-MR01-OAK', 280000, 490000, '{"content":[{"id":1,"code":"color","name":"Màu sắc","value":"Gỗ sồi sáng"}],"totalElements":1}', null, 1);
 
--- 6. IMAGES (Curated Unsplash Home & Living Photography)
+-- 6. IMAGES (Clean Local Isolated Studio Photography)
 INSERT INTO image (id, created_at, updated_at, created_by, updated_by, name, path, content_type, size, `group`, is_thumbnail, is_eliminated, product_id)
 VALUES
--- Product 1: Ghế ăn
-(1, NOW(), NOW(), null, null, 'ghe-an-oak-thumb.jpg', 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 250, 'P', true, false, 1),
-(2, NOW(), NOW(), null, null, 'ghe-an-oak-detail.jpg', 'https://images.unsplash.com/photo-1503602642458-232111445657?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 240, 'P', false, false, 1),
-
--- Product 2: Đèn thả trần
-(3, NOW(), NOW(), null, null, 'den-tha-tran-thumb.jpg', 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 220, 'P', true, false, 2),
-(4, NOW(), NOW(), null, null, 'den-tha-tran-detail.jpg', 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 210, 'P', false, false, 2),
-
--- Product 3: Sofa văng
-(5, NOW(), NOW(), null, null, 'sofa-vang-thumb.jpg', 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 310, 'P', true, false, 3),
-(6, NOW(), NOW(), null, null, 'sofa-vang-detail.jpg', 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 290, 'P', false, false, 3),
-
--- Product 4: Kệ sách 5 tầng
-(7, NOW(), NOW(), null, null, 'ke-sach-thumb.jpg', 'https://images.unsplash.com/photo-1594671581674-5c9b5d271312?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 270, 'P', true, false, 4),
-
--- Product 5: Cây bàng Singapore
-(8, NOW(), NOW(), null, null, 'cay-bang-thumb.jpg', 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 260, 'P', true, false, 5),
-
--- Product 6: Bàn làm việc
-(9, NOW(), NOW(), null, null, 'ban-lam-viec-thumb.jpg', 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 280, 'P', true, false, 6),
-
--- Product 7: Nồi gang đúc
-(10, NOW(), NOW(), null, null, 'noi-gang-thumb.jpg', 'https://images.unsplash.com/photo-1584990347449-3997d81a9540?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 240, 'P', true, false, 7),
-
--- Product 8: Bàn trà tròn đôi
-(11, NOW(), NOW(), null, null, 'ban-tra-thumb.jpg', 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 250, 'P', true, false, 8),
-
--- Product 9: Đèn ngủ gốm
-(12, NOW(), NOW(), null, null, 'den-ngu-gom-thumb.jpg', 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 230, 'P', true, false, 9),
-
--- Product 10: Hộp vải lưu trữ
-(13, NOW(), NOW(), null, null, 'hop-vai-thumb.jpg', 'https://images.unsplash.com/photo-1589365278144-c9e705f843ba?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 210, 'P', true, false, 10),
-
--- Product 11: Gối tựa sofa
-(14, NOW(), NOW(), null, null, 'goi-tua-thumb.jpg', 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 200, 'P', true, false, 11),
-
--- Product 12: Bình hoa gốm
-(15, NOW(), NOW(), null, null, 'binh-hoa-thumb.jpg', 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 220, 'P', true, false, 12),
-
--- Product 13: Ghế bành thư giãn
-(16, NOW(), NOW(), null, null, 'ghe-banh-thumb.jpg', 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 290, 'P', true, false, 13),
-
--- Product 14: Kệ để giày
-(17, NOW(), NOW(), null, null, 'ke-giay-thumb.jpg', 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 240, 'P', true, false, 14),
-
--- Product 15: Cốc gốm thủ công
-(18, NOW(), NOW(), null, null, 'coc-gom-thumb.jpg', 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 210, 'P', true, false, 15),
-
--- Product 16: Kệ nâng màn hình
-(19, NOW(), NOW(), null, null, 'ke-man-hinh-thumb.jpg', 'https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=700&auto=format&fit=crop&q=80', 'image/jpeg', 260, 'P', true, false, 16);
+(1, NOW(), NOW(), null, null, 'ghe-an.jpg', '/images/products/ghe-an.jpg', 'image/jpeg', 250, 'P', true, false, 1),
+(2, NOW(), NOW(), null, null, 'den-tha.jpg', '/images/products/den-tha.jpg', 'image/jpeg', 220, 'P', true, false, 2),
+(3, NOW(), NOW(), null, null, 'sofa-vang.jpg', '/images/products/sofa-vang.jpg', 'image/jpeg', 310, 'P', true, false, 3),
+(4, NOW(), NOW(), null, null, 'ke-sach.jpg', '/images/products/ke-sach.jpg', 'image/jpeg', 270, 'P', true, false, 4),
+(5, NOW(), NOW(), null, null, 'cay-canh.jpg', '/images/products/cay-canh.jpg', 'image/jpeg', 260, 'P', true, false, 5),
+(6, NOW(), NOW(), null, null, 'ban-lam-viec.jpg', '/images/products/ban-lam-viec.jpg', 'image/jpeg', 280, 'P', true, false, 6),
+(7, NOW(), NOW(), null, null, 'noi-gang.jpg', '/images/products/noi-gang.jpg', 'image/jpeg', 240, 'P', true, false, 7),
+(8, NOW(), NOW(), null, null, 'ban-tra.jpg', '/images/products/ban-tra.jpg', 'image/jpeg', 250, 'P', true, false, 8),
+(9, NOW(), NOW(), null, null, 'den-ngu.jpg', '/images/products/den-ngu.jpg', 'image/jpeg', 230, 'P', true, false, 9),
+(10, NOW(), NOW(), null, null, 'hop-vai.jpg', '/images/products/hop-vai.jpg', 'image/jpeg', 210, 'P', true, false, 10),
+(11, NOW(), NOW(), null, null, 'goi-tua.jpg', '/images/products/goi-tua.jpg', 'image/jpeg', 200, 'P', true, false, 11),
+(12, NOW(), NOW(), null, null, 'binh-hoa.jpg', '/images/products/binh-hoa.jpg', 'image/jpeg', 220, 'P', true, false, 12),
+(13, NOW(), NOW(), null, null, 'ghe-banh.jpg', '/images/products/ghe-banh.jpg', 'image/jpeg', 290, 'P', true, false, 13),
+(14, NOW(), NOW(), null, null, 'ke-giay.jpg', '/images/products/ke-giay.jpg', 'image/jpeg', 240, 'P', true, false, 14),
+(15, NOW(), NOW(), null, null, 'coc-gom.jpg', '/images/products/coc-gom.jpg', 'image/jpeg', 210, 'P', true, false, 15),
+(16, NOW(), NOW(), null, null, 'ke-man-hinh.jpg', '/images/products/ke-man-hinh.jpg', 'image/jpeg', 260, 'P', true, false, 16);
 
 -- 7. PRODUCT TAGS (Tag 1 = Mới, Tag 2 = Nổi bật)
 INSERT INTO product_tag (product_id, tag_id)
@@ -359,7 +325,7 @@ VALUES
 (1, 25, 75),
 (1, 26, 50);
 
--- 9. REVIEWS (Realistic customer feedback)
+-- 9. REVIEWS
 INSERT INTO review (created_at, updated_at, user_id, product_id, rating_score, content, status)
 VALUES
 (NOW(), NOW(), 4, 1, 5, 'Ghế rất chắc chắn, gỗ sồi màu đẹp tự nhiên đúng gu Japandi mình tìm kiếm bấy lâu. Đệm ngồi êm ái, đóng gói cẩn thận 10/10!', 2),
