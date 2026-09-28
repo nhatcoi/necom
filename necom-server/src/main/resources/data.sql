@@ -63,21 +63,23 @@ VALUES ('2022-01-28 17:13:08', '2022-01-28 19:16:21', '1706 Carberry Lane', 2, 1
 INSERT INTO address (created_at, updated_at, line, province_id, district_id)
 VALUES ('2021-10-06 19:21:11', '2022-05-03 08:50:28', '02 Moland Court', 9, 10);
 
--- user TABLE: 20 records
+-- user TABLE: 8 records (All sample users have default password: admin123)
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2021-10-05 07:30:07', '2021-06-03 16:38:23', 'dnucator0', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Dolly Nucator', 'dnucator0@prweb.com', '0919944705', 'M', 1, 'http://dummyimage.com/138x100.png/dddddd/000000', 1);
+VALUES ('2021-10-05 07:30:07', '2021-06-03 16:38:23', 'dnucator0', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Dolly Nucator', 'dnucator0@prweb.com', '0919944705', 'M', 1, 'http://dummyimage.com/138x100.png/dddddd/000000', 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-07 17:51:29', '2022-02-24 10:37:18', 'jgratten1', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Jose Gratten', 'jgratten1@google.co.jp', '0919944709', 'F', 2, 'http://dummyimage.com/222x100.png/ff4444/ffffff', 1);
+VALUES ('2022-01-07 17:51:29', '2022-02-24 10:37:18', 'jgratten1', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Jose Gratten', 'jgratten1@google.co.jp', '0919944709', 'F', 2, 'http://dummyimage.com/222x100.png/ff4444/ffffff', 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2021-11-30 21:45:42', '2022-03-05 17:40:25', 'ethuillier2', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Ermin Thuillier', 'ethuillier2@jimdo.com', '0919944305', 'M', 3, null, 1);
+VALUES ('2021-11-30 21:45:42', '2022-03-05 17:40:25', 'ethuillier2', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Ermin Thuillier', 'ethuillier2@jimdo.com', '0919944305', 'M', 3, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-27 04:22:37', '2022-05-04 02:25:59', 'dtreat3', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Danila Treat', 'dtreat3@nymag.com', '0919944735', 'F', 4, null, 1);
+VALUES ('2022-01-27 04:22:37', '2022-05-04 02:25:59', 'dtreat3', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Danila Treat', 'dtreat3@nymag.com', '0919944735', 'F', 4, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-03-27 11:16:32', '2021-10-03 12:04:10', 'tkorting4', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Tanya Korting', 'tkorting4@livejournal.com', '0919944735', 'F', 5, null, 1);
+VALUES ('2022-03-27 11:16:32', '2021-10-03 12:04:10', 'tkorting4', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Tanya Korting', 'tkorting4@livejournal.com', '0919944735', 'F', 5, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
 VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'admin', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Quản trị viên', 'admin@necom.local', '0901234567', 'M', 6, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
 VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'customer', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Khách hàng', 'customer@necom.local', '0901234568', 'M', 7, null, 1);
+INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'employee', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Nhân viên', 'employee@necom.local', '0901234569', 'M', 8, null, 1);
 
 -- role TABLE: 3 records
 INSERT INTO `role` (created_at, updated_at, code, name, status)
@@ -87,7 +89,7 @@ VALUES ('1995-08-23 17:15:34', '1983-06-18 03:01:29', 'EMPLOYEE', 'Nhân viên',
 INSERT INTO `role` (created_at, updated_at, code, name, status)
 VALUES ('1989-01-25 23:05:02', '2001-01-13 09:01:36', 'CUSTOMER', 'Khách hàng', 1);
 
--- user_role TABLE: 7 records
+-- user_role TABLE: 8 records
 INSERT INTO user_role (user_id, role_id)
 VALUES (1, 1);
 INSERT INTO user_role (user_id, role_id)
@@ -102,6 +104,8 @@ INSERT INTO user_role (user_id, role_id)
 VALUES (6, 1);
 INSERT INTO user_role (user_id, role_id)
 VALUES (7, 3);
+INSERT INTO user_role (user_id, role_id)
+VALUES (8, 2);
 
 -- office TABLE: 5 records
 INSERT INTO office (created_at, updated_at, name, address_id, status)
