@@ -78,6 +78,7 @@ import ClientChat from 'pages/client-chat';
 import ChatDashboard from 'pages/chat';
 import ClientSupport from 'pages/client-support/ClientSupport';
 import ClientAbout from 'pages/client-about/ClientAbout';
+import ClientDocumentation from 'pages/client-documentation';
 import ClientCareers from 'pages/client-careers/ClientCareers';
 import ClientPartners from 'pages/client-partners/ClientPartners';
 import ClientContact from 'pages/client-contact/ClientContact';
@@ -137,6 +138,7 @@ function App() {
                   <Route path="/support/:slug" element={<ClientSupport/>}/>
                   <Route path="/support" element={<Navigate to="/support/faq" replace/>}/>
                   <Route path="/about" element={<ClientAbout/>}/>
+                  <Route path="/documentation" element={<ClientDocumentation/>}/>
                   <Route path="/careers" element={<ClientCareers/>}/>
                   <Route path="/partners" element={<ClientPartners/>}/>
                   <Route path="/contact" element={<ClientContact/>}/>

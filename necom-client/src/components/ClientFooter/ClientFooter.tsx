@@ -118,6 +118,7 @@ function ClientFooter() {
                       <Anchor component={Link} to="/careers">Tuyển dụng</Anchor>
                       <Anchor component={Link} to="/partners">Hợp tác</Anchor>
                       <Anchor component={Link} to="/contact">Liên hệ mua hàng</Anchor>
+                      <Anchor component={Link} to="/documentation">Tài liệu dự án</Anchor>
                     </Stack>
                   </Stack>
                   <Group>
