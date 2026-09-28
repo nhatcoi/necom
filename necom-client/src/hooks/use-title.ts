@@ -9,7 +9,7 @@ function useTitle(explicitTitle?: string) {
   const match = matchRoutes(routes, location);
   const path = match ? match[0].route.path : '';
 
-  useDocumentTitle(explicitTitle ? explicitTitle + ' – Necom' : Titles[path]);
+  useDocumentTitle(explicitTitle ? explicitTitle + ' – NECOM' : Titles[path]);
 }
 
 export default useTitle;

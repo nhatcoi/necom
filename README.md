@@ -1,7 +1,7 @@
-# Necom - E-commerce Platform
+# NECOM - Needs eCommerce Platform
 
 ## Overview
-Necom (Jackie Shop) is a full-stack e-commerce platform built with Spring Boot backend and React frontend. It provides comprehensive features for managing products, orders, inventory, customers, and business operations.
+**NECOM** (**Needs eCommerce**) is a full-stack e-commerce platform built with Spring Boot backend and React frontend. It provides comprehensive features for managing products, orders, inventory, customers, and business operations.
 
 ## Tech Stack
 

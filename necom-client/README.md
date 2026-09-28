@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# NECOM - Needs eCommerce (Frontend Client)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ứng dụng Frontend React cho nền tảng thương mại điện tử **NECOM** (**Needs eCommerce**).
 
 ## Available Scripts
 

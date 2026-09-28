@@ -28,7 +28,7 @@ const titles: Record<string, string> = {
 
 const handler = {
   get: function (target: typeof titles, name: string) {
-    return Object.prototype.hasOwnProperty.call(target, name) ? target[name] + ' – Necom' : 'Necom';
+    return Object.prototype.hasOwnProperty.call(target, name) ? target[name] + ' – NECOM' : 'NECOM - Needs eCommerce';
   },
 };
 

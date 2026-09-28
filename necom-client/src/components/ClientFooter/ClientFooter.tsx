@@ -154,7 +154,7 @@ function ClientFooter() {
         </Grid>
         <Group className={classes.afterFooter} position="apart">
           <Text color="dimmed" size="sm">
-            © 2022 Necom Corporation. Bảo lưu mọi quyền.
+            © 2026 NECOM (Needs eCommerce). Bảo lưu mọi quyền.
           </Text>
           <Group spacing="xs">
             <ThemeIcon variant="outline" color="gray" sx={{ width: 50, height: 30 }}>
