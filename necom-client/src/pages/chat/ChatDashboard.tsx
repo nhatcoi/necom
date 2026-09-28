@@ -9,7 +9,6 @@ import {
   Button,
   Center,
   Divider,
-  Grid,
   Group,
   Loader,
   Paper,
@@ -120,13 +119,23 @@ function ChatInbox() {
         setActiveRoomId(current => current ?? (
           response.find(r => r.status === 'WAITING_AGENT')?.id ?? response[0]?.id ?? null
         ));
-        if (!response.some(r => r.status === 'WAITING_AGENT')) {
-          setTab(response.some(r => r.status === 'AGENT') ? 'mine' : 'open');
-        }
+        // Mở tab đầu tiên có hội thoại: Chờ nhận → Của tôi → Đang mở → Đã xong
+        setTab(current => {
+          if (current !== 'waiting') {
+            return current;
+          }
+          if (response.some(r => r.status === 'WAITING_AGENT')) {
+            return 'waiting';
+          }
+          if (response.some(r => r.status === 'AGENT' && r.assignee?.id === adminUser?.id)) {
+            return 'mine';
+          }
+          return response.some(r => r.status !== 'RESOLVED') ? 'open' : 'resolved';
+        });
       })
       .catch(() => NotifyUtils.simpleFailed('Không tải được danh sách hội thoại'))
       .finally(() => setLoadingRooms(false));
-  }, []);
+  }, [adminUser?.id]);
 
   useEffect(loadRooms, [loadRooms]);
 
@@ -251,8 +260,23 @@ function ChatInbox() {
   };
 
   return (
-    <Grid sx={{ height: '100%' }} gutter="sm">
-      <Grid.Col xs={12} md={4} lg={3} sx={{ height: '100%' }}>
+    // Khóa chiều cao theo viewport để mỗi cột (danh sách, hội thoại, hồ sơ khách) tự cuộn riêng
+    <Box
+      sx={theme => ({
+        display: 'flex',
+        gap: theme.spacing.sm,
+        height: `calc(100vh - var(--mantine-header-height, 56px) - ${theme.spacing.md * 2}px)`,
+        minHeight: 520,
+        [theme.fn.smallerThan('md')]: { flexDirection: 'column', height: 'auto' },
+      })}
+    >
+      <Box sx={theme => ({
+        width: 320,
+        flexShrink: 0,
+        height: '100%',
+        minHeight: 0,
+        [theme.fn.smallerThan('md')]: { width: '100%', height: 420 },
+      })}>
         <Paper shadow="xs" p="sm" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <Group position="apart" mb="xs">
             <Group spacing="xs">
@@ -328,9 +352,15 @@ function ChatInbox() {
             </Stack>
           </ScrollArea>
         </Paper>
-      </Grid.Col>
+      </Box>
 
-      <Grid.Col xs={12} md={8} lg={6} sx={{ height: '100%' }}>
+      <Box sx={theme => ({
+        flex: 1,
+        minWidth: 0,
+        height: '100%',
+        minHeight: 0,
+        [theme.fn.smallerThan('md')]: { height: 'calc(100vh - 120px)' },
+      })}>
         <Paper shadow="xs" sx={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {activeRoom
             ? (
@@ -348,14 +378,20 @@ function ChatInbox() {
             )
             : <Center sx={{ flex: 1 }}><Text color="dimmed">Chọn một hội thoại</Text></Center>}
         </Paper>
-      </Grid.Col>
+      </Box>
 
-      <Grid.Col lg={3} sx={theme => ({ height: '100%', [theme.fn.smallerThan('lg')]: { display: 'none' } })}>
+      <Box sx={theme => ({
+        width: 300,
+        flexShrink: 0,
+        height: '100%',
+        minHeight: 0,
+        [theme.fn.smallerThan('lg')]: { display: 'none' },
+      })}>
         <Paper shadow="xs" p="sm" sx={{ height: '100%', overflow: 'hidden' }}>
-          {activeRoom && <CustomerSidebar room={activeRoom}/>}
+          {activeRoom && <CustomerSidebar key={activeRoom.id} room={activeRoom}/>}
         </Paper>
-      </Grid.Col>
-    </Grid>
+      </Box>
+    </Box>
   );
 }
 
@@ -711,7 +747,7 @@ function CustomerSidebar({ room }: { room: RoomResponse }) {
   }
 
   return (
-    <ScrollArea sx={{ height: '100%' }}>
+    <ScrollArea sx={{ ...noHorizontalOverflow, height: '100%' }}>
       <Stack spacing="sm">
         <Stack align="center" spacing={4}>
           <Avatar size="lg" radius="xl" color="cyan">{profile.fullname.charAt(0).toUpperCase()}</Avatar>

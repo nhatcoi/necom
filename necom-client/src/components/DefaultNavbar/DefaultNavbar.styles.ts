@@ -45,6 +45,17 @@ const useDefaultNavbarStyles = createStyles((theme, _params, getRef) => {
       },
     },
 
+    // Chế độ thu gọn: chỉ còn icon, căn giữa
+    linkCollapsed: {
+      justifyContent: 'center',
+      paddingLeft: 0,
+      paddingRight: 0,
+
+      [`& .${icon}`]: {
+        marginRight: 0,
+      },
+    },
+
     linkDisabled: {
       opacity: 0.5,
       pointerEvents: 'none',

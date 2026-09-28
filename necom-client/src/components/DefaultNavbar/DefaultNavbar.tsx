@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Center, Navbar, ScrollArea, Stack, useMantineTheme } from '@mantine/core';
+import React from 'react';
+import { Center, Navbar, ScrollArea, Stack, Tooltip, UnstyledButton, useMantineTheme } from '@mantine/core';
 import {
   AddressBook,
   Award,
@@ -7,6 +7,8 @@ import {
   Building,
   BuildingWarehouse,
   Car,
+  ChevronsLeft,
+  ChevronsRight,
   CurrencyDollar,
   FileBarcode,
   Fingerprint,
@@ -15,7 +17,7 @@ import {
   Message,
   Users
 } from 'tabler-icons-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import useAppStore from 'stores/use-app-store';
 import useDefaultNavbarStyles from 'components/DefaultNavbar/DefaultNavbar.styles';
 import useAdminAuthStore from 'stores/use-admin-auth-store';
@@ -242,13 +244,33 @@ const navbarLinks: NavbarLink[] = [
   },
 ];
 
+// Mục đang active suy ra từ URL (khớp tiền tố dài nhất trong link cha và link con)
+function findActiveLabel(pathname: string) {
+  let best = { label: 'Trang chủ', length: 0 };
+  navbarLinks.forEach(navbarLink => {
+    [navbarLink.link, ...(navbarLink.childLinks || []).map(child => child.link)].forEach(link => {
+      const matched = link === '/admin'
+        ? pathname === '/admin' || pathname === '/admin/'
+        : pathname === link || pathname.startsWith(link + '/');
+      if (matched && link.length > best.length) {
+        best = { label: navbarLink.label, length: link.length };
+      }
+    });
+  });
+  return best.label;
+}
+
 export function DefaultNavbar() {
   const theme = useMantineTheme();
-  const { opened } = useAppStore();
+  const { opened, navbarCollapsed, toggleNavbarCollapsed } = useAppStore();
   const { classes, cx } = useDefaultNavbarStyles();
-  const [active, setActive] = useState('Trang chủ');
+  const location = useLocation();
+  const active = findActiveLabel(location.pathname);
 
   const { isOnlyEmployee } = useAdminAuthStore();
+
+  // Menu mobile (burger) luôn hiển thị đầy đủ, chỉ thu gọn trên desktop
+  const collapsed = navbarCollapsed && !opened;
 
   const navbarLinksFragment = navbarLinks.map(navbarLink => (
     <Stack
@@ -256,18 +278,21 @@ export function DefaultNavbar() {
       spacing={0}
       sx={{ borderRadius: theme.radius.sm, overflow: 'hidden' }}
     >
-      <Link
-        to={navbarLink.link}
-        className={cx(classes.link, {
-          [classes.linkActive]: navbarLink.label === active,
-          [classes.linkDisabled]: isOnlyEmployee() && navbarLink.disableForEmployee,
-        })}
-        onClick={() => setActive(navbarLink.label)}
-      >
-        <navbarLink.icon className={classes.linkIcon}/>
-        <span>{navbarLink.label}</span>
-      </Link>
-      {navbarLink.label === active && (navbarLink.childLinks || []).map(childLink => (
+      <Tooltip label={navbarLink.label} position="right" withArrow disabled={!collapsed}>
+        <Link
+          to={navbarLink.link}
+          aria-label={navbarLink.label}
+          className={cx(classes.link, {
+            [classes.linkActive]: navbarLink.label === active,
+            [classes.linkDisabled]: isOnlyEmployee() && navbarLink.disableForEmployee,
+            [classes.linkCollapsed]: collapsed,
+          })}
+        >
+          <navbarLink.icon className={classes.linkIcon}/>
+          {!collapsed && <span>{navbarLink.label}</span>}
+        </Link>
+      </Tooltip>
+      {!collapsed && navbarLink.label === active && (navbarLink.childLinks || []).map(childLink => (
         <Link
           key={childLink.label}
           to={childLink.link}
@@ -284,12 +309,35 @@ export function DefaultNavbar() {
 
   return (
     <Navbar
-      p="md"
-      width={{ md: 250 }}
+      p={collapsed ? 'xs' : 'md'}
+      width={{ md: collapsed ? 76 : 250 }}
       hidden={!opened}
+      hiddenBreakpoint="md"
+      sx={{ transition: 'width 150ms ease' }}
     >
       <Navbar.Section grow component={ScrollArea}>
         {navbarLinksFragment}
+      </Navbar.Section>
+      <Navbar.Section
+        pt="xs"
+        sx={theme => ({
+          borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]}`,
+          [theme.fn.smallerThan('md')]: { display: 'none' },
+        })}
+      >
+        <Tooltip label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'} position="right" withArrow sx={{ width: '100%' }}>
+          <UnstyledButton
+            onClick={toggleNavbarCollapsed}
+            className={cx(classes.link, { [classes.linkCollapsed]: collapsed })}
+            sx={{ width: '100%', borderRadius: theme.radius.sm }}
+            aria-label={collapsed ? 'Mở rộng menu' : 'Thu gọn menu'}
+          >
+            {collapsed
+              ? <ChevronsRight className={classes.linkIcon}/>
+              : <ChevronsLeft className={classes.linkIcon}/>}
+            {!collapsed && <span>Thu gọn</span>}
+          </UnstyledButton>
+        </Tooltip>
       </Navbar.Section>
     </Navbar>
   );
