@@ -75,7 +75,47 @@ Necom (Jackie Shop) is a full-stack e-commerce platform built with Spring Boot b
 - `necom-server/` - Spring Boot backend application
 - `necom-client/` - React frontend application
 - `docker-compose.yml` - Docker containerization setup
+- `run.sh` - Automated sequential orchestration script
 
+## Khởi Chạy Nhanh (Quick Start)
+
+Dự án cung cấp script điều phối tuần tự `run.sh` tự động chuẩn bị môi trường, kiểm tra Docker và khởi chạy hệ thống theo đúng thứ tự phụ thuộc:
+
+```bash
+# 1. Khởi chạy tuần tự toàn bộ hệ thống
+./run.sh
+
+# 2. Hoặc build lại mã nguồn và khởi chạy
+./run.sh start --build
+
+# 3. Kiểm tra trạng thái và sức khỏe các dịch vụ
+./run.sh status
+
+# 4. Xem logs thời gian thực
+./run.sh logs        # Xem tất cả
+./run.sh logs server # Xem riêng backend Spring Boot
+./run.sh logs client # Xem riêng frontend
+./run.sh logs db     # Xem riêng MySQL
+
+# 5. Dừng hệ thống
+./run.sh stop
+```
+
+### Các Địa Chỉ Truy Cập (Access URLs)
+
+| Dịch vụ | URL | Mô tả |
+|---|---|---|
+| **Storefront** | [http://localhost](http://localhost) | Giao diện mua sắm khách hàng (React) |
+| **Admin Portal** | [http://localhost/admin](http://localhost/admin) | Trang quản trị hệ thống |
+| **Admin Login** | [http://localhost/admin/signin](http://localhost/admin/signin) | Đăng nhập tài khoản quản trị |
+| **Backend API** | [http://localhost:8085/api](http://localhost:8085/api) | Spring Boot REST API |
+| **Swagger UI** | [http://localhost:8085/swagger-ui/index.html](http://localhost:8085/swagger-ui/index.html) | Tài liệu OpenAPI tương tác |
+| **MySQL DB** | `localhost:3306` | Database (User: `necom`, Pass: `necom`, DB: `necom`) |
+
+### Tài Khoản Mẫu (Default Credentials)
+
+- **Quản trị viên (Admin):** `admin` / `admin123`
+- **Khách hàng (Customer):** `customer` / `admin123`
 
 ## Author
 - [nhatcoi aka jackie](https://github.com/nhatcoi)

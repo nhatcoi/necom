@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   necom-database:
     image: mysql:8.0
@@ -11,11 +9,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-necom}
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./necom-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-      - ./necom-server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/address.sql
-      - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./necom-server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/01-address.sql
+      - ./necom-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
+      - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/03-data.sql
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     networks:
       - backend
     healthcheck:
@@ -33,12 +31,34 @@ services:
       dockerfile: Dockerfile
     image: necom-server:latest
     environment:
+      JAVA_OPTS: ${JAVA_OPTS:--Xmx384m -Xms192m}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      BACKEND_HOST: ${BACKEND_HOST:-http://localhost:8085}
       SPRING_DATASOURCE_URL: jdbc:mysql://necom-database:3306/necom?createDatabaseIfNotExist=true&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-necom}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-necom}
-      SPRING_PROFILES_ACTIVE: ci
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-ci}
+      SPRING_SQL_INIT_MODE: ${SPRING_SQL_INIT_MODE:-never}
+      # JWT Configuration
+      JWT_SECRET: ${JWT_SECRET:-necom-production-jwt-secret-key-must-be-long-and-secure-for-hs512-compliance-2026}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-10080000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-86400000}
+      # Mail Configuration
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      # PayPal Configuration (Sandbox)
+      PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-https://api-m.sandbox.paypal.com}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
+      PAYPAL_SECRET: ${PAYPAL_SECRET:-}
+      # GHN Configuration (Dev)
+      GHN_TOKEN: ${GHN_TOKEN:-}
+      GHN_SHOP_ID: ${GHN_SHOP_ID:-}
+      GHN_API_PATH: ${GHN_API_PATH:-https://dev-online-gateway.ghn.vn/shiip/public-api/v2}
     ports:
-      - "8085:8085"
+      - "${SERVER_PORT:-8085}:8085"
+
     depends_on:
       necom-database:
         condition: service_healthy
@@ -53,7 +73,7 @@ services:
       dockerfile: Dockerfile
     image: necom-client:latest
     ports:
-      - "80:80"
+      - "${CLIENT_PORT:-80}:80"
     depends_on:
       - necom-server
     networks:

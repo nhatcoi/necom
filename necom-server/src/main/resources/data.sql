@@ -71,6 +71,10 @@ INSERT INTO user (created_at, updated_at, username, password, fullname, email, p
 VALUES ('2022-01-27 04:22:37', '2022-05-04 02:25:59', 'dtreat3', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Danila Treat', 'dtreat3@nymag.com', '0919944735', 'F', 4, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
 VALUES ('2022-03-27 11:16:32', '2021-10-03 12:04:10', 'tkorting4', '$2a$10$VsJWsj.z4mu7hwgl24mbLO4kINGNU3NntESfPiZbnslKDts.RqEl6', 'Tanya Korting', 'tkorting4@livejournal.com', '0919944735', 'F', 5, null, 1);
+INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'admin', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Quản trị viên', 'admin@necom.local', '0901234567', 'M', 6, null, 1);
+INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'customer', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Khách hàng', 'customer@necom.local', '0901234568', 'M', 7, null, 1);
 
 -- role TABLE: 3 records
 INSERT INTO `role` (created_at, updated_at, code, name, status)
@@ -80,7 +84,7 @@ VALUES ('1995-08-23 17:15:34', '1983-06-18 03:01:29', 'EMPLOYEE', 'Nhân viên',
 INSERT INTO `role` (created_at, updated_at, code, name, status)
 VALUES ('1989-01-25 23:05:02', '2001-01-13 09:01:36', 'CUSTOMER', 'Khách hàng', 1);
 
--- user_role TABLE: 5 records
+-- user_role TABLE: 7 records
 INSERT INTO user_role (user_id, role_id)
 VALUES (1, 1);
 INSERT INTO user_role (user_id, role_id)
@@ -91,6 +95,10 @@ INSERT INTO user_role (user_id, role_id)
 VALUES (4, 3);
 INSERT INTO user_role (user_id, role_id)
 VALUES (5, 3);
+INSERT INTO user_role (user_id, role_id)
+VALUES (6, 1);
+INSERT INTO user_role (user_id, role_id)
+VALUES (7, 3);
 
 -- office TABLE: 5 records
 INSERT INTO office (created_at, updated_at, name, address_id, status)

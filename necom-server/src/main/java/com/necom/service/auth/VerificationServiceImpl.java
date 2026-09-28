@@ -78,7 +78,7 @@ public class VerificationServiceImpl implements VerificationService {
         // (5) Send email
         Map<String, Object> attributes = Map.of(
                 "token", token,
-                "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_HOST, user.getId()));
+                "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_URL, user.getId()));
         emailSenderService.sendVerificationToken(user.getEmail(), attributes);
 
         return user.getId();
@@ -99,7 +99,7 @@ public class VerificationServiceImpl implements VerificationService {
 
             Map<String, Object> attributes = Map.of(
                     "token", token,
-                    "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_HOST, userId));
+                    "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_URL, userId));
             emailSenderService.sendVerificationToken(verification.getUser().getEmail(), attributes);
         } else {
             throw new VerificationException("User ID is invalid. Please try again!");
@@ -147,7 +147,7 @@ public class VerificationServiceImpl implements VerificationService {
 
                 Map<String, Object> attributes = Map.of(
                         "token", token,
-                        "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_HOST, registration.getUserId()));
+                        "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_URL, registration.getUserId()));
                 emailSenderService.sendVerificationToken(verification.getUser().getEmail(), attributes);
 
                 throw new ExpiredTokenException("Token is expired, please check your email to get new token!");
@@ -179,7 +179,7 @@ public class VerificationServiceImpl implements VerificationService {
 
             Map<String, Object> attributes = Map.of(
                     "token", token,
-                    "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_HOST, userId));
+                    "link", MessageFormat.format("{0}/signup?userId={1}", AppConstants.FRONTEND_URL, userId));
             emailSenderService.sendVerificationToken(verification.getUser().getEmail(), attributes);
         } else {
             throw new VerificationException("User does not exist");
@@ -195,7 +195,7 @@ public class VerificationServiceImpl implements VerificationService {
             user.setResetPasswordToken(token);
             userRepository.save(user);
 
-            String link = MessageFormat.format("{0}/change-password?token={1}&email={2}", AppConstants.FRONTEND_HOST, token, email);
+            String link = MessageFormat.format("{0}/change-password?token={1}&email={2}", AppConstants.FRONTEND_URL, token, email);
             emailSenderService.sendForgetPasswordToken(user.getEmail(), Map.of("link", link));
         } else {
             throw new VerificationException("Account is not activated");

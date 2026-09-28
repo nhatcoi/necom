@@ -95,7 +95,7 @@ public class ClientOrderController {
         orderService.captureTransactionPaypal(paypalOrderId, payerId);
 
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(AppConstants.FRONTEND_HOST + "/payment/success");
+        redirectView.setUrl(AppConstants.FRONTEND_URL + "/payment/success");
         return redirectView;
     }
 
@@ -119,7 +119,7 @@ public class ClientOrderController {
                 notificationMapper.entityToResponse(notification));
 
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(AppConstants.FRONTEND_HOST + "/payment/cancel");
+        redirectView.setUrl(AppConstants.FRONTEND_URL + "/payment/cancel");
         return redirectView;
     }
 
