@@ -199,7 +199,8 @@ set -eo pipefail
 cd /var/www/necom
 
 echo "Đang build Docker images trên VPS..."
-docker compose build necom-server necom-client
+docker compose build necom-server
+docker compose build --no-cache necom-client
 
 echo "1/3. Khởi động [necom-database] (MySQL 8.0)..."
 docker compose up -d necom-database
