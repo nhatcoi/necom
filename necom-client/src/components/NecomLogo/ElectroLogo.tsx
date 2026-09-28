@@ -9,7 +9,7 @@ function NecomLogo({ width = 120 }: NecomLogoProps) {
   useMantineTheme();
 
   return (
-    <img src="/necom.svg" width={width} alt="NECOM - Needs eCommerce" />
+    <img src="/necom.svg" width={width} alt="NECOM - Nest Commerce" />
   );
 }
 

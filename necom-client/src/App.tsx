@@ -97,7 +97,30 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+        <MantineProvider
+          theme={{
+            colorScheme,
+            primaryColor: 'emerald',
+            colors: {
+              emerald: [
+                '#ECFDF5',
+                '#D1FAE5',
+                '#A7F3D0',
+                '#6EE7B7',
+                '#34D399',
+                '#10B981',
+                '#059669',
+                '#047857',
+                '#065F46',
+                '#064E3B',
+              ],
+            },
+            primaryShade: 6,
+            defaultRadius: 'md',
+          }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
           <NotificationsProvider>
             <ModalsProvider>
               <ScrollToTop/>

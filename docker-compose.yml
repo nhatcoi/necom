@@ -12,6 +12,7 @@ services:
       - ./necom-server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/01-address.sql
       - ./necom-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
       - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/03-data.sql
+      - ./necom-server/src/main/resources/home-living-seed.sql:/docker-entrypoint-initdb.d/04-home-living-seed.sql
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     networks:

@@ -1,17 +1,18 @@
 import React from 'react';
-import { Button, Grid, Group, Skeleton, Stack, Text, Title, useMantineTheme } from '@mantine/core';
-import { AlertTriangle, List, Marquee } from 'tabler-icons-react';
+import { Anchor, Group, SimpleGrid, Skeleton, Stack, Text, Title, useMantineTheme } from '@mantine/core';
+import { AlertTriangle, Marquee } from 'tabler-icons-react';
 import { ClientProductCard } from 'components';
 import { useQuery } from 'react-query';
 import FetchUtils, { ErrorMessage, ListResponse } from 'utils/FetchUtils';
 import { ClientListedProductResponse } from 'types';
 import ResourceURL from 'constants/ResourceURL';
 import NotifyUtils from 'utils/NotifyUtils';
+import { Link } from 'react-router-dom';
 
 function ClientHomeLatestProducts() {
   const theme = useMantineTheme();
 
-  const requestParams = { size: 12, newable: true, saleable: true };
+  const requestParams = { size: 10, newable: true, saleable: true };
 
   const {
     data: productResponses,
@@ -32,55 +33,93 @@ function ClientHomeLatestProducts() {
 
   if (isLoadingProductResponses) {
     resultFragment = (
-      <Stack>
+      <SimpleGrid
+        cols={5}
+        spacing="md"
+        breakpoints={[
+          { maxWidth: 'lg', cols: 5, spacing: 'sm' },
+          { maxWidth: 'md', cols: 3, spacing: 'sm' },
+          { maxWidth: 'xs', cols: 2, spacing: 'xs' },
+        ]}
+      >
         {Array(5).fill(0).map((_, index) => (
-          <Skeleton key={index} height={50} radius="md"/>
+          <Skeleton key={index} height={320} radius="lg" />
         ))}
-      </Stack>
+      </SimpleGrid>
     );
   }
 
   if (isErrorProductResponses) {
     resultFragment = (
       <Stack my={theme.spacing.xl} sx={{ alignItems: 'center', color: theme.colors.pink[6] }}>
-        <AlertTriangle size={125} strokeWidth={1}/>
-        <Text size="xl" weight={500}>Đã có lỗi xảy ra</Text>
+        <AlertTriangle size={80} strokeWidth={1.5} />
+        <Text size="lg" weight={500}>Đã có lỗi xảy ra khi tải sản phẩm</Text>
       </Stack>
     );
   }
 
   if (products && products.totalElements === 0) {
     resultFragment = (
-      <Stack my={theme.spacing.xl} sx={{ alignItems: 'center', color: theme.colors.blue[6] }}>
-        <Marquee size={125} strokeWidth={1}/>
-        <Text size="xl" weight={500}>Không có sản phẩm</Text>
+      <Stack my={theme.spacing.xl} sx={{ alignItems: 'center', color: theme.colors.gray[6] }}>
+        <Marquee size={80} strokeWidth={1.5} />
+        <Text size="lg" weight={500}>Chưa có sản phẩm nào</Text>
       </Stack>
     );
   }
 
   if (products && products.totalElements > 0) {
     resultFragment = (
-      <Grid>
-        {products.content.map((product, index) => (
-          <Grid.Col key={index} span={6} sm={4} md={3}>
-            <ClientProductCard product={product}/>
-          </Grid.Col>
+      <SimpleGrid
+        cols={5}
+        spacing="md"
+        breakpoints={[
+          { maxWidth: 'lg', cols: 5, spacing: 'md' },
+          { maxWidth: 'md', cols: 3, spacing: 'sm' },
+          { maxWidth: 'xs', cols: 2, spacing: 'xs' },
+        ]}
+      >
+        {products.content.map((product) => (
+          <ClientProductCard key={product.productId} product={product} />
         ))}
-      </Grid>
+      </SimpleGrid>
     );
   }
 
   return (
-    <Stack>
+    <Stack spacing="md">
       <Group position="apart">
-        <Title order={2}>
-          <Text color="orange" inherit>
-            Sản phẩm mới nhất
-          </Text>
+        <Title
+          order={2}
+          sx={{
+            fontSize: 24,
+            fontWeight: 700,
+            color: '#111827',
+            letterSpacing: '-0.01em',
+          }}
+        >
+          Sản phẩm nổi bật
         </Title>
-        <Button variant="light" leftIcon={<List size={16}/>} radius="md">
-          Xem tất cả
-        </Button>
+        <Anchor
+          component={Link}
+          to="/search"
+          sx={{
+            color: '#059669',
+            fontWeight: 600,
+            fontSize: theme.fontSizes.sm,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            transition: 'gap 0.2s ease',
+            '&:hover': {
+              textDecoration: 'none',
+              color: '#047857',
+              gap: 8,
+            },
+          }}
+        >
+          Xem tất cả →
+        </Anchor>
       </Group>
 
       {resultFragment}

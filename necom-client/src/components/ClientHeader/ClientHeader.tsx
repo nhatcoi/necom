@@ -127,7 +127,7 @@ function ClientHeader() {
               <NecomLogo/>
             </Center>
             <TextInput
-              placeholder="Bạn tìm gì..."
+              placeholder="Tìm bàn, ghế, đèn, đồ decor..."
               variant="filled"
               size="md"
               radius="md"

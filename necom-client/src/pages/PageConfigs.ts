@@ -1,20 +1,20 @@
 import { EntityPropertySchema, EntityPropertyType, SelectOption } from 'types';
 import { ListResponse } from 'utils/FetchUtils';
 import {
+  Archive,
+  Armchair,
+  Bed,
   Box,
   BrandPaypal,
-  Briefcase,
   Cash,
-  Cpu,
-  DeviceGamepad2,
+  DeviceDesktop,
   DeviceLaptop,
-  DevicesPc,
   DeviceSpeaker,
-  DeviceTablet,
-  DeviceWatch,
   Icon,
-  Keyboard,
-  Mouse
+  Lamp,
+  Plant,
+  Sofa,
+  ToolsKitchen2
 } from 'tabler-icons-react';
 import { PaymentMethodType } from 'models/PaymentMethod';
 
@@ -80,16 +80,18 @@ class PageConfigs {
 
   static categorySlugIconMap: Record<string, Icon> = new Proxy(
     {
+      'ban-ghe': Armchair,
+      'sofa': Sofa,
+      'tu-ke': Archive,
+      'den-chieu-sang': Lamp,
+      'decor': Plant,
+      'do-bep': ToolsKitchen2,
+      'do-luu-tru': Box,
+      'van-phong-tai-nha': DeviceDesktop,
+      'cay-canh': Plant,
+      'phong-ngu': Bed,
       'laptop': DeviceLaptop,
       'loa': DeviceSpeaker,
-      'ban-phim': Keyboard,
-      'may-choi-game': DeviceGamepad2,
-      'chuot': Mouse,
-      'cpu': Cpu,
-      'pc': DevicesPc,
-      'balo': Briefcase,
-      'tablet': DeviceTablet,
-      'smartwatch': DeviceWatch,
     },
     {
       get: function (target: Record<string, Icon>, name: string) {
