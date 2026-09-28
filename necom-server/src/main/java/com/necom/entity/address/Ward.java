@@ -35,9 +35,14 @@ public class Ward extends BaseEntity {
     private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id")
     @JsonBackReference
     private District district;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id")
+    @JsonBackReference
+    private Province province;
 
     @OneToMany(mappedBy = "ward", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

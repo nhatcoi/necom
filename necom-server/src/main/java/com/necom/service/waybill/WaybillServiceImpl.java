@@ -233,6 +233,9 @@ public class WaybillServiceImpl implements WaybillService {
         ghnCreateOrderRequest.setToWardName(order.getToWardName());
         ghnCreateOrderRequest.setToDistrictName(order.getToDistrictName());
         ghnCreateOrderRequest.setToProvinceName(order.getToProvinceName());
+        if (order.getToDistrictName() == null || order.getToDistrictName().trim().isEmpty()) {
+            ghnCreateOrderRequest.setIsNewToAddress(true);
+        }
         ghnCreateOrderRequest.setCodAmount(
                 order.getPaymentMethodType() == PaymentMethodType.CASH
                         ? order.getTotalPay().intValue() // totalPay lúc này là tổng tiền tạm thời

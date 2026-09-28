@@ -72,7 +72,7 @@ get_java11_home() {
 # Test SSH connection
 check_ssh() {
     log_info "Kiểm tra kết nối SSH tới ${VPS_USER}@${VPS_HOST}..."
-    if ! ssh -o BatchMode=yes -o ConnectTimeout=5 "${VPS_USER}@${VPS_HOST}" "echo 'OK'" >/dev/null 2>&1; then
+    if ! ssh -o BatchMode=yes -o ConnectTimeout=10 "${VPS_USER}@${VPS_HOST}" "echo 'OK'" >/dev/null 2>&1; then
         log_error "Không thể kết nối SSH tới ${VPS_USER}@${VPS_HOST}."
         log_error "Vui lòng đảm bảo SSH Key đã được cấu hình (ví dụ: ssh-copy-id ${VPS_USER}@${VPS_HOST})."
         exit 1

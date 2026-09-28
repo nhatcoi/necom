@@ -15,10 +15,12 @@ public interface WardMapper extends GenericMapper<Ward, WardRequest, WardRespons
 
     @Override
     @Mapping(source = "districtId", target = "district")
+    @Mapping(source = "provinceId", target = "province")
     Ward requestToEntity(WardRequest request);
 
     @Override
     @Mapping(source = "districtId", target = "district")
+    @Mapping(source = "provinceId", target = "province")
     Ward partialUpdate(@MappingTarget Ward entity, WardRequest request);
 
 }

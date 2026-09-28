@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         order.setToPhone(user.getPhone());
         order.setToAddress(user.getAddress().getLine());
         order.setToWardName(user.getAddress().getWard().getName());
-        order.setToDistrictName(user.getAddress().getDistrict().getName());
+        order.setToDistrictName(user.getAddress().getDistrict() != null ? user.getAddress().getDistrict().getName() : "");
         order.setToProvinceName(user.getAddress().getProvince().getName());
         order.setOrderResource((OrderResource) new OrderResource().setId(1L)); // Default OrderResource
         order.setUser(user);

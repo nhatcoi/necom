@@ -29,6 +29,9 @@ public class GhnCreateOrderRequest {
     private String toDistrictName;
     @JsonProperty("to_province_name")
     private String toProvinceName;
+    @JsonProperty("is_new_to_address")
+    @Nullable
+    private Boolean isNewToAddress;
     @JsonProperty("cod_amount")
     @Nullable
     private Integer codAmount;

@@ -7,4 +7,5 @@ public class WardRequest {
     private String name;
     private String code;
     private Long districtId;
+    private Long provinceId;
 }

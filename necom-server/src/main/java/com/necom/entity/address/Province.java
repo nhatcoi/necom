@@ -36,5 +36,9 @@ public class Province extends BaseEntity {
 
     @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    private List<Ward> wards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 }
