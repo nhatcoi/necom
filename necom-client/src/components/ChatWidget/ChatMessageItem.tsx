@@ -11,12 +11,12 @@ import {
   Image,
   Stack,
   Text,
-  ThemeIcon,
   Tooltip,
   UnstyledButton,
   useMantineTheme
 } from '@mantine/core';
-import { AlertCircle, Clock, Notes, Package, Wand } from 'tabler-icons-react';
+import { AlertCircle, Clock, Notes, Package } from 'tabler-icons-react';
+import { NecomAssistantAvatar, useChatPalette } from 'components/ChatWidget/chat-palette';
 import { ChatOrderCard, ChatProductCard, MessageResponse } from 'models/Message';
 import MiscUtils from 'utils/MiscUtils';
 import DateUtils from 'utils/DateUtils';
@@ -54,6 +54,7 @@ function ChatMessageItem({
   orderLink,
 }: ChatMessageItemProps) {
   const theme = useMantineTheme();
+  const palette = useChatPalette();
   const dark = theme.colorScheme === 'dark';
 
   if (message.type === 'SYSTEM') {
@@ -76,13 +77,12 @@ function ChatMessageItem({
     if (isNote) {
       return { bg: dark ? theme.fn.rgba(theme.colors.yellow[8], 0.25) : theme.colors.yellow[0], fg: undefined };
     }
-    if (isMine && viewer === 'customer') {
-      return { bg: theme.colors[theme.primaryColor][dark ? 8 : 6], fg: theme.white };
+    // Tin của bot: nền cát ấm; tin của khách/nhân viên (phía mình): xanh rừng thương hiệu
+    if (isBot) {
+      return { bg: palette.sand, fg: palette.text };
     }
-    if (isMine && viewer === 'agent') {
-      return isBot
-        ? { bg: dark ? theme.colors.dark[5] : theme.colors.violet[0], fg: undefined }
-        : { bg: theme.colors[theme.primaryColor][dark ? 8 : 6], fg: theme.white };
+    if (isMine) {
+      return { bg: palette.forest, fg: theme.white };
     }
     return { bg: dark ? theme.colors.dark[5] : theme.colors.gray[1], fg: undefined };
   })();
@@ -94,11 +94,7 @@ function ChatMessageItem({
   const showHeader = !grouped && (!isMine || viewer === 'agent');
 
   const avatar = isBot
-    ? (
-      <ThemeIcon radius="xl" size={30} variant="gradient" gradient={{ from: 'violet', to: 'grape' }}>
-        <Wand size={16}/>
-      </ThemeIcon>
-    )
+    ? <NecomAssistantAvatar size={30}/>
     : (
       <Avatar radius="xl" size={30} color={message.senderType === 'CUSTOMER' ? 'cyan' : 'teal'}>
         {senderName.charAt(0).toUpperCase()}
@@ -120,7 +116,15 @@ function ChatMessageItem({
           {showHeader && (
             <Group spacing={6}>
               <Text size="xs" weight={600}>{senderName}</Text>
-              {isBot && <Badge size="xs" color="violet" variant="light">Trợ lý AI</Badge>}
+              {isBot && (
+                <Badge
+                  size="xs"
+                  variant="outline"
+                  sx={{ color: palette.wood, borderColor: palette.sandBorder, backgroundColor: palette.cream }}
+                >
+                  Trợ lý AI
+                </Badge>
+              )}
               {message.senderType === 'AGENT' && !isNote && viewer === 'customer' &&
                 <Badge size="xs" color="teal" variant="light">Tư vấn viên</Badge>}
               {isNote && (
@@ -162,9 +166,16 @@ function ChatMessageItem({
                   key={option}
                   size="xs"
                   radius="xl"
-                  variant="outline"
+                  variant="default"
                   compact
                   onClick={() => onQuickReply(option)}
+                  sx={{
+                    color: palette.forest,
+                    backgroundColor: palette.cream,
+                    borderColor: palette.sandBorder,
+                    fontWeight: 500,
+                    '&:hover': { backgroundColor: palette.sand, borderColor: palette.wood },
+                  }}
                 >
                   {option}
                 </Button>
@@ -287,7 +298,7 @@ function ProductCards({ products }: { products: ChatProductCard[] }) {
 const orderStatusColor: Record<number, string> = {
   1: 'gray',
   2: 'blue',
-  3: 'violet',
+  3: 'teal',
   4: 'green',
   5: 'red',
 };

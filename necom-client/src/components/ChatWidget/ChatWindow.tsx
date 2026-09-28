@@ -9,6 +9,7 @@ import {
   Center,
   Divider,
   Group,
+  MantineTheme,
   Loader,
   Menu,
   Paper,
@@ -29,10 +30,16 @@ import {
   Headset,
   Login,
   Send,
-  Wand,
   WifiOff,
-  X
+  X,
+  Armchair,
+  Gift,
+  Package,
+  RotateClockwise,
+  Truck,
+  Icon
 } from 'tabler-icons-react';
+import { NecomAssistantAvatar, useChatPalette } from 'components/ChatWidget/chat-palette';
 import dayjs from 'dayjs';
 import useAuthStore from 'stores/use-auth-store';
 import { useChat } from 'components/ChatWidget/ChatProvider';
@@ -54,12 +61,12 @@ interface ChatWindowProps {
   height?: number | string;
 }
 
-const SUGGESTIONS: { label: string, text: string }[] = [
-  { label: '📦 Tra cứu đơn hàng', text: 'Đơn hàng gần nhất của mình đang ở đâu rồi?' },
-  { label: '🛋️ Tư vấn sản phẩm', text: 'Tư vấn giúp mình sofa cho phòng khách nhỏ' },
-  { label: '🔄 Đổi trả & bảo hành', text: 'Chính sách đổi trả và bảo hành như thế nào?' },
-  { label: '🚚 Phí vận chuyển', text: 'Phí và thời gian giao hàng về Hà Nội bao lâu?' },
-  { label: '🎁 Điểm thưởng', text: 'Mình đang có bao nhiêu điểm thưởng?' },
+const SUGGESTIONS: { label: string, text: string, icon: Icon }[] = [
+  { label: 'Tra cứu đơn hàng', text: 'Đơn hàng gần nhất của mình đang ở đâu rồi?', icon: Package },
+  { label: 'Tư vấn nội thất', text: 'Tư vấn giúp mình sofa cho phòng khách nhỏ', icon: Armchair },
+  { label: 'Đổi trả & bảo hành', text: 'Chính sách đổi trả và bảo hành như thế nào?', icon: RotateClockwise },
+  { label: 'Phí & thời gian giao hàng', text: 'Phí và thời gian giao hàng về Hà Nội bao lâu?', icon: Truck },
+  { label: 'Điểm thưởng của tôi', text: 'Mình đang có bao nhiêu điểm thưởng?', icon: Gift },
 ];
 
 /**
@@ -128,6 +135,7 @@ function WindowFrame({ header, children, height }: { header: React.ReactNode, ch
 function ChatHeader({ mode, onClose }: { mode: 'widget' | 'page', onClose?: () => void }) {
   const theme = useMantineTheme();
   const chat = useChat();
+  const palette = useChatPalette();
   const navigate = useNavigate();
   const status = chat.room?.status;
 
@@ -137,31 +145,38 @@ function ChatHeader({ mode, onClose }: { mode: 'widget' | 'page', onClose?: () =
       return {
         title: agentName,
         subtitle: 'Tư vấn viên · Đang hỗ trợ bạn',
-        icon: <Avatar radius="xl" size={40} color="teal">{agentName.charAt(0)}</Avatar>,
+        icon: (
+          <Avatar radius="xl" size={40} styles={{ placeholder: { backgroundColor: palette.cream, color: palette.forest } }}>
+            {agentName.charAt(0)}
+          </Avatar>
+        ),
       };
     }
     if (status === 'WAITING_AGENT' || (chat.enabled && !chat.botEnabled)) {
       return {
         title: 'Chăm sóc khách hàng',
         subtitle: status === 'WAITING_AGENT' ? 'Đang kết nối tư vấn viên…' : 'Thường phản hồi trong vài phút',
-        icon: <ThemeIcon radius="xl" size={40} color="teal" variant="filled"><Headset size={22}/></ThemeIcon>,
+        icon: (
+          <ThemeIcon radius="xl" size={40} sx={{ backgroundColor: palette.cream, color: palette.forest }}>
+            <Headset size={22} strokeWidth={1.75}/>
+          </ThemeIcon>
+        ),
       };
     }
     return {
       title: BOT_NAME,
       subtitle: 'Trợ lý AI · Trả lời ngay 24/7',
-      icon: <ThemeIcon radius="xl" size={40} variant="gradient" gradient={{ from: 'violet', to: 'grape' }}><Wand size={22}/></ThemeIcon>,
+      icon: <NecomAssistantAvatar size={40} inverted/>,
     };
   })();
 
-  const primary = theme.colors[theme.primaryColor];
 
   return (
     <Box
       px="md"
       py="sm"
       sx={{
-        background: `linear-gradient(135deg, ${primary[7]} 0%, ${primary[5]} 100%)`,
+        background: `linear-gradient(135deg, ${palette.forest} 0%, #13684F 100%)`,
         color: theme.white,
         flexShrink: 0,
       }}
@@ -178,7 +193,7 @@ function ChatHeader({ mode, onClose }: { mode: 'widget' | 'page', onClose?: () =
                 width: 11,
                 height: 11,
                 borderRadius: '50%',
-                border: `2px solid ${primary[6]}`,
+                border: `2px solid ${palette.forest}`,
                 backgroundColor: chat.enabled && !chat.connected ? theme.colors.yellow[5] : theme.colors.green[5],
               }}
             />
@@ -241,51 +256,60 @@ function ChatHeader({ mode, onClose }: { mode: 'widget' | 'page', onClose?: () =
 
 function WelcomeScreen({ name }: { name?: string }) {
   const chat = useChat();
+  const palette = useChatPalette();
+
+  const optionSx = (theme: MantineTheme) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: '10px 12px',
+    borderRadius: theme.radius.md,
+    border: `1px solid ${palette.sandBorder}`,
+    backgroundColor: palette.cream,
+    color: palette.text,
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    transition: 'background-color 120ms ease, border-color 120ms ease, transform 120ms ease',
+    '&:hover': { backgroundColor: palette.sand, borderColor: palette.wood, transform: 'translateX(2px)' },
+  });
 
   return (
     <ScrollArea sx={noHorizontalOverflow}>
       <Stack p="lg" spacing="md">
-        <Box>
-          <Text size="lg" weight={700}>Chào {name ? name.split(' ').slice(-1)[0] : 'bạn'} 👋</Text>
-          <Text size="sm" color="dimmed">
-            {chat.botEnabled
-              ? 'Mình là trợ lý AI của Necom. Hỏi mình về sản phẩm, đơn hàng, đổi trả… hoặc chọn nhanh bên dưới.'
-              : 'Để lại lời nhắn, tư vấn viên Necom sẽ phản hồi bạn sớm nhất.'}
-          </Text>
-        </Box>
+        <Group spacing="sm" noWrap align="flex-start">
+          <NecomAssistantAvatar size={44}/>
+          <Box>
+            <Text size="lg" weight={700} sx={{ color: palette.text }}>
+              Chào {name ? name.split(' ').slice(-1)[0] : 'bạn'}
+            </Text>
+            <Text size="sm" color="dimmed">
+              {chat.botEnabled
+                ? 'Mình là trợ lý của Necom. Cần chọn món nội thất, tra đơn hay hỏi đổi trả, cứ nhắn nhé.'
+                : 'Để lại lời nhắn, tư vấn viên Necom sẽ phản hồi bạn sớm nhất.'}
+            </Text>
+          </Box>
+        </Group>
         <Stack spacing={8}>
           {chat.botEnabled && SUGGESTIONS.map(suggestion => (
-            <UnstyledButton
-              key={suggestion.label}
-              onClick={() => chat.send(suggestion.text)}
-              sx={theme => ({
-                padding: '10px 14px',
-                borderRadius: theme.radius.md,
-                border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-                fontSize: theme.fontSizes.sm,
-                transition: 'background-color 120ms ease, border-color 120ms ease',
-                '&:hover': {
-                  backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors[theme.primaryColor][0],
-                  borderColor: theme.colors[theme.primaryColor][4],
-                },
-              })}
-            >
+            <UnstyledButton key={suggestion.label} onClick={() => chat.send(suggestion.text)} sx={optionSx}>
+              <Box sx={{ display: 'flex', color: palette.wood }}>
+                <suggestion.icon size={18} strokeWidth={1.75}/>
+              </Box>
               {suggestion.label}
             </UnstyledButton>
           ))}
           <UnstyledButton
             onClick={chat.requestAgent}
             sx={theme => ({
-              padding: '10px 14px',
-              borderRadius: theme.radius.md,
-              fontSize: theme.fontSizes.sm,
+              ...optionSx(theme),
+              color: palette.forest,
               fontWeight: 600,
-              color: theme.colors.teal[theme.colorScheme === 'dark' ? 4 : 7],
-              border: `1px solid ${theme.colors.teal[4]}`,
-              '&:hover': { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.teal[0] },
+              backgroundColor: palette.forestSoft,
+              borderColor: 'transparent',
             })}
           >
-            👤 Gặp tư vấn viên
+            <Box sx={{ display: 'flex' }}><Headset size={18} strokeWidth={1.75}/></Box>
+            Gặp tư vấn viên
           </UnstyledButton>
         </Stack>
       </Stack>
@@ -457,6 +481,7 @@ export function TypingIndicator({ name }: { name: string }) {
 
 function Composer() {
   const theme = useMantineTheme();
+  const palette = useChatPalette();
   const chat = useChat();
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -505,10 +530,10 @@ function Composer() {
           size={36}
           radius="xl"
           variant="filled"
-          color={theme.primaryColor}
           disabled={!value.trim()}
           onClick={submit}
           aria-label="Gửi tin nhắn"
+          sx={{ backgroundColor: palette.forest, '&:hover': { backgroundColor: '#13684F' } }}
         >
           <Send size={18}/>
         </ActionIcon>

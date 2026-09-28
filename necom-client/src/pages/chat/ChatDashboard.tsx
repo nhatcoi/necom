@@ -30,7 +30,7 @@ import {
   Headset,
   Notes,
   Refresh,
-  Robot,
+  Armchair,
   Search,
   Send,
   UserCheck,
@@ -54,7 +54,7 @@ import { DateDivider, isGrouped, noHorizontalOverflow, TypingIndicator } from 'c
 type InboxTab = 'waiting' | 'mine' | 'bot' | 'open' | 'resolved';
 
 const STATUS_META: Record<RoomStatus, { label: string, color: string }> = {
-  BOT: { label: 'Bot', color: 'violet' },
+  BOT: { label: 'Bot', color: 'yellow' },
   WAITING_AGENT: { label: 'Chờ nhận', color: 'orange' },
   AGENT: { label: 'Đang hỗ trợ', color: 'teal' },
   RESOLVED: { label: 'Đã xong', color: 'gray' },
@@ -605,7 +605,7 @@ function ChatPanel({
             </Button>
           )}
           {room.status === 'AGENT' && (
-            <Button size="xs" variant="light" color="violet" leftIcon={<Robot size={14}/>} onClick={() => action('/release')}>
+            <Button size="xs" variant="light" color="yellow" leftIcon={<Armchair size={14}/>} onClick={() => action('/release')}>
               Trả lại bot
             </Button>
           )}
@@ -676,7 +676,7 @@ function ChatPanel({
           <Button
             size="xs"
             variant="light"
-            color="violet"
+            color="teal"
             compact
             leftIcon={<Wand size={14}/>}
             loading={suggesting}

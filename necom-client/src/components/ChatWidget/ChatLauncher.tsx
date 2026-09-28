@@ -13,7 +13,8 @@ import {
   useMantineTheme
 } from '@mantine/core';
 import { useMediaQuery, useWindowEvent } from '@mantine/hooks';
-import { BrandMessenger, Help, Mail, MessageCircle2, Messages, Phone, X } from 'tabler-icons-react';
+import { BrandMessenger, Lifebuoy, Mail, MessageDots, PhoneCall, X } from 'tabler-icons-react';
+import { useChatPalette } from 'components/ChatWidget/chat-palette';
 import { useChat } from 'components/ChatWidget/ChatProvider';
 import ChatWindow, { SUPPORT_HOTLINE } from 'components/ChatWidget/ChatWindow';
 import { BOT_NAME } from 'components/ChatWidget/ChatMessageItem';
@@ -30,7 +31,8 @@ interface SpeedDialItem {
   key: string;
   label: string;
   icon: React.ReactNode;
-  color: string;
+  // Mục chính (chat) được tô đặc, các kênh còn lại dùng nền kem
+  primary?: boolean;
   href?: string;
   to?: string;
   external?: boolean;
@@ -43,6 +45,7 @@ interface SpeedDialItem {
  */
 function ChatLauncher() {
   const theme = useMantineTheme();
+  const palette = useChatPalette();
   const chat = useChat();
   const location = useLocation();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
@@ -115,18 +118,19 @@ function ChatLauncher() {
     chat.open();
   };
 
+  const iconProps = { size: 20, strokeWidth: 1.75 };
   const items: SpeedDialItem[] = [
-    { key: 'chat', label: 'Chat với Necom', icon: <Messages size={20}/>, color: theme.primaryColor, onClick: openChat },
-    { key: 'hotline', label: `Gọi ${SUPPORT_HOTLINE}`, icon: <Phone size={20}/>, color: 'green', href: 'tel:19006868' },
+    { key: 'chat', label: 'Chat với Necom', icon: <MessageDots {...iconProps}/>, primary: true, onClick: openChat },
+    { key: 'hotline', label: `Gọi ${SUPPORT_HOTLINE}`, icon: <PhoneCall {...iconProps}/>, href: 'tel:19006868' },
     ...(ZALO_URL ? [{
-      key: 'zalo', label: 'Chat qua Zalo', color: 'blue', href: ZALO_URL, external: true,
+      key: 'zalo', label: 'Chat qua Zalo', href: ZALO_URL, external: true,
       icon: <Text weight={800} size="xs">Zalo</Text>,
     }] : []),
     ...(MESSENGER_URL ? [{
-      key: 'messenger', label: 'Messenger', icon: <BrandMessenger size={20}/>, color: 'indigo', href: MESSENGER_URL, external: true,
+      key: 'messenger', label: 'Messenger', icon: <BrandMessenger {...iconProps}/>, href: MESSENGER_URL, external: true,
     }] : []),
-    { key: 'email', label: 'Gửi email hỗ trợ', icon: <Mail size={20}/>, color: 'orange', href: 'mailto:support@necom.vnhat.dev' },
-    { key: 'help', label: 'Trung tâm trợ giúp', icon: <Help size={20}/>, color: 'gray', to: '/support/faq' },
+    { key: 'email', label: 'Gửi email hỗ trợ', icon: <Mail {...iconProps}/>, href: 'mailto:support@necom.vnhat.dev' },
+    { key: 'help', label: 'Trung tâm trợ giúp', icon: <Lifebuoy {...iconProps}/>, to: '/support/faq' },
   ];
 
   const handleFabClick = () => {
@@ -151,7 +155,7 @@ function ChatLauncher() {
           <Box
             onClick={() => setDialOpened(false)}
             style={styles}
-            sx={{ position: 'fixed', inset: 0, backgroundColor: theme.fn.rgba(theme.black, 0.25), backdropFilter: 'blur(1px)' }}
+            sx={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(47, 42, 36, 0.22)', backdropFilter: 'blur(1.5px)' }}
           />
         )}
       </Transition>
@@ -199,21 +203,41 @@ function ChatLauncher() {
           <Transition key={item.key} mounted={dialOpened} transition="slide-up" duration={160} timingFunction="ease">
             {styles => (
               <Box style={{ ...styles, transitionDelay: `${index * 35}ms` }} sx={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Paper shadow="sm" radius="xl" px="sm" py={4}>
-                  <Text size="sm" weight={500}>{item.label}</Text>
+                <Paper
+                  radius="xl"
+                  px="sm"
+                  py={5}
+                  sx={{
+                    backgroundColor: palette.cream,
+                    border: `1px solid ${palette.sandBorder}`,
+                    boxShadow: '0 2px 8px rgba(47, 42, 36, 0.08)',
+                  }}
+                >
+                  <Text size="sm" weight={item.primary ? 600 : 500} sx={{ color: item.primary ? palette.forest : palette.text }}>
+                    {item.label}
+                  </Text>
                 </Paper>
                 <ActionIcon
                   size={46}
                   radius="xl"
                   variant="filled"
-                  color={item.color}
                   aria-label={item.label}
                   {...(item.to
                     ? { component: Link, to: item.to }
                     : item.href
                       ? { component: 'a', href: item.href, ...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }
                       : { onClick: item.onClick }) as Record<string, unknown>}
-                  sx={{ boxShadow: theme.shadows.md }}
+                  sx={{
+                    backgroundColor: item.primary ? palette.forest : palette.cream,
+                    color: item.primary ? theme.white : palette.forest,
+                    border: `1px solid ${item.primary ? palette.forest : palette.sandBorder}`,
+                    boxShadow: '0 4px 12px rgba(47, 42, 36, 0.12)',
+                    transition: 'background-color 120ms ease, transform 120ms ease',
+                    '&:hover': {
+                      backgroundColor: item.primary ? '#13684F' : palette.sand,
+                      transform: 'scale(1.05)',
+                    },
+                  }}
                 >
                   {item.icon}
                 </ActionIcon>
@@ -265,14 +289,15 @@ function ChatLauncher() {
           size={FAB_SIZE}
           radius="xl"
           variant="filled"
-          color={theme.primaryColor}
           onClick={handleFabClick}
           aria-label={chat.opened || dialOpened ? 'Đóng' : 'Liên hệ & chat với Necom'}
           aria-expanded={dialOpened}
           sx={{
-            boxShadow: theme.shadows.lg,
-            transition: 'transform 200ms ease',
-            '&:hover': { transform: 'scale(1.06)' },
+            backgroundColor: palette.forest,
+            color: theme.white,
+            boxShadow: '0 8px 24px rgba(11, 79, 60, 0.35)',
+            transition: 'transform 200ms ease, background-color 200ms ease',
+            '&:hover': { transform: 'scale(1.06)', backgroundColor: '#13684F' },
           }}
         >
           <Box
@@ -282,7 +307,7 @@ function ChatLauncher() {
               transform: chat.opened || dialOpened ? 'rotate(90deg)' : 'none',
             }}
           >
-            {chat.opened || dialOpened ? <X size={26}/> : <MessageCircle2 size={28}/>}
+            {chat.opened || dialOpened ? <X size={26}/> : <MessageDots size={28} strokeWidth={1.75}/>}
           </Box>
         </ActionIcon>
         {chat.unread > 0 && !chat.opened && (
