@@ -126,7 +126,6 @@ function ClientSignupStepOne({ nextStep }: { nextStep: () => void }) {
     gender: 'M' as 'M' | 'F',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
     'address.wardId': null as string | null,
     avatar: null, // Không dùng
     status: '2', // Không dùng
@@ -146,7 +145,6 @@ function ClientSignupStepOne({ nextStep }: { nextStep: () => void }) {
     gender: z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
     'address.line': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
     'address.provinceId': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
-    'address.districtId': z.string().nullable().optional(),
     'address.wardId': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
     avatar: z.string().nullable(),
     status: z.string(),
@@ -209,7 +207,7 @@ function ClientSignupStepOne({ nextStep }: { nextStep: () => void }) {
       address: {
         line: formValues['address.line'],
         provinceId: Number(formValues['address.provinceId']),
-        districtId: Number(formValues['address.districtId']),
+        districtId: null,
         wardId: Number(formValues['address.wardId']),
       },
       avatar: formValues.avatar,

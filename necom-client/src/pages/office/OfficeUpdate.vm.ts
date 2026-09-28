@@ -8,9 +8,10 @@ import MiscUtils from 'utils/MiscUtils';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
 import { SelectOption } from 'types';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useOfficeUpdateViewModel(id: number) {
   const form = useForm({
@@ -18,10 +19,12 @@ function useOfficeUpdateViewModel(id: number) {
     schema: zodResolver(OfficeConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'address.provinceId', 'address.wardId');
+
   const [office, setOffice] = useState<OfficeResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
 
   const updateApi = useUpdateApi<OfficeRequest, OfficeResponse>(OfficeConfigs.resourceUrl, OfficeConfigs.resourceKey, id);
   useGetByIdApi<OfficeResponse>(OfficeConfigs.resourceUrl, OfficeConfigs.resourceKey, id,
@@ -31,7 +34,7 @@ function useOfficeUpdateViewModel(id: number) {
         name: officeResponse.name,
         'address.line': officeResponse.address.line || '',
         'address.provinceId': officeResponse.address.province ? String(officeResponse.address.province.id) : null,
-        'address.districtId': officeResponse.address.district ? String(officeResponse.address.district.id) : null,
+        'address.wardId': officeResponse.address.ward ? String(officeResponse.address.ward.id) : null,
         status: String(officeResponse.status),
       };
       form.setValues(formValues);
@@ -48,14 +51,14 @@ function useOfficeUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
 
@@ -67,8 +70,8 @@ function useOfficeUpdateViewModel(id: number) {
         address: {
           line: formValues['address.line'],
           provinceId: Number(formValues['address.provinceId']),
-          districtId: Number(formValues['address.districtId']),
-          wardId: null,
+          districtId: null,
+          wardId: Number(formValues['address.wardId']),
         },
         status: Number(formValues.status),
       };
@@ -96,7 +99,7 @@ function useOfficeUpdateViewModel(id: number) {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   };
 }

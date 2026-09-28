@@ -5,8 +5,8 @@ import useCreateApi from 'hooks/use-create-api';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
 import { useState } from 'react';
 import { SelectOption } from 'types';
 import CustomerGroupConfigs from 'pages/customer-group/CustomerGroupConfigs';
@@ -15,6 +15,7 @@ import CustomerStatusConfigs from 'pages/customer-status/CustomerStatusConfigs';
 import { CustomerStatusResponse } from 'models/CustomerStatus';
 import { CustomerResourceResponse } from 'models/CustomerResource';
 import CustomerResourceConfigs from 'pages/customer-resource/CustomerResourceConfigs';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useCustomerCreateViewModel() {
   const form = useForm({
@@ -22,8 +23,10 @@ function useCustomerCreateViewModel() {
     schema: zodResolver(CustomerConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'user.address.provinceId', 'user.address.wardId');
+
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
   const [customerGroupSelectList, setCustomerGroupSelectList] = useState<SelectOption[]>([]);
   const [customerStatusSelectList, setCustomerStatusSelectList] = useState<SelectOption[]>([]);
   const [customerResourceSelectList, setCustomerResourceSelectList] = useState<SelectOption[]>([]);
@@ -39,14 +42,14 @@ function useCustomerCreateViewModel() {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['user.address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
   useGetAllApi<CustomerGroupResponse>(CustomerGroupConfigs.resourceUrl, CustomerGroupConfigs.resourceKey,
@@ -92,8 +95,8 @@ function useCustomerCreateViewModel() {
         address: {
           line: formValues['user.address.line'],
           provinceId: Number(formValues['user.address.provinceId']),
-          districtId: Number(formValues['user.address.districtId']),
-          wardId: null,
+          districtId: null,
+          wardId: formValues['user.address.wardId'] ? Number(formValues['user.address.wardId']) : null,
         },
         avatar: formValues['user.avatar'].trim() || null,
         status: Number(formValues['user.status']),
@@ -140,7 +143,7 @@ function useCustomerCreateViewModel() {
     handleFormSubmit,
     userGenderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     userStatusSelectList,
     userRoleSelectList,
     customerGroupSelectList,

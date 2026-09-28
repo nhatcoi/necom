@@ -27,7 +27,6 @@ const formSchema = z.object({
   gender: z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
   'address.line': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
   'address.provinceId': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
-  'address.districtId': z.string().nullable().optional(),
   'address.wardId': z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
 });
 
@@ -53,7 +52,6 @@ function ClientSettingPersonal() {
     gender: user?.gender as 'M' | 'F',
     'address.line': user?.address.line as string,
     'address.provinceId': String(user?.address.province?.id) as string | null,
-    'address.districtId': user?.address.district?.id ? String(user.address.district.id) : null,
     'address.wardId': String(user?.address.ward?.id) as string | null,
   };
 
@@ -107,7 +105,7 @@ function ClientSettingPersonal() {
       address: {
         line: formValues['address.line'],
         provinceId: Number(formValues['address.provinceId']),
-        districtId: formValues['address.districtId'] ? Number(formValues['address.districtId']) : null,
+        districtId: null,
         wardId: Number(formValues['address.wardId']),
       },
     };

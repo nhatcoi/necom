@@ -9,9 +9,10 @@ import { SelectOption } from 'types';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
 import { AddressRequest } from 'models/Address';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useSupplierUpdateViewModel(id: number) {
   const form = useForm({
@@ -19,10 +20,12 @@ function useSupplierUpdateViewModel(id: number) {
     schema: zodResolver(SupplierConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'address.provinceId', 'address.wardId');
+
   const [supplier, setSupplier] = useState<SupplierResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
 
   const updateApi = useUpdateApi<SupplierRequest, SupplierResponse>(SupplierConfigs.resourceUrl, SupplierConfigs.resourceKey, id);
   useGetByIdApi<SupplierResponse>(SupplierConfigs.resourceUrl, SupplierConfigs.resourceKey, id,
@@ -42,7 +45,7 @@ function useSupplierUpdateViewModel(id: number) {
         website: supplierResponse.website || '',
         'address.line': supplierResponse.address?.line || '',
         'address.provinceId': supplierResponse.address?.province ? String(supplierResponse.address.province.id) : null,
-        'address.districtId': supplierResponse.address?.district ? String(supplierResponse.address.district.id) : null,
+        'address.wardId': supplierResponse.address?.ward ? String(supplierResponse.address.ward.id) : null,
         description: supplierResponse.description || '',
         note: supplierResponse.note || '',
         status: String(supplierResponse.status),
@@ -61,14 +64,14 @@ function useSupplierUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
 
@@ -78,8 +81,8 @@ function useSupplierUpdateViewModel(id: number) {
       const addressRequest: AddressRequest = {
         line: formValues['address.line'] || null,
         provinceId: Number(formValues['address.provinceId']) || null,
-        districtId: Number(formValues['address.districtId']) || null,
-        wardId: null,
+        districtId: null,
+        wardId: formValues['address.wardId'] ? Number(formValues['address.wardId']) : null,
       };
       const requestBody: SupplierRequest = {
         displayName: formValues.displayName,
@@ -118,7 +121,7 @@ function useSupplierUpdateViewModel(id: number) {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   };
 }

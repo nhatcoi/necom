@@ -39,8 +39,8 @@ class DestinationConfigs extends Configs {
       type: EntityPropertyType.STRING,
       isShowInTable: true,
     },
-    'address.district.name': {
-      label: 'Tên quận huyện',
+    'address.ward.name': {
+      label: 'Tên phường xã',
       type: EntityPropertyType.STRING,
       isShowInTable: true,
     },
@@ -55,8 +55,8 @@ class DestinationConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'address.districtId': {
-      label: 'Quận huyện',
+    'address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -72,7 +72,7 @@ class DestinationConfigs extends Configs {
     contactPhone: '',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
+    'address.wardId': null as string | null,
     status: '1',
   };
 
@@ -82,7 +82,7 @@ class DestinationConfigs extends Configs {
     contactPhone: z.string(),
     'address.line': z.string(),
     'address.provinceId': z.string(),
-    'address.districtId': z.string(),
+    'address.wardId': z.string(),
     status: z.string(),
   });
 }

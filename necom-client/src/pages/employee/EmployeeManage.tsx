@@ -173,12 +173,12 @@ function EmployeeManage() {
         <td>{entity.user.address.province?.code}</td>
       </tr>
       <tr>
-        <td>{EmployeeConfigs.properties['user.address.district.name'].label}</td>
-        <td>{entity.user.address.district?.name}</td>
+        <td>{EmployeeConfigs.properties['user.address.ward.name'].label}</td>
+        <td>{entity.user.address.ward?.name}</td>
       </tr>
       <tr>
-        <td>{EmployeeConfigs.properties['user.address.district.code'].label}</td>
-        <td>{entity.user.address.district?.code}</td>
+        <td>{EmployeeConfigs.properties['user.address.ward.code'].label}</td>
+        <td>{entity.user.address.ward?.code}</td>
       </tr>
       <tr>
         <td>{EmployeeConfigs.properties['user.avatar'].label}</td>
@@ -215,12 +215,12 @@ function EmployeeManage() {
         <td>{entity.office.address.province?.code}</td>
       </tr>
       <tr>
-        <td>{EmployeeConfigs.properties['office.address.district.name'].label}</td>
-        <td>{entity.office.address.district?.name}</td>
+        <td>{EmployeeConfigs.properties['office.address.ward.name'].label}</td>
+        <td>{entity.office.address.ward?.name}</td>
       </tr>
       <tr>
-        <td>{EmployeeConfigs.properties['office.address.district.code'].label}</td>
-        <td>{entity.office.address.district?.code}</td>
+        <td>{EmployeeConfigs.properties['office.address.ward.code'].label}</td>
+        <td>{entity.office.address.ward?.code}</td>
       </tr>
       <tr>
         <td>{EmployeeConfigs.properties['office.status'].label}</td>

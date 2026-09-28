@@ -37,12 +37,12 @@ class OfficeConfigs extends Configs {
       label: 'Mã tỉnh thành',
       type: EntityPropertyType.STRING,
     },
-    'address.district.name': {
-      label: 'Tên quận huyện',
+    'address.ward.name': {
+      label: 'Tên phường xã',
       type: EntityPropertyType.STRING,
     },
-    'address.district.code': {
-      label: 'Mã quận huyện',
+    'address.ward.code': {
+      label: 'Mã phường xã',
       type: EntityPropertyType.STRING,
     },
     status: {
@@ -56,8 +56,8 @@ class OfficeConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'address.districtId': {
-      label: 'Quận huyện',
+    'address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -71,7 +71,7 @@ class OfficeConfigs extends Configs {
     name: '',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
+    'address.wardId': null as string | null,
     status: '1',
   };
 
@@ -79,7 +79,7 @@ class OfficeConfigs extends Configs {
     name: z.string().min(2, MessageUtils.min(OfficeConfigs.properties.name.label, 2)),
     'address.line': z.string(),
     'address.provinceId': z.string(),
-    'address.districtId': z.string(),
+    'address.wardId': z.string(),
     status: z.string(),
   });
 }

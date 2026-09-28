@@ -8,15 +8,16 @@ import MiscUtils from 'utils/MiscUtils';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
-import { CustomerGroupResponse } from 'models/CustomerGroup';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
+import { SelectOption } from 'types';
 import CustomerGroupConfigs from 'pages/customer-group/CustomerGroupConfigs';
-import { CustomerStatusResponse } from 'models/CustomerStatus';
+import { CustomerGroupResponse } from 'models/CustomerGroup';
 import CustomerStatusConfigs from 'pages/customer-status/CustomerStatusConfigs';
+import { CustomerStatusResponse } from 'models/CustomerStatus';
 import { CustomerResourceResponse } from 'models/CustomerResource';
 import CustomerResourceConfigs from 'pages/customer-resource/CustomerResourceConfigs';
-import { SelectOption } from 'types';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useCustomerUpdateViewModel(id: number) {
   const form = useForm({
@@ -24,10 +25,12 @@ function useCustomerUpdateViewModel(id: number) {
     schema: zodResolver(CustomerConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'user.address.provinceId', 'user.address.wardId');
+
   const [customer, setCustomer] = useState<CustomerResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
   const [customerGroupSelectList, setCustomerGroupSelectList] = useState<SelectOption[]>([]);
   const [customerStatusSelectList, setCustomerStatusSelectList] = useState<SelectOption[]>([]);
   const [customerResourceSelectList, setCustomerResourceSelectList] = useState<SelectOption[]>([]);
@@ -45,7 +48,7 @@ function useCustomerUpdateViewModel(id: number) {
         'user.gender': customerResponse.user.gender,
         'user.address.line': customerResponse.user.address.line || '',
         'user.address.provinceId': customerResponse.user.address.province ? String(customerResponse.user.address.province.id) : null,
-        'user.address.districtId': customerResponse.user.address.district ? String(customerResponse.user.address.district.id) : null,
+        'user.address.wardId': customerResponse.user.address.ward ? String(customerResponse.user.address.ward.id) : null,
         'user.avatar': customerResponse.user.avatar || '',
         'user.status': String(customerResponse.user.status),
         'user.roles': [String(CustomerConfigs.CUSTOMER_ROLE_ID)],
@@ -67,14 +70,14 @@ function useCustomerUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['user.address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
   useGetAllApi<CustomerGroupResponse>(CustomerGroupConfigs.resourceUrl, CustomerGroupConfigs.resourceKey,
@@ -122,8 +125,8 @@ function useCustomerUpdateViewModel(id: number) {
           address: {
             line: formValues['user.address.line'],
             provinceId: Number(formValues['user.address.provinceId']),
-            districtId: Number(formValues['user.address.districtId']),
-            wardId: null,
+            districtId: null,
+            wardId: formValues['user.address.wardId'] ? Number(formValues['user.address.wardId']) : null,
           },
           avatar: formValues['user.avatar'].trim() || null,
           status: Number(formValues['user.status']),
@@ -172,7 +175,7 @@ function useCustomerUpdateViewModel(id: number) {
     handleFormSubmit,
     userGenderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     userStatusSelectList,
     userRoleSelectList,
     customerGroupSelectList,

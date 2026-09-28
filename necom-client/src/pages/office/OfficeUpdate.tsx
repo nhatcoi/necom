@@ -12,7 +12,7 @@ function OfficeUpdate() {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   } = useOfficeUpdateViewModel(Number(id));
 
@@ -66,11 +66,12 @@ function OfficeUpdate() {
               <Grid.Col xs={6}>
                 <Select
                   required
-                  label={OfficeConfigs.properties['address.districtId'].label}
+                  label={OfficeConfigs.properties['address.wardId'].label}
                   placeholder="--"
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('address.districtId')}
+                  disabled={!form.values['address.provinceId']}
+                  data={wardSelectList}
+                  {...form.getInputProps('address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col xs={6}>

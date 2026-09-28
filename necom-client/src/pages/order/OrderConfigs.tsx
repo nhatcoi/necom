@@ -101,7 +101,7 @@ class OrderConfigs extends Configs {
     toPhone: z.string(),
     toAddress: z.string(),
     toWardName: z.string(),
-    toDistrictName: z.string(),
+    toDistrictName: z.string().optional().default(''),
     toProvinceName: z.string(),
     orderResourceId: z.string({ invalid_type_error: 'Vui lòng không bỏ trống' }),
     orderCancellationReasonId: z.string().nullable(),
@@ -203,7 +203,7 @@ class OrderConfigs extends Configs {
               <Text size="sm">{entity.toName}</Text>
               <Text size="xs">{entity.toPhone}</Text>
               <Text size="xs" color="dimmed">
-                {[entity.toAddress, entity.toWardName, entity.toDistrictName, entity.toProvinceName].join(', ')}
+                {[entity.toAddress, entity.toWardName, entity.toProvinceName].filter(Boolean).join(', ')}
               </Text>
             </Stack>
           </td>

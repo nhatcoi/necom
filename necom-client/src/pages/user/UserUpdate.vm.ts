@@ -8,12 +8,13 @@ import MiscUtils from 'utils/MiscUtils';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
 import { RoleResponse } from 'models/Role';
 import { SelectOption } from 'types';
 import RoleConfigs from 'pages/role/RoleConfigs';
 import useAdminAuthStore from 'stores/use-admin-auth-store';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useUserUpdateViewModel(id: number) {
   const form = useForm({
@@ -21,12 +22,14 @@ function useUserUpdateViewModel(id: number) {
     schema: zodResolver(UserConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'address.provinceId', 'address.wardId');
+
   const { user: adminUser, updateUser: updateAdminUser } = useAdminAuthStore();
 
   const [user, setUser] = useState<UserResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
   const [roleSelectList, setRoleSelectList] = useState<SelectOption[]>([]);
 
   const updateApi = useUpdateApi<UserRequest, UserResponse>(UserConfigs.resourceUrl, UserConfigs.resourceKey, id);
@@ -42,7 +45,7 @@ function useUserUpdateViewModel(id: number) {
         gender: userResponse.gender,
         'address.line': userResponse.address.line || '',
         'address.provinceId': userResponse.address.province ? String(userResponse.address.province.id) : null,
-        'address.districtId': userResponse.address.district ? String(userResponse.address.district.id) : null,
+        'address.wardId': userResponse.address.ward ? String(userResponse.address.ward.id) : null,
         avatar: userResponse.avatar || '',
         status: String(userResponse.status),
         roles: userResponse.roles.map((role) => String(role.id)),
@@ -61,14 +64,14 @@ function useUserUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
   useGetAllApi<RoleResponse>(RoleConfigs.resourceUrl, RoleConfigs.resourceKey,
@@ -84,16 +87,8 @@ function useUserUpdateViewModel(id: number) {
 
   const handleFormSubmit = form.onSubmit((formValues) => {
     setPrevFormValues(formValues);
-
-    // TODO: Bad code for check admin
-    const checkAdmin = adminUser && adminUser.roles.map(r => r.code).includes('ADMIN')
-      && formValues.username === adminUser.username
-      && !formValues.roles.includes('1');
-
-    if (!MiscUtils.isEquals(formValues, prevFormValues) && user) {
-      if (checkAdmin) {
-        form.setFieldError('roles', 'Người quản trị không được xóa quyền Người quản trị');
-      } else {
+    if (!MiscUtils.isEquals(formValues, prevFormValues)) {
+      if (user) {
         const requestBody: UserRequest = {
           username: formValues.username,
           password: formValues.password || null,
@@ -104,8 +99,8 @@ function useUserUpdateViewModel(id: number) {
           address: {
             line: formValues['address.line'],
             provinceId: Number(formValues['address.provinceId']),
-            districtId: Number(formValues['address.districtId']),
-            wardId: null,
+            districtId: null,
+            wardId: formValues['address.wardId'] ? Number(formValues['address.wardId']) : null,
           },
           avatar: formValues.avatar.trim() || null,
           status: Number(formValues.status),
@@ -152,7 +147,7 @@ function useUserUpdateViewModel(id: number) {
     handleFormSubmit,
     genderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
     roleSelectList,
     isDisabledUpdateButton,

@@ -45,7 +45,7 @@ function AdminAccount() {
             <Stack spacing={0}>
               <Text weight={500}>Địa chỉ</Text>
               <Text>
-                {[user?.address.line, user?.address.ward?.name, user?.address.district?.name, user?.address.province?.name]
+                {[user?.address.line, user?.address.ward?.name, user?.address.province?.name]
                   .filter(Boolean)
                   .join(', ')}
               </Text>

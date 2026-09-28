@@ -24,7 +24,7 @@ function EmployeeUpdate() {
     handleFormSubmit,
     userGenderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     userStatusSelectList,
     userRoleSelectList,
     officeSelectList,
@@ -122,11 +122,12 @@ function EmployeeUpdate() {
               <Grid.Col xs={6}>
                 <Select
                   required
-                  label={EmployeeConfigs.properties['user.address.districtId'].label}
+                  label={EmployeeConfigs.properties['user.address.wardId'].label}
                   placeholder="--"
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('user.address.districtId')}
+                  disabled={!form.values['user.address.provinceId']}
+                  data={wardSelectList}
+                  {...form.getInputProps('user.address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col>

@@ -5,12 +5,12 @@ import { EmployeeRequest, EmployeeResponse } from 'models/Employee';
 import useUpdateApi from 'hooks/use-update-api';
 import useGetByIdApi from 'hooks/use-get-by-id-api';
 import MiscUtils from 'utils/MiscUtils';
-import { SelectOption } from 'types';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
+import { SelectOption } from 'types';
 import { OfficeResponse } from 'models/Office';
 import OfficeConfigs from 'pages/office/OfficeConfigs';
 import { DepartmentResponse } from 'models/Department';
@@ -21,6 +21,7 @@ import { JobLevelResponse } from 'models/JobLevel';
 import JobLevelConfigs from 'pages/job-level/JobLevelConfigs';
 import { JobTitleResponse } from 'models/JobTitle';
 import JobTitleConfigs from 'pages/job-title/JobTitleConfigs';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useEmployeeUpdateViewModel(id: number) {
   const form = useForm({
@@ -28,10 +29,12 @@ function useEmployeeUpdateViewModel(id: number) {
     schema: zodResolver(EmployeeConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'user.address.provinceId', 'user.address.wardId');
+
   const [employee, setEmployee] = useState<EmployeeResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
   const [officeSelectList, setOfficeSelectList] = useState<SelectOption[]>([]);
   const [departmentSelectList, setDepartmentSelectList] = useState<SelectOption[]>([]);
   const [jobTypeSelectList, setJobTypeSelectList] = useState<SelectOption[]>([]);
@@ -51,7 +54,7 @@ function useEmployeeUpdateViewModel(id: number) {
         'user.gender': employeeResponse.user.gender,
         'user.address.line': employeeResponse.user.address.line || '',
         'user.address.provinceId': employeeResponse.user.address.province ? String(employeeResponse.user.address.province.id) : null,
-        'user.address.districtId': employeeResponse.user.address.district ? String(employeeResponse.user.address.district.id) : null,
+        'user.address.wardId': employeeResponse.user.address.ward ? String(employeeResponse.user.address.ward.id) : null,
         'user.avatar': employeeResponse.user.avatar || '',
         'user.status': String(employeeResponse.user.status),
         'user.roles': [String(EmployeeConfigs.EMPLOYEE_ROLE_ID)],
@@ -75,14 +78,14 @@ function useEmployeeUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['user.address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
   useGetAllApi<OfficeResponse>(OfficeConfigs.resourceUrl, OfficeConfigs.resourceKey,
@@ -150,8 +153,8 @@ function useEmployeeUpdateViewModel(id: number) {
           address: {
             line: formValues['user.address.line'],
             provinceId: Number(formValues['user.address.provinceId']),
-            districtId: Number(formValues['user.address.districtId']),
-            wardId: null,
+            districtId: null,
+            wardId: formValues['user.address.wardId'] ? Number(formValues['user.address.wardId']) : null,
           },
           avatar: formValues['user.avatar'].trim() || null,
           status: Number(formValues['user.status']),
@@ -202,7 +205,7 @@ function useEmployeeUpdateViewModel(id: number) {
     handleFormSubmit,
     userGenderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     userStatusSelectList,
     userRoleSelectList,
     officeSelectList,

@@ -9,7 +9,7 @@ function SupplierCreate() {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   } = useSupplierCreateViewModel();
 
@@ -124,12 +124,13 @@ function SupplierCreate() {
               </Grid.Col>
               <Grid.Col xs={6}>
                 <Select
-                  label={SupplierConfigs.properties['address.districtId'].label}
+                  label={SupplierConfigs.properties['address.wardId'].label}
                   placeholder="--"
                   clearable
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('address.districtId')}
+                  disabled={!form.values['address.provinceId']}
+                  data={wardSelectList}
+                  {...form.getInputProps('address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col>

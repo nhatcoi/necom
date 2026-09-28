@@ -9,8 +9,9 @@ import { SelectOption } from 'types';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useDestinationUpdateViewModel(id: number) {
   const form = useForm({
@@ -18,10 +19,12 @@ function useDestinationUpdateViewModel(id: number) {
     schema: zodResolver(DestinationConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'address.provinceId', 'address.wardId');
+
   const [destination, setDestination] = useState<DestinationResponse>();
   const [prevFormValues, setPrevFormValues] = useState<typeof form.values>();
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
 
   const updateApi = useUpdateApi<DestinationRequest, DestinationResponse>(DestinationConfigs.resourceUrl, DestinationConfigs.resourceKey, id);
   useGetByIdApi<DestinationResponse>(DestinationConfigs.resourceUrl, DestinationConfigs.resourceKey, id,
@@ -33,7 +36,7 @@ function useDestinationUpdateViewModel(id: number) {
         contactPhone: destinationResponse.contactPhone || '',
         'address.line': destinationResponse.address.line || '',
         'address.provinceId': destinationResponse.address.province ? String(destinationResponse.address.province.id) : null,
-        'address.districtId': destinationResponse.address.district ? String(destinationResponse.address.district.id) : null,
+        'address.wardId': destinationResponse.address.ward ? String(destinationResponse.address.ward.id) : null,
         status: String(destinationResponse.status),
       };
       form.setValues(formValues);
@@ -50,14 +53,14 @@ function useDestinationUpdateViewModel(id: number) {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
 
@@ -71,8 +74,8 @@ function useDestinationUpdateViewModel(id: number) {
         address: {
           line: formValues['address.line'],
           provinceId: Number(formValues['address.provinceId']),
-          districtId: Number(formValues['address.districtId']),
-          wardId: null,
+          districtId: null,
+          wardId: Number(formValues['address.wardId']),
         },
         status: Number(formValues.status),
       };
@@ -96,7 +99,7 @@ function useDestinationUpdateViewModel(id: number) {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   };
 }

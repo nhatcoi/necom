@@ -117,12 +117,12 @@ function UserManage() {
         <td>{entity.address.province?.code}</td>
       </tr>
       <tr>
-        <td>{UserConfigs.properties['address.district.name'].label}</td>
-        <td>{entity.address.district?.name}</td>
+        <td>{UserConfigs.properties['address.ward.name'].label}</td>
+        <td>{entity.address.ward?.name}</td>
       </tr>
       <tr>
-        <td>{UserConfigs.properties['address.district.code'].label}</td>
-        <td>{entity.address.district?.code}</td>
+        <td>{UserConfigs.properties['address.ward.code'].label}</td>
+        <td>{entity.address.ward?.code}</td>
       </tr>
       <tr>
         <td>{UserConfigs.properties.avatar.label}</td>

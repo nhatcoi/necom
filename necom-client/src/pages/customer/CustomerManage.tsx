@@ -129,12 +129,12 @@ function CustomerManage() {
         <td>{entity.user.address.province?.code}</td>
       </tr>
       <tr>
-        <td>{CustomerConfigs.properties['user.address.district.name'].label}</td>
-        <td>{entity.user.address.district?.name}</td>
+        <td>{CustomerConfigs.properties['user.address.ward.name'].label}</td>
+        <td>{entity.user.address.ward?.name}</td>
       </tr>
       <tr>
-        <td>{CustomerConfigs.properties['user.address.district.code'].label}</td>
-        <td>{entity.user.address.district?.code}</td>
+        <td>{CustomerConfigs.properties['user.address.ward.code'].label}</td>
+        <td>{entity.user.address.ward?.code}</td>
       </tr>
       <tr>
         <td>{CustomerConfigs.properties['user.avatar'].label}</td>

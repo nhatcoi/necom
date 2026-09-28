@@ -56,7 +56,7 @@ function DestinationManage() {
       </td>
       <td>
         <Highlight highlight={searchToken} highlightColor="blue" size="sm">
-          {entity.address.district?.name || ''}
+          {entity.address.ward?.name || ''}
         </Highlight>
       </td>
       <td>{destinationStatusBadgeFragment(entity.status)}</td>
@@ -98,8 +98,8 @@ function DestinationManage() {
         <td>{entity.address.province?.name}</td>
       </tr>
       <tr>
-        <td>{DestinationConfigs.properties['address.district.name'].label}</td>
-        <td>{entity.address.district?.name}</td>
+        <td>{DestinationConfigs.properties['address.ward.name'].label}</td>
+        <td>{entity.address.ward?.name}</td>
       </tr>
       <tr>
         <td>{DestinationConfigs.properties.status.label}</td>

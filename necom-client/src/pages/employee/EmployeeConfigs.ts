@@ -77,12 +77,12 @@ class EmployeeConfigs extends Configs {
       label: 'Mã tỉnh thành nhân viên',
       type: EntityPropertyType.STRING,
     },
-    'user.address.district.name': {
-      label: 'Tên quận huyện nhân viên',
+    'user.address.ward.name': {
+      label: 'Tên phường xã nhân viên',
       type: EntityPropertyType.STRING,
     },
-    'user.address.district.code': {
-      label: 'Mã quận huyện nhân viên',
+    'user.address.ward.code': {
+      label: 'Mã phường xã nhân viên',
       type: EntityPropertyType.STRING,
     },
     'user.avatar': {
@@ -114,8 +114,8 @@ class EmployeeConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'user.address.districtId': {
-      label: 'Quận huyện',
+    'user.address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -137,12 +137,12 @@ class EmployeeConfigs extends Configs {
       label: 'Mã tỉnh thành văn phòng',
       type: EntityPropertyType.STRING,
     },
-    'office.address.district.name': {
-      label: 'Tên quận huyện văn phòng',
+    'office.address.ward.name': {
+      label: 'Tên phường xã văn phòng',
       type: EntityPropertyType.STRING,
     },
-    'office.address.district.code': {
-      label: 'Mã quận huyện văn phòng',
+    'office.address.ward.code': {
+      label: 'Mã phường xã văn phòng',
       type: EntityPropertyType.STRING,
     },
     'office.status': {
@@ -229,7 +229,7 @@ class EmployeeConfigs extends Configs {
     'user.gender': 'M' as 'M' | 'F',
     'user.address.line': '',
     'user.address.provinceId': null as string | null,
-    'user.address.districtId': null as string | null,
+    'user.address.wardId': null as string | null,
     'user.avatar': '',
     'user.status': '1',
     'user.roles': [String(EmployeeConfigs.EMPLOYEE_ROLE_ID)],
@@ -249,7 +249,7 @@ class EmployeeConfigs extends Configs {
     'user.gender': z.string(),
     'user.address.line': z.string(),
     'user.address.provinceId': z.string(),
-    'user.address.districtId': z.string(),
+    'user.address.wardId': z.string().nullable().optional(),
     'user.avatar': z.string(),
     'user.status': z.string(),
     'user.roles': z.array(z.string()).nonempty(),

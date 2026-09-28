@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import 'dayjs/locale/vi';
 import '@smastrom/react-rating/style.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -13,7 +13,7 @@ import Admin from 'pages/Admin';
 import AdminDashboard from 'pages/AdminDashboard';
 import AddressManage, { AddressCreate, AddressUpdate } from 'pages/address';
 import ProvinceManage, { ProvinceCreate, ProvinceUpdate } from 'pages/province';
-import DistrictManage, { DistrictCreate, DistrictUpdate } from 'pages/district';
+import WardManage, { WardCreate, WardUpdate } from 'pages/ward';
 import UserManage, { UserCreate, UserUpdate } from 'pages/user';
 import RoleManage, { RoleCreate, RoleUpdate } from 'pages/role';
 import OfficeManage, { OfficeCreate, OfficeUpdate } from 'pages/office';
@@ -202,10 +202,13 @@ function App() {
                   <Route path={ManagerPath.PROVINCE} element={<ProvinceManage/>}/>
                   <Route path={ManagerPath.PROVINCE + '/create'} element={<ProvinceCreate/>}/>
                   <Route path={ManagerPath.PROVINCE + '/update/:id'} element={<ProvinceUpdate/>}/>
-                  {/* DISTRICT */}
-                  <Route path={ManagerPath.DISTRICT} element={<DistrictManage/>}/>
-                  <Route path={ManagerPath.DISTRICT + '/create'} element={<DistrictCreate/>}/>
-                  <Route path={ManagerPath.DISTRICT + '/update/:id'} element={<DistrictUpdate/>}/>
+                  {/* WARD */}
+                  <Route path={ManagerPath.WARD} element={<WardManage/>}/>
+                  <Route path={ManagerPath.WARD + '/create'} element={<WardCreate/>}/>
+                  <Route path={ManagerPath.WARD + '/update/:id'} element={<WardUpdate/>}/>
+                  {/* DISTRICT (REDIRECT TO WARD) */}
+                  <Route path={ManagerPath.DISTRICT} element={<Navigate to={ManagerPath.WARD} replace/>}/>
+                  <Route path={ManagerPath.DISTRICT + '/*'} element={<Navigate to={ManagerPath.WARD} replace/>}/>
                   {/* USER */}
                   <Route path={ManagerPath.USER} element={<UserManage/>}/>
                   <Route path={ManagerPath.USER + '/create'} element={<UserCreate/>}/>

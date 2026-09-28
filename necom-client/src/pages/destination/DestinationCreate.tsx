@@ -9,7 +9,7 @@ function DestinationCreate() {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   } = useDestinationCreateViewModel();
 
@@ -64,11 +64,12 @@ function DestinationCreate() {
               <Grid.Col xs={6}>
                 <Select
                   required
-                  label={DestinationConfigs.properties['address.districtId'].label}
+                  label={DestinationConfigs.properties['address.wardId'].label}
                   placeholder="--"
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('address.districtId')}
+                  disabled={!form.values['address.provinceId']}
+                  data={wardSelectList}
+                  {...form.getInputProps('address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col xs={6}>

@@ -72,7 +72,7 @@ function PurchaseOrderManage() {
             {entity.destination.address.line || ''}
           </Highlight>
           <Text inherit>
-            {[entity.destination.address.district?.name, entity.destination.address.province?.name]
+            {[entity.destination.address.ward?.name, entity.destination.address.province?.name]
               .filter(Boolean)
               .join(', ')}
           </Text>
@@ -123,7 +123,7 @@ function PurchaseOrderManage() {
           <Stack spacing={0}>
             <Text inherit>{entity.destination.address.line}</Text>
             <Text inherit>
-              {[entity.destination.address.district?.name, entity.destination.address.province?.name]
+              {[entity.destination.address.ward?.name, entity.destination.address.province?.name]
                 .filter(Boolean)
                 .join(', ')}
             </Text>

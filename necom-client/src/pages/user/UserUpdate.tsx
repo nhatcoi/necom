@@ -24,7 +24,7 @@ function UserUpdate() {
     handleFormSubmit,
     genderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
     roleSelectList,
     isDisabledUpdateButton,
@@ -117,12 +117,13 @@ function UserUpdate() {
               </Grid.Col>
               <Grid.Col xs={6}>
                 <Select
-                  required
-                  label={UserConfigs.properties['address.districtId'].label}
+                  label={UserConfigs.properties['address.wardId'].label}
                   placeholder="--"
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('address.districtId')}
+                  clearable
+                  data={wardSelectList}
+                  disabled={!form.values['address.provinceId']}
+                  {...form.getInputProps('address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col>

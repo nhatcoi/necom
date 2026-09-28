@@ -22,8 +22,8 @@ class AddressConfigs extends Configs {
       label: 'Quản lý tỉnh thành',
     },
     {
-      link: ManagerPath.DISTRICT,
-      label: 'Quản lý quận huyện',
+      link: ManagerPath.WARD,
+      label: 'Quản lý phường xã',
     },
   ];
 
@@ -43,13 +43,13 @@ class AddressConfigs extends Configs {
       label: 'Mã tỉnh thành',
       type: EntityPropertyType.STRING,
     },
-    'district.name': {
-      label: 'Tên quận huyện',
+    'ward.name': {
+      label: 'Tên phường xã',
       type: EntityPropertyType.STRING,
       isShowInTable: true,
     },
-    'district.code': {
-      label: 'Mã quận huyện',
+    'ward.code': {
+      label: 'Mã phường xã',
       type: EntityPropertyType.STRING,
     },
     provinceId: {
@@ -58,8 +58,8 @@ class AddressConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    districtId: {
-      label: 'Quận huyện',
+    wardId: {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -72,13 +72,13 @@ class AddressConfigs extends Configs {
   static initialCreateUpdateFormValues = {
     line: '',
     provinceId: null as string | null,
-    districtId: null as string | null,
+    wardId: null as string | null,
   };
 
   static createUpdateFormSchema = z.object({
     line: z.string(),
     provinceId: z.string().nullable(),
-    districtId: z.string().nullable(),
+    wardId: z.string().nullable(),
   });
 }
 

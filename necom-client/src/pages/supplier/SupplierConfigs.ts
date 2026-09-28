@@ -75,8 +75,8 @@ class SupplierConfigs extends Configs {
       label: 'Tên tỉnh thành công ty',
       type: EntityPropertyType.STRING,
     },
-    'address.district.name': {
-      label: 'Tên quận huyện công ty',
+    'address.ward.name': {
+      label: 'Tên phường xã công ty',
       type: EntityPropertyType.STRING,
     },
     'address.provinceId': {
@@ -85,8 +85,8 @@ class SupplierConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'address.districtId': {
-      label: 'Quận huyện công ty',
+    'address.wardId': {
+      label: 'Phường xã công ty',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -123,7 +123,7 @@ class SupplierConfigs extends Configs {
     website: '',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
+    'address.wardId': null as string | null,
     description: '',
     note: '',
     status: '1',
@@ -143,7 +143,7 @@ class SupplierConfigs extends Configs {
     website: z.string(),
     'address.line': z.string(),
     'address.provinceId': z.string().nullable(),
-    'address.districtId': z.string().nullable(),
+    'address.wardId': z.string().nullable(),
     description: z.string(),
     note: z.string(),
     status: z.string(),

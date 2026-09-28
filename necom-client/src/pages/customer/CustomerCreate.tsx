@@ -21,7 +21,7 @@ function CustomerCreate() {
     handleFormSubmit,
     userGenderSelectList,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     userStatusSelectList,
     userRoleSelectList,
     customerGroupSelectList,
@@ -106,12 +106,13 @@ function CustomerCreate() {
               </Grid.Col>
               <Grid.Col xs={6}>
                 <Select
-                  required
-                  label={CustomerConfigs.properties['user.address.districtId'].label}
+                  label={CustomerConfigs.properties['user.address.wardId'].label}
                   placeholder="--"
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('user.address.districtId')}
+                  clearable
+                  data={wardSelectList}
+                  disabled={!form.values['user.address.provinceId']}
+                  {...form.getInputProps('user.address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col>

@@ -98,12 +98,12 @@ function OfficeManage() {
         <td>{entity.address.province?.code}</td>
       </tr>
       <tr>
-        <td>{OfficeConfigs.properties['address.district.name'].label}</td>
-        <td>{entity.address.district?.name}</td>
+        <td>{OfficeConfigs.properties['address.ward.name'].label}</td>
+        <td>{entity.address.ward?.name}</td>
       </tr>
       <tr>
-        <td>{OfficeConfigs.properties['address.district.code'].label}</td>
-        <td>{entity.address.district?.code}</td>
+        <td>{OfficeConfigs.properties['address.ward.code'].label}</td>
+        <td>{entity.address.ward?.code}</td>
       </tr>
       <tr>
         <td>{OfficeConfigs.properties.status.label}</td>

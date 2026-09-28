@@ -9,7 +9,7 @@ function WarehouseCreate() {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   } = useWarehouseCreateViewModel();
 
@@ -58,12 +58,13 @@ function WarehouseCreate() {
               </Grid.Col>
               <Grid.Col xs={6}>
                 <Select
-                  label={WarehouseConfigs.properties['address.districtId'].label}
+                  label={WarehouseConfigs.properties['address.wardId'].label}
                   placeholder="--"
                   clearable
                   searchable
-                  data={districtSelectList}
-                  {...form.getInputProps('address.districtId')}
+                  data={wardSelectList}
+                  disabled={!form.values['address.provinceId']}
+                  {...form.getInputProps('address.wardId')}
                 />
               </Grid.Col>
               <Grid.Col xs={6}>

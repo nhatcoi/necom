@@ -11,34 +11,39 @@ import {
   SearchPanel
 } from 'components';
 import DateUtils from 'utils/DateUtils';
-import { AddressResponse } from 'models/Address';
+import { WardResponse } from 'models/Ward';
 import { ListResponse } from 'utils/FetchUtils';
 import PageConfigs from 'pages/PageConfigs';
-import AddressConfigs from 'pages/address/AddressConfigs';
+import WardConfigs from 'pages/ward/WardConfigs';
 import useResetManagePageState from 'hooks/use-reset-manage-page-state';
 import useInitFilterPanelState from 'hooks/use-init-filter-panel-state';
 import useGetAllApi from 'hooks/use-get-all-api';
 import useAppStore from 'stores/use-app-store';
 
-function AddressManage() {
+function WardManage() {
   useResetManagePageState();
-  useInitFilterPanelState(AddressConfigs.properties);
+  useInitFilterPanelState(WardConfigs.properties);
 
   const {
     isLoading,
-    data: listResponse = PageConfigs.initialListResponse as ListResponse<AddressResponse>,
-  } = useGetAllApi<AddressResponse>(AddressConfigs.resourceUrl, AddressConfigs.resourceKey);
+    data: listResponse = PageConfigs.initialListResponse as ListResponse<WardResponse>,
+  } = useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey);
 
   const { searchToken } = useAppStore();
 
-  const showedPropertiesFragment = (entity: AddressResponse) => (
+  const showedPropertiesFragment = (entity: WardResponse) => (
     <>
       <td>{entity.id}</td>
       <td>{DateUtils.isoDateToString(entity.createdAt)}</td>
       <td>{DateUtils.isoDateToString(entity.updatedAt)}</td>
       <td>
         <Highlight highlight={searchToken} highlightColor="blue" size="sm">
-          {entity.line || ''}
+          {entity.name}
+        </Highlight>
+      </td>
+      <td>
+        <Highlight highlight={searchToken} highlightColor="blue" size="sm">
+          {entity.code}
         </Highlight>
       </td>
       <td>
@@ -48,45 +53,41 @@ function AddressManage() {
       </td>
       <td>
         <Highlight highlight={searchToken} highlightColor="blue" size="sm">
-          {entity.ward?.name || ''}
+          {entity.province?.code || ''}
         </Highlight>
       </td>
     </>
   );
 
-  const entityDetailTableRowsFragment = (entity: AddressResponse) => (
+  const entityDetailTableRowsFragment = (entity: WardResponse) => (
     <>
       <tr>
-        <td>{AddressConfigs.properties.id.label}</td>
+        <td>{WardConfigs.properties.id.label}</td>
         <td>{entity.id}</td>
       </tr>
       <tr>
-        <td>{AddressConfigs.properties.createdAt.label}</td>
+        <td>{WardConfigs.properties.createdAt.label}</td>
         <td>{DateUtils.isoDateToString(entity.createdAt)}</td>
       </tr>
       <tr>
-        <td>{AddressConfigs.properties.updatedAt.label}</td>
+        <td>{WardConfigs.properties.updatedAt.label}</td>
         <td>{DateUtils.isoDateToString(entity.updatedAt)}</td>
       </tr>
       <tr>
-        <td>{AddressConfigs.properties.line.label}</td>
-        <td>{entity.line}</td>
+        <td>{WardConfigs.properties.name.label}</td>
+        <td>{entity.name}</td>
       </tr>
       <tr>
-        <td>{AddressConfigs.properties['province.name'].label}</td>
+        <td>{WardConfigs.properties.code.label}</td>
+        <td>{entity.code}</td>
+      </tr>
+      <tr>
+        <td>{WardConfigs.properties['province.name'].label}</td>
         <td>{entity.province?.name}</td>
       </tr>
       <tr>
-        <td>{AddressConfigs.properties['province.code'].label}</td>
+        <td>{WardConfigs.properties['province.code'].label}</td>
         <td>{entity.province?.code}</td>
-      </tr>
-      <tr>
-        <td>{AddressConfigs.properties['ward.name'].label}</td>
-        <td>{entity.ward?.name}</td>
-      </tr>
-      <tr>
-        <td>{AddressConfigs.properties['ward.code'].label}</td>
-        <td>{entity.ward?.code}</td>
       </tr>
     </>
   );
@@ -95,13 +96,13 @@ function AddressManage() {
     <Stack>
       <ManageHeader>
         <ManageHeaderTitle
-          titleLinks={AddressConfigs.manageTitleLinks}
-          title={AddressConfigs.manageTitle}
+          titleLinks={WardConfigs.manageTitleLinks}
+          title={WardConfigs.manageTitle}
         />
         <ManageHeaderButtons
           listResponse={listResponse}
-          resourceUrl={AddressConfigs.resourceUrl}
-          resourceKey={AddressConfigs.resourceKey}
+          resourceUrl={WardConfigs.resourceUrl}
+          resourceKey={WardConfigs.resourceKey}
         />
       </ManageHeader>
 
@@ -115,9 +116,9 @@ function AddressManage() {
       >
         <ManageTable
           listResponse={listResponse}
-          properties={AddressConfigs.properties}
-          resourceUrl={AddressConfigs.resourceUrl}
-          resourceKey={AddressConfigs.resourceKey}
+          properties={WardConfigs.properties}
+          resourceUrl={WardConfigs.resourceUrl}
+          resourceKey={WardConfigs.resourceKey}
           showedPropertiesFragment={showedPropertiesFragment}
           entityDetailTableRowsFragment={entityDetailTableRowsFragment}
         />
@@ -128,4 +129,4 @@ function AddressManage() {
   );
 }
 
-export default AddressManage;
+export default WardManage;

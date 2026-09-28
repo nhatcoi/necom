@@ -7,8 +7,9 @@ import { SelectOption } from 'types';
 import useGetAllApi from 'hooks/use-get-all-api';
 import { ProvinceResponse } from 'models/Province';
 import ProvinceConfigs from 'pages/province/ProvinceConfigs';
-import { DistrictResponse } from 'models/District';
-import DistrictConfigs from 'pages/district/DistrictConfigs';
+import { WardResponse } from 'models/Ward';
+import WardConfigs from 'pages/ward/WardConfigs';
+import useSelectAddress from 'hooks/use-select-address';
 
 function useDestinationCreateViewModel() {
   const form = useForm({
@@ -16,8 +17,10 @@ function useDestinationCreateViewModel() {
     schema: zodResolver(DestinationConfigs.createUpdateFormSchema),
   });
 
+  useSelectAddress(form, 'address.provinceId', 'address.wardId');
+
   const [provinceSelectList, setProvinceSelectList] = useState<SelectOption[]>([]);
-  const [districtSelectList, setDistrictSelectList] = useState<SelectOption[]>([]);
+  const [wardSelectList, setWardSelectList] = useState<SelectOption[]>([]);
 
   const createApi = useCreateApi<DestinationRequest, DestinationResponse>(DestinationConfigs.resourceUrl);
   useGetAllApi<ProvinceResponse>(ProvinceConfigs.resourceUrl, ProvinceConfigs.resourceKey,
@@ -30,14 +33,14 @@ function useDestinationCreateViewModel() {
       setProvinceSelectList(selectList);
     }
   );
-  useGetAllApi<DistrictResponse>(DistrictConfigs.resourceUrl, DistrictConfigs.resourceKey,
-    { all: 1 },
-    (districtListResponse) => {
-      const selectList: SelectOption[] = districtListResponse.content.map((item) => ({
+  useGetAllApi<WardResponse>(WardConfigs.resourceUrl, WardConfigs.resourceKey,
+    { all: 1, filter: `province.id==${form.values['address.provinceId'] || 0}` },
+    (wardListResponse) => {
+      const selectList: SelectOption[] = wardListResponse.content.map((item) => ({
         value: String(item.id),
         label: item.name,
       }));
-      setDistrictSelectList(selectList);
+      setWardSelectList(selectList);
     }
   );
 
@@ -49,8 +52,8 @@ function useDestinationCreateViewModel() {
       address: {
         line: formValues['address.line'],
         provinceId: Number(formValues['address.provinceId']),
-        districtId: Number(formValues['address.districtId']),
-        wardId: null,
+        districtId: null,
+        wardId: Number(formValues['address.wardId']),
       },
       status: Number(formValues.status),
     };
@@ -72,7 +75,7 @@ function useDestinationCreateViewModel() {
     form,
     handleFormSubmit,
     provinceSelectList,
-    districtSelectList,
+    wardSelectList,
     statusSelectList,
   };
 }

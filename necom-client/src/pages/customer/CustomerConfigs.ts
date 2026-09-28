@@ -70,12 +70,12 @@ class CustomerConfigs extends Configs {
       label: 'Mã tỉnh thành khách hàng',
       type: EntityPropertyType.STRING,
     },
-    'user.address.district.name': {
-      label: 'Tên quận huyện khách hàng',
+    'user.address.ward.name': {
+      label: 'Tên phường xã khách hàng',
       type: EntityPropertyType.STRING,
     },
-    'user.address.district.code': {
-      label: 'Mã quận huyện khách hàng',
+    'user.address.ward.code': {
+      label: 'Mã phường xã khách hàng',
       type: EntityPropertyType.STRING,
     },
     'user.avatar': {
@@ -107,8 +107,8 @@ class CustomerConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'user.address.districtId': {
-      label: 'Quận huyện',
+    'user.address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -160,7 +160,7 @@ class CustomerConfigs extends Configs {
     'user.gender': 'M' as 'M' | 'F',
     'user.address.line': '',
     'user.address.provinceId': null as string | null,
-    'user.address.districtId': null as string | null,
+    'user.address.wardId': null as string | null,
     'user.avatar': '',
     'user.status': '1',
     'user.roles': [String(CustomerConfigs.CUSTOMER_ROLE_ID)],
@@ -178,7 +178,7 @@ class CustomerConfigs extends Configs {
     'user.gender': z.string(),
     'user.address.line': z.string(),
     'user.address.provinceId': z.string(),
-    'user.address.districtId': z.string(),
+    'user.address.wardId': z.string().nullable().optional(),
     'user.avatar': z.string(),
     'user.status': z.string(),
     'user.roles': z.array(z.string()).nonempty(),

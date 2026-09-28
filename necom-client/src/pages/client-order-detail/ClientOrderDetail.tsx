@@ -195,7 +195,7 @@ function ClientOrderDetail() {
                   <Text size="sm" weight={500}>{order.orderToName}</Text>
                   <Text size="sm">{order.orderToPhone}</Text>
                   <Text size="sm">
-                    {[order.orderToAddress, order.orderToWardName, order.orderToDistrictName, order.orderToProvinceName]
+                    {[order.orderToAddress, order.orderToWardName, order.orderToProvinceName]
                       .filter(Boolean)
                       .join(', ')}
                   </Text>

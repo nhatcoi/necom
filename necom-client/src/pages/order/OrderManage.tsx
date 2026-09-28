@@ -98,7 +98,7 @@ function OrderManage() {
               {entity.toAddress}
             </Highlight>
             <Highlight highlight={searchToken} highlightColor="blue" size="xs" color="dimmed">
-              {[entity.toWardName, entity.toDistrictName].join(', ')}
+              {entity.toWardName}
             </Highlight>
             <Highlight highlight={searchToken} highlightColor="blue" size="xs" color="dimmed">
               {entity.toProvinceName}

@@ -68,8 +68,8 @@ class WarehouseConfigs extends Configs {
       label: 'Tên tỉnh thành',
       type: EntityPropertyType.STRING,
     },
-    'address.district.name': {
-      label: 'Tên quận huyện',
+    'address.ward.name': {
+      label: 'Tên phường xã',
       type: EntityPropertyType.STRING,
     },
     status: {
@@ -83,8 +83,8 @@ class WarehouseConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'address.districtId': {
-      label: 'Quận huyện',
+    'address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -99,7 +99,7 @@ class WarehouseConfigs extends Configs {
     name: '',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
+    'address.wardId': null as string | null,
     status: '1',
   };
 
@@ -108,7 +108,7 @@ class WarehouseConfigs extends Configs {
     name: z.string().min(2, MessageUtils.min(WarehouseConfigs.properties.name.label, 2)),
     'address.line': z.string(),
     'address.provinceId': z.string().nullable(),
-    'address.districtId': z.string().nullable(),
+    'address.wardId': z.string().nullable().optional(),
     status: z.string(),
   });
 }

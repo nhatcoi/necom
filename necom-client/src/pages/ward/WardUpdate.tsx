@@ -2,34 +2,33 @@ import React from 'react';
 import { Button, Divider, Grid, Group, Paper, Select, Stack, TextInput } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import { CreateUpdateTitle, DefaultPropertyPanel } from 'components';
-import AddressConfigs from 'pages/address/AddressConfigs';
-import useAddressUpdateViewModel from 'pages/address/AddressUpdate.vm';
+import WardConfigs from 'pages/ward/WardConfigs';
+import useWardUpdateViewModel from 'pages/ward/WardUpdate.vm';
 
-function AddressUpdate() {
+function WardUpdate() {
   const { id } = useParams();
   const {
-    address,
+    ward,
     form,
     handleFormSubmit,
     provinceSelectList,
-    wardSelectList,
-  } = useAddressUpdateViewModel(Number(id));
+  } = useWardUpdateViewModel(Number(id));
 
-  if (!address) {
+  if (!ward) {
     return null;
   }
 
   return (
     <Stack sx={{ maxWidth: 800 }}>
       <CreateUpdateTitle
-        managerPath={AddressConfigs.managerPath}
-        title={AddressConfigs.updateTitle}
+        managerPath={WardConfigs.managerPath}
+        title={WardConfigs.updateTitle}
       />
 
       <DefaultPropertyPanel
-        id={address.id}
-        createdAt={address.createdAt}
-        updatedAt={address.updatedAt}
+        id={ward.id}
+        createdAt={ward.createdAt}
+        updatedAt={ward.updatedAt}
         createdBy="1"
         updatedBy="1"
       />
@@ -38,31 +37,28 @@ function AddressUpdate() {
         <Paper shadow="xs">
           <Stack spacing={0}>
             <Grid p="sm">
-              <Grid.Col>
+              <Grid.Col xs={6}>
                 <TextInput
-                  label={AddressConfigs.properties.line.label}
-                  {...form.getInputProps('line')}
+                  required
+                  label={WardConfigs.properties.name.label}
+                  {...form.getInputProps('name')}
+                />
+              </Grid.Col>
+              <Grid.Col xs={6}>
+                <TextInput
+                  required
+                  label={WardConfigs.properties.code.label}
+                  {...form.getInputProps('code')}
                 />
               </Grid.Col>
               <Grid.Col xs={6}>
                 <Select
-                  label={AddressConfigs.properties.provinceId.label}
+                  required
+                  label={WardConfigs.properties.provinceId.label}
                   placeholder="--"
-                  clearable
                   searchable
                   data={provinceSelectList}
                   {...form.getInputProps('provinceId')}
-                />
-              </Grid.Col>
-              <Grid.Col xs={6}>
-                <Select
-                  label={AddressConfigs.properties.wardId.label}
-                  placeholder="--"
-                  clearable
-                  searchable
-                  data={wardSelectList}
-                  disabled={!form.values.provinceId}
-                  {...form.getInputProps('wardId')}
                 />
               </Grid.Col>
             </Grid>
@@ -80,4 +76,4 @@ function AddressUpdate() {
   );
 }
 
-export default AddressUpdate;
+export default WardUpdate;

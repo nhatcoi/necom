@@ -214,13 +214,6 @@ function OrderUpdate() {
                   <Grid.Col>
                     <TextInput
                       required
-                      label="Quận huyện người nhận"
-                      {...form.getInputProps('toDistrictName')}
-                    />
-                  </Grid.Col>
-                  <Grid.Col>
-                    <TextInput
-                      required
                       label="Phường xã người nhận"
                       {...form.getInputProps('toWardName')}
                     />

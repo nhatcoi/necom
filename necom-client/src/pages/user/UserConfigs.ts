@@ -62,12 +62,12 @@ class UserConfigs extends Configs {
       label: 'Mã tỉnh thành',
       type: EntityPropertyType.STRING,
     },
-    'address.district.name': {
-      label: 'Tên quận huyện',
+    'address.ward.name': {
+      label: 'Tên phường xã',
       type: EntityPropertyType.STRING,
     },
-    'address.district.code': {
-      label: 'Mã quận huyện',
+    'address.ward.code': {
+      label: 'Mã phường xã',
       type: EntityPropertyType.STRING,
     },
     avatar: {
@@ -101,8 +101,8 @@ class UserConfigs extends Configs {
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
     },
-    'address.districtId': {
-      label: 'Quận huyện',
+    'address.wardId': {
+      label: 'Phường xã',
       type: EntityPropertyType.NUMBER,
       isNotAddToSortCriteria: true,
       isNotAddToFilterCriteria: true,
@@ -121,7 +121,7 @@ class UserConfigs extends Configs {
     gender: 'M' as 'M' | 'F',
     'address.line': '',
     'address.provinceId': null as string | null,
-    'address.districtId': null as string | null,
+    'address.wardId': null as string | null,
     avatar: '',
     status: '1',
     roles: [] as string[],
@@ -136,7 +136,7 @@ class UserConfigs extends Configs {
     gender: z.string(),
     'address.line': z.string(),
     'address.provinceId': z.string(),
-    'address.districtId': z.string(),
+    'address.wardId': z.string().nullable().optional(),
     avatar: z.string(),
     status: z.string(),
     roles: z.array(z.string()).nonempty(),

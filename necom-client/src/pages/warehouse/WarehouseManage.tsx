@@ -89,8 +89,8 @@ function WarehouseManage() {
         <td>{entity.address?.province?.name}</td>
       </tr>
       <tr>
-        <td>{WarehouseConfigs.properties['address.district.name'].label}</td>
-        <td>{entity.address?.district?.name}</td>
+        <td>{WarehouseConfigs.properties['address.ward.name'].label}</td>
+        <td>{entity.address?.ward?.name}</td>
       </tr>
       <tr>
         <td>{WarehouseConfigs.properties.status.label}</td>

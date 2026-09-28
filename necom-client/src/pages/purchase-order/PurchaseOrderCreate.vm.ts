@@ -40,7 +40,7 @@ function usePurchaseOrderCreateViewModel() {
     (destinationListResponse) => {
       const selectList: SelectOption[] = destinationListResponse.content.map((item) => ({
         value: String(item.id),
-        label: [item.address.line, item.address.district?.name, item.address.province?.name].filter(Boolean).join(', '),
+        label: [item.address.line, item.address.ward?.name, item.address.province?.name].filter(Boolean).join(', '),
       }));
       setDestinationSelectList(selectList);
     }

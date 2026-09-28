@@ -138,8 +138,8 @@ function SupplierManage() {
         <td>{entity.address?.province?.name}</td>
       </tr>
       <tr>
-        <td>{SupplierConfigs.properties['address.district.name'].label}</td>
-        <td>{entity.address?.district?.name}</td>
+        <td>{SupplierConfigs.properties['address.ward.name'].label}</td>
+        <td>{entity.address?.ward?.name}</td>
       </tr>
       <tr>
         <td>{SupplierConfigs.properties.description.label}</td>
