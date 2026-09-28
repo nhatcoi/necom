@@ -10,7 +10,7 @@ public class SearchUtils {
 
     public static <T> Specification<T> parse(String search, List<String> searchFields) {
         if (search == null || search.isBlank() || searchFields == null || searchFields.size() == 0) {
-            return RSQLJPASupport.toSpecification(null);
+            return RSQLJPASupport.toSpecification((String) null);
         }
 
         return searchFields.stream()

@@ -21,8 +21,8 @@ public class ClientPreorderMapper {
 
     public Preorder requestToEntity(ClientPreorderRequest request) {
         Preorder entity = new Preorder();
-        entity.setUser(userRepository.getById(request.getUserId()));
-        entity.setProduct(productRepository.getById(request.getProductId()));
+        entity.setUser(userRepository.getReferenceById(request.getUserId()));
+        entity.setProduct(productRepository.getReferenceById(request.getProductId()));
         entity.setStatus(request.getStatus());
         return entity;
     }
