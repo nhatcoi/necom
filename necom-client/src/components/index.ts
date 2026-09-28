@@ -46,7 +46,7 @@ import VariantFinder from 'components/VariantFinder/VariantFinder';
 import VariantTable from 'components/VariantTable/VariantTable';
 
 // Others
-import NecomLogo from 'components/NecomLogo/ElectroLogo';
+import NecomLogo from 'components/NecomLogo/NecomLogo';
 import FloatingCodeFrame from 'components/FloatingCodeFrame/FloatingCodeFrame';
 import LoadingMiddleware from 'components/LoadingMiddleware/LoadingMiddleware';
 import ScrollToTop from 'components/ScrollToTop/ScrollToTop';
