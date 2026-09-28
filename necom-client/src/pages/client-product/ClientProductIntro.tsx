@@ -26,10 +26,9 @@ import {
   ClientCartRequest,
   ClientPreorderRequest,
   ClientProductResponse,
-  ClientWishRequest,
   UpdateQuantityType
 } from 'types';
-import useCreateWishApi from 'hooks/use-create-wish-api';
+import useWishlist from 'hooks/use-wishlist';
 import NotifyUtils from 'utils/NotifyUtils';
 import useAuthStore from 'stores/use-auth-store';
 import useCreatePreorderApi from 'hooks/use-create-preorder-api';
@@ -49,7 +48,8 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
 
   const { user, currentCartId } = useAuthStore();
 
-  const createWishApi = useCreateWishApi();
+  const { isWished, toggleWish } = useWishlist();
+  const wished = isWished(product.productId);
   const createPreorderApi = useCreatePreorderApi();
   const saveCartApi = useSaveCartApi();
 
@@ -58,16 +58,8 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
     setQuantity(1);
   };
 
-  const handleCreateWishButton = () => {
-    if (!user) {
-      NotifyUtils.simple('Vui lòng đăng nhập để sử dụng chức năng');
-    } else {
-      const clientWishRequest: ClientWishRequest = {
-        userId: user.id,
-        productId: product.productId,
-      };
-      createWishApi.mutate(clientWishRequest);
-    }
+  const handleWishButton = () => {
+    toggleWish(product);
   };
 
   const handleCreatePreorderButton = () => {
@@ -326,11 +318,17 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
                   radius="md"
                   size="lg"
                   color="pink"
-                  variant="outline"
-                  leftIcon={<Heart/>}
-                  onClick={handleCreateWishButton}
+                  variant={wished ? 'filled' : 'outline'}
+                  leftIcon={
+                    <Heart
+                      size={20}
+                      fill={wished ? '#ffffff' : 'none'}
+                      color={wished ? '#ffffff' : 'currentColor'}
+                    />
+                  }
+                  onClick={handleWishButton}
                 >
-                  Yêu thích
+                  {wished ? 'Đã yêu thích' : 'Yêu thích'}
                 </Button>
               </Group>
             </Stack>

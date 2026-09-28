@@ -47,6 +47,7 @@ import ResourceURL from 'constants/ResourceURL';
 import { EventInitiationResponse, NotificationResponse } from 'models/Notification';
 import MiscUtils from 'utils/MiscUtils';
 import useClientSiteStore from 'stores/use-client-site-store';
+import useWishlist from 'hooks/use-wishlist';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -59,6 +60,8 @@ const useStyles = createStyles((theme) => ({
   iconGroup: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     borderRadius: theme.radius.md,
+    cursor: 'pointer',
+    userSelect: 'none',
 
     '&:hover': {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
@@ -80,6 +83,7 @@ function ClientHeader() {
   const { ref: refHeaderStack, width: widthHeaderStack } = useElementSize();
 
   const { user, resetAuthState, currentTotalCartItems } = useAuthStore();
+  const { totalWishes } = useWishlist();
 
   // Search state & function
   const navigate = useNavigate();
@@ -142,7 +146,7 @@ function ClientHeader() {
               {user && (
                 <>
                   <Tooltip label="Giỏ hàng" position="bottom">
-                    <UnstyledButton component={Link} to="/cart">
+                    <UnstyledButton onClick={() => navigate('/cart')}>
                       <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
                         <ShoppingCart strokeWidth={1}/>
                         <Text weight={500} size="sm">{currentTotalCartItems}</Text>
@@ -150,8 +154,26 @@ function ClientHeader() {
                     </UnstyledButton>
                   </Tooltip>
 
+                  <Tooltip label="Sản phẩm yêu thích" position="bottom">
+                    <UnstyledButton onClick={() => navigate('/user/wishlist')}>
+                      <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
+                        <Heart
+                          strokeWidth={1}
+                          size={20}
+                          color={totalWishes > 0 ? theme.colors.pink[6] : 'currentColor'}
+                          fill={totalWishes > 0 ? theme.colors.pink[6] : 'none'}
+                        />
+                        {totalWishes > 0 && (
+                          <Text weight={500} size="sm" color={theme.colors.pink[6]}>
+                            {totalWishes}
+                          </Text>
+                        )}
+                      </Group>
+                    </UnstyledButton>
+                  </Tooltip>
+
                   <Tooltip label="Đơn hàng" position="bottom">
-                    <UnstyledButton component={Link} to="/order">
+                    <UnstyledButton onClick={() => navigate('/order')}>
                       <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
                         <FileBarcode strokeWidth={1}/>
                       </Group>

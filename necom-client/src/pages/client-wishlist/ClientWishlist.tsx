@@ -210,7 +210,7 @@ function useDeleteWishesApi() {
     {
       onSuccess: () => {
         NotifyUtils.simpleSuccess('Xóa sản phẩm yêu thích thành công');
-        void queryClient.invalidateQueries(['client-api', 'wishes', 'getAllWishes']);
+        void queryClient.invalidateQueries(['client-api', 'wishes']);
       },
       onError: () => NotifyUtils.simpleFailed('Xóa sản phẩm yêu thích thất bại'),
     }

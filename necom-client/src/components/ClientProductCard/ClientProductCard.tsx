@@ -18,13 +18,12 @@ import {
   ClientCartRequest,
   ClientListedProductResponse,
   ClientPreorderRequest,
-  ClientWishRequest,
   UpdateQuantityType
 } from 'types';
 import { BellPlus, Heart, ShoppingCartPlus, Star } from 'tabler-icons-react';
 import NotifyUtils from 'utils/NotifyUtils';
 import useAuthStore from 'stores/use-auth-store';
-import useCreateWishApi from 'hooks/use-create-wish-api';
+import useWishlist from 'hooks/use-wishlist';
 import useCreatePreorderApi from 'hooks/use-create-preorder-api';
 import useSaveCartApi from 'hooks/use-save-cart-api';
 
@@ -142,25 +141,18 @@ function getRatingData(productId: number) {
 function ClientProductCard({ product, search }: ClientProductCardProps) {
   const { classes } = useStyles();
 
-  const createWishApi = useCreateWishApi();
+  const { isWished, toggleWish } = useWishlist();
+  const wished = isWished(product.productId);
   const createPreorderApi = useCreatePreorderApi();
   const saveCartApi = useSaveCartApi();
 
   const { user, currentCartId } = useAuthStore();
   const rating = getRatingData(product.productId);
 
-  const handleCreateWishButton = (event: React.MouseEvent<HTMLElement>) => {
+  const handleWishButton = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!user) {
-      NotifyUtils.simple('Vui lòng đăng nhập để sử dụng chức năng');
-    } else {
-      const clientWishRequest: ClientWishRequest = {
-        userId: user.id,
-        productId: product.productId,
-      };
-      createWishApi.mutate(clientWishRequest);
-    }
+    toggleWish(product);
   };
 
   const handleAddToCartButton = (event: React.MouseEvent<HTMLElement>) => {
@@ -227,10 +219,20 @@ function ClientProductCard({ product, search }: ClientProductCardProps) {
             className={classes.wishlistBtn}
             size="md"
             radius="xl"
-            title="Thêm vào danh sách yêu thích"
-            onClick={handleCreateWishButton}
+            title={wished ? 'Bỏ yêu thích' : 'Thêm vào danh sách yêu thích'}
+            onClick={handleWishButton}
+            sx={{
+              color: wished ? '#e11d48 !important' : undefined,
+              backgroundColor: wished ? 'rgba(255, 241, 242, 0.95)' : undefined,
+              borderColor: wished ? '#fecdd3' : undefined,
+            }}
           >
-            <Heart size={16} strokeWidth={1.75} />
+            <Heart
+              size={16}
+              strokeWidth={wished ? 2 : 1.75}
+              fill={wished ? '#e11d48' : 'none'}
+              color={wished ? '#e11d48' : 'currentColor'}
+            />
           </ActionIcon>
 
           {product.productPromotion && (

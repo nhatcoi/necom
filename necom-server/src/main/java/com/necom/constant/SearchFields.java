@@ -18,7 +18,6 @@ public interface SearchFields {
     List<String> WARD = List.of(
             "name",
             "code",
-            "province.id",
             "province.name",
             "province.code",
             "district.name",
