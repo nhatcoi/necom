@@ -40,7 +40,7 @@ public class ClientCartMapper {
 
     public Cart requestToEntity(ClientCartRequest request) {
         var entity = new Cart();
-        entity.setUser(userRepository.getById(request.getUserId()));
+        entity.setUser(userRepository.getReferenceById(request.getUserId()));
         entity.setCartVariants(request.getCartItems().stream().map(this::requestToEntity).collect(Collectors.toSet()));
         entity.setStatus(request.getStatus());
         attach(entity);
@@ -83,7 +83,7 @@ public class ClientCartMapper {
 
     private CartVariant requestToEntity(ClientCartVariantRequest request) {
         var entity = new CartVariant();
-        entity.setVariant(variantRepository.getById(request.getVariantId()));
+        entity.setVariant(variantRepository.getReferenceById(request.getVariantId()));
         entity.setQuantity(request.getQuantity());
         return entity;
     }

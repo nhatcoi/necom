@@ -15,14 +15,13 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private static final Path IMAGE_DIR = Paths.get(System.getProperty("user.dir")).resolve("image-dir");
+    private static final Path IMAGE_DIR = Path.of(System.getProperty("user.dir")).resolve("image-dir");
 
     public ImageServiceImpl() {
         if (!Files.exists(IMAGE_DIR)) {

@@ -234,7 +234,8 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPatternParser;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.List;
 
 @Component
@@ -242,6 +243,8 @@ import java.util.List;
 public class GenericMappingRegister {
 
     private ApplicationContext context;
+    // Actuator cũng có một RequestMappingHandlerMapping (controllerEndpointHandlerMapping), chỉ định rõ bean của MVC
+    @Qualifier("requestMappingHandlerMapping")
     private RequestMappingHandlerMapping handlerMapping;
 
     // Controllers

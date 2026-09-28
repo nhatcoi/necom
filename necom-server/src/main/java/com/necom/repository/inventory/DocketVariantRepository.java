@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import javax.persistence.criteria.Join;
+import jakarta.persistence.criteria.Join;
 import java.util.List;
 
 public interface DocketVariantRepository extends JpaRepository<DocketVariant, DocketVariantKey>,

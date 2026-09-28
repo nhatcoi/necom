@@ -10,17 +10,22 @@ public class SimpleProductInventory {
     private Integer canBeSold;
     private Integer areComing;
 
+    // Nhận Number: Hibernate 6 trả Integer cho biểu thức SUM/CASE trên cột INT (Hibernate 5 trả Long)
     public SimpleProductInventory(
             Long productId,
-            Long inventory,
-            Long waitingForDelivery,
-            Long canBeSold,
-            Long areComing
+            Number inventory,
+            Number waitingForDelivery,
+            Number canBeSold,
+            Number areComing
     ) {
         this.productId = productId;
-        this.inventory = Math.toIntExact(inventory);
-        this.waitingForDelivery = Math.toIntExact(waitingForDelivery);
-        this.canBeSold = Math.toIntExact(canBeSold);
-        this.areComing = Math.toIntExact(areComing);
+        this.inventory = toInt(inventory);
+        this.waitingForDelivery = toInt(waitingForDelivery);
+        this.canBeSold = toInt(canBeSold);
+        this.areComing = toInt(areComing);
+    }
+
+    private static Integer toInt(Number value) {
+        return value == null ? 0 : Math.toIntExact(value.longValue());
     }
 }

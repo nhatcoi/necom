@@ -17,12 +17,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -127,7 +127,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             }
 
             if ("random".equals(sort)) {
-                orders.add(cb.asc(cb.function("RAND", Void.class)));
+                orders.add(cb.asc(cb.function("RAND", Double.class)));
             }
 
             if (newable) {

@@ -20,11 +20,11 @@ import com.necom.repository.authentication.VerificationRepository;
 import com.necom.repository.customer.CustomerRepository;
 import com.necom.service.email.EmailSenderService;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.utility.RandomString;
+import com.necom.utils.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -191,7 +191,7 @@ public class VerificationServiceImpl implements VerificationService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email doesn't exist"));
 
         if (user.getStatus() == 1) {
-            String token = RandomString.make(10);
+            String token = RandomStringUtils.alphanumeric(10);
             user.setResetPasswordToken(token);
             userRepository.save(user);
 

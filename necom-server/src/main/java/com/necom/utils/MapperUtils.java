@@ -80,15 +80,15 @@ public abstract class MapperUtils {
     private UserRepository userRepository;
 
     public Province mapToProvince(@Nullable Long id) {
-        return id == null ? null : provinceRepository.getById(id);
+        return id == null ? null : provinceRepository.getReferenceById(id);
     }
 
     public District mapToDistrict(@Nullable Long id) {
-        return id == null ? null : districtRepository.getById(id);
+        return id == null ? null : districtRepository.getReferenceById(id);
     }
 
     public Ward mapToWard(@Nullable Long id) {
-        return id == null ? null : wardRepository.getById(id);
+        return id == null ? null : wardRepository.getReferenceById(id);
     }
 
     public abstract Office mapToOffice(Long id);
@@ -136,15 +136,15 @@ public abstract class MapperUtils {
     public abstract Room mapToRoom(Long id);
 
     public Variant mapToVariant(Long id) {
-        return variantRepository.getById(id);
+        return variantRepository.getReferenceById(id);
     }
 
     public Product mapToProduct(Long id) {
-        return productRepository.getById(id);
+        return productRepository.getReferenceById(id);
     }
 
     public User mapToUser(Long id) {
-        return userRepository.getById(id);
+        return userRepository.getReferenceById(id);
     }
 
     @Named("hashPassword")

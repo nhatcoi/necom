@@ -46,7 +46,7 @@ public abstract class PromotionMapper implements GenericMapper<Promotion, Promot
     protected void addProductsFromCategories(@MappingTarget Promotion promotion, PromotionRequest request) {
         if (request.getCategoryIds().size() != 0) {
             Set<Product> productsFromCategories = request.getCategoryIds().stream()
-                    .map(categoryRepository::getById)
+                    .map(categoryRepository::getReferenceById)
                     .map(Category::getProducts)
                     .flatMap(List::stream)
                     .collect(Collectors.toSet());

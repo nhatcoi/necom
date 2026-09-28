@@ -21,8 +21,8 @@ public class ClientReviewMapper {
 
     public Review requestToEntity(ClientReviewRequest request) {
         Review entity = new Review();
-        entity.setUser(userRepository.getById(request.getUserId()));
-        entity.setProduct(productRepository.getById(request.getProductId()));
+        entity.setUser(userRepository.getReferenceById(request.getUserId()));
+        entity.setProduct(productRepository.getReferenceById(request.getProductId()));
         entity.setRatingScore(request.getRatingScore());
         entity.setContent(request.getContent());
         entity.setStatus(request.getStatus());

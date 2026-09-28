@@ -20,8 +20,8 @@ public class ClientWishMapper {
 
     public Wish requestToEntity(ClientWishRequest request) {
         Wish entity = new Wish();
-        entity.setUser(userRepository.getById(request.getUserId()));
-        entity.setProduct(productRepository.getById(request.getProductId()));
+        entity.setUser(userRepository.getReferenceById(request.getUserId()));
+        entity.setProduct(productRepository.getReferenceById(request.getProductId()));
         return entity;
     }
 

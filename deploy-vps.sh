@@ -60,10 +60,10 @@ EOF
     echo -e "${CYAN}   Production Deployment Orchestrator for Necom on VPS${NC}\n"
 }
 
-# Resolve Java 11
-get_java11_home() {
+# Resolve Java 17 (Spring Boot 3 yêu cầu Java 17+)
+get_java17_home() {
     if [[ "$OSTYPE" == "darwin"* ]] && command -v /usr/libexec/java_home >/dev/null 2>&1; then
-        /usr/libexec/java_home -v 11 2>/dev/null || echo "$JAVA_HOME"
+        /usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME"
     else
         echo "${JAVA_HOME:-}"
     fi
@@ -82,11 +82,11 @@ check_ssh() {
 
 # Build Spring Boot Backend locally (Cross-platform bytecode JAR)
 build_backend() {
-    log_info "1/2. Biên dịch Spring Boot backend (Java 11)..."
-    local j11
-    j11="$(get_java11_home)"
-    if [ -n "$j11" ]; then
-        export JAVA_HOME="$j11"
+    log_info "1/2. Biên dịch Spring Boot backend (Java 17)..."
+    local j17
+    j17="$(get_java17_home)"
+    if [ -n "$j17" ]; then
+        export JAVA_HOME="$j17"
     fi
 
     cd "$ROOT_DIR/necom-server"

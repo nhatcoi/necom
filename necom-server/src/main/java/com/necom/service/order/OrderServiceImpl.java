@@ -37,7 +37,7 @@ import com.necom.repository.waybill.WaybillRepository;
 import com.necom.service.general.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
+import com.necom.utils.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +49,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -149,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
         // (1) Tạo đơn hàng
         Order order = new Order();
 
-        order.setCode(RandomString.make(12).toUpperCase());
+        order.setCode(RandomStringUtils.alphanumeric(12).toUpperCase());
         order.setStatus(1); // Status 1: Đơn hàng mới
         order.setToName(user.getFullname());
         order.setToPhone(user.getPhone());
