@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/necom?createDatabaseIfNotExist=true&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+    url: jdbc:mysql://localhost:3306/necom?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:}
   jpa:
@@ -24,6 +24,7 @@ spring:
   sql:
     init:
       mode: always
+      encoding: UTF-8
       schema-locations: classpath:address.sql, classpath:schema.sql
       continue-on-error: true
   servlet:

@@ -1,3 +1,6 @@
+SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+SET CHARACTER SET utf8mb4;
+
 -- address TABLE: 30 records
 INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
 VALUES ('2021-09-29 21:58:33', '2021-07-30 14:27:56', '140 Commercial Way', 7, 28, 1);

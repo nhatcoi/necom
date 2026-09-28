@@ -22,7 +22,7 @@ services:
       timeout: 5s
       retries: 5
     restart: always
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --character-set-client-handshake=FALSE --init-connect='SET NAMES utf8mb4'
 
   necom-server:
     container_name: necom-server
@@ -34,7 +34,7 @@ services:
       JAVA_OPTS: ${JAVA_OPTS:--Xmx384m -Xms192m}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
       BACKEND_HOST: ${BACKEND_HOST:-http://localhost:8085}
-      SPRING_DATASOURCE_URL: jdbc:mysql://necom-database:3306/necom?createDatabaseIfNotExist=true&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+      SPRING_DATASOURCE_URL: jdbc:mysql://necom-database:3306/necom?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&sessionVariables=sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-necom}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-necom}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-ci}
