@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-type DateFormat = 'HH:mm:ss DD/MM/YYYY' | 'DD/MM/YYYY' | 'DD/MM/YY';
+type DateFormat = 'HH:mm:ss DD/MM/YYYY' | 'HH:mm DD/MM/YYYY' | 'HH:mm' | 'DD/MM/YYYY' | 'DD/MM/YY';
 
 class DateUtils {
   static now = () => dayjs().toISOString();

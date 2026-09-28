@@ -2,31 +2,24 @@ package com.necom.controller.client;
 
 import com.necom.constant.AppConstants;
 import com.necom.dto.chat.ClientRoomExistenceResponse;
+import com.necom.dto.chat.MessageResponse;
 import com.necom.dto.chat.RoomResponse;
-import com.necom.entity.authentication.User;
-import com.necom.entity.chat.Message;
-import com.necom.entity.chat.Room;
-import com.necom.mapper.chat.MessageMapper;
-import com.necom.mapper.chat.RoomMapper;
-import com.necom.repository.authentication.UserRepository;
-import com.necom.repository.chat.MessageRepository;
-import com.necom.repository.chat.RoomRepository;
+import com.necom.service.chat.ChatService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/client-api/chat")
@@ -34,52 +27,53 @@ import java.util.stream.Collectors;
 @CrossOrigin(AppConstants.FRONTEND_HOST)
 public class ClientChatController {
 
-    private UserRepository userRepository;
-    private RoomRepository roomRepository;
-    private RoomMapper roomMapper;
-    private MessageRepository messageRepository;
-    private MessageMapper messageMapper;
+    private ChatService chatService;
 
     @GetMapping("/get-room")
     public ResponseEntity<ClientRoomExistenceResponse> getRoom(Authentication authentication) {
-        String username = authentication.getName();
-
-        RoomResponse roomResponse = roomRepository.findByUserUsername(username)
-                .map(roomMapper::entityToResponse)
-                .orElse(null);
+        RoomResponse roomResponse = chatService.findCustomerRoom(authentication.getName());
 
         var clientRoomExistenceResponse = new ClientRoomExistenceResponse();
         clientRoomExistenceResponse.setRoomExistence(roomResponse != null);
         clientRoomExistenceResponse.setRoomResponse(roomResponse);
-        clientRoomExistenceResponse.setRoomRecentMessages(
-                roomResponse != null
-                        ? messageMapper.entityToResponse(
-                        messageRepository
-                                .findByRoomId(
-                                        roomResponse.getId(),
-                                        PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "id")))
-                                .stream()
-                                .sorted(Comparator.comparing(Message::getId))
-                                .collect(Collectors.toList()))
-                        : Collections.emptyList());
+        clientRoomExistenceResponse.setRoomRecentMessages(roomResponse != null
+                ? chatService.listMessages(authentication, roomResponse.getId(), null, null, 30)
+                : Collections.emptyList());
+        clientRoomExistenceResponse.setBotEnabled(chatService.isBotActive());
 
         return ResponseEntity.status(HttpStatus.OK).body(clientRoomExistenceResponse);
     }
 
     @PostMapping("/create-room")
     public ResponseEntity<RoomResponse> createRoom(Authentication authentication) {
-        String username = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(chatService.getOrCreateRoom(authentication.getName()));
+    }
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+    // before: cuộn xem tin cũ; after: lấy tin bị lỡ khi kết nối lại
+    @GetMapping("/messages")
+    public ResponseEntity<List<MessageResponse>> getMessages(Authentication authentication,
+                                                             @RequestParam Long roomId,
+                                                             @RequestParam(required = false) @Nullable Long before,
+                                                             @RequestParam(required = false) @Nullable Long after,
+                                                             @RequestParam(defaultValue = "30") int size) {
+        return ResponseEntity.ok(chatService.listMessages(authentication, roomId, before, after, size));
+    }
 
-        Room room = new Room();
-        room.setName(user.getFullname());
-        room.setUser(user);
+    @PostMapping("/request-agent")
+    public ResponseEntity<RoomResponse> requestAgent(Authentication authentication) {
+        return ResponseEntity.ok(chatService.requestAgent(authentication));
+    }
 
-        Room roomAfterSave = roomRepository.save(room);
+    @PostMapping("/read")
+    public ResponseEntity<Map<String, Object>> markRead(Authentication authentication, @RequestParam Long roomId) {
+        chatService.markRead(authentication, roomId);
+        // Trả JSON rỗng thay vì 204 để client dùng chung postWithToken (luôn parse JSON)
+        return ResponseEntity.ok(Collections.emptyMap());
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body(roomMapper.entityToResponse(roomAfterSave));
+    @PostMapping("/resolve")
+    public ResponseEntity<RoomResponse> resolve(Authentication authentication, @RequestParam Long roomId) {
+        return ResponseEntity.ok(chatService.resolve(authentication, roomId));
     }
 
 }

@@ -8,5 +8,6 @@ public enum NotificationType {
     REVIEW,
     ORDER,
     CHECKOUT_PAYPAL_SUCCESS,
-    CHECKOUT_PAYPAL_CANCEL
+    CHECKOUT_PAYPAL_CANCEL,
+    CHAT
 }

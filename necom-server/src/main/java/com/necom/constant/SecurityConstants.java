@@ -2,7 +2,10 @@ package com.necom.constant;
 
 public interface SecurityConstants {
     String[] ADMIN_API_PATHS = {
-            "/api/auth/info"
+            "/api/auth/info",
+            "/api/chat/**",
+            "/api/rooms/**",
+            "/api/messages/**"
     };
 
     String[] CLIENT_API_PATHS = {

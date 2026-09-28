@@ -307,6 +307,7 @@ export interface ClientRoomExistenceResponse {
   roomExistence: boolean;
   roomResponse: RoomResponse;
   roomRecentMessages: MessageResponse[];
+  botEnabled: boolean;
 }
 
 // ORDER 2

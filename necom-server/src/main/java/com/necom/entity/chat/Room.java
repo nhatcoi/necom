@@ -12,8 +12,11 @@ import lombok.experimental.Accessors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -42,4 +45,19 @@ public class Room extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "last_message_id", referencedColumnName = "id", unique = true)
     private Message lastMessage;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoomStatus status = RoomStatus.BOT;
+
+    // Tư vấn viên đang phụ trách phòng
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+
+    @Column(name = "customer_last_read_id")
+    private Long customerLastReadId;
+
+    @Column(name = "agent_last_read_id")
+    private Long agentLastReadId;
 }

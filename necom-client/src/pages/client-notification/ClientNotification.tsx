@@ -32,7 +32,8 @@ import {
   FileBarcode,
   Icon,
   Marquee,
-  Message
+  Message,
+  Messages
 } from 'tabler-icons-react';
 import { ClientUserNavbar } from 'components';
 import DateUtils from 'utils/DateUtils';
@@ -170,6 +171,10 @@ const notificationIconMap: Record<NotificationType, NotificationFigure> = {
   [NotificationType.CHECKOUT_PAYPAL_CANCEL]: {
     icon: BrandPaypal,
     color: 'pink',
+  },
+  [NotificationType.CHAT]: {
+    icon: Messages,
+    color: 'teal',
   },
 };
 

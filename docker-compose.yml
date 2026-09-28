@@ -13,6 +13,7 @@ services:
       - ./necom-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
       - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/03-data.sql
       - ./necom-server/src/main/resources/home-living-seed.sql:/docker-entrypoint-initdb.d/04-home-living-seed.sql
+      - ./necom-server/src/main/resources/chat-migration.sql:/docker-entrypoint-initdb.d/05-chat-migration.sql
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     networks:
@@ -57,6 +58,14 @@ services:
       GHN_TOKEN: ${GHN_TOKEN:-}
       GHN_SHOP_ID: ${GHN_SHOP_ID:-}
       GHN_API_PATH: ${GHN_API_PATH:-https://dev-online-gateway.ghn.vn/shiip/public-api/v2}
+      # Chatbot CSKH (giá trị thật chỉ nằm trong .env, không commit)
+      CHATBOT_ENABLED: ${CHATBOT_ENABLED:-true}
+      CHATBOT_BASE_URL: ${CHATBOT_BASE_URL:-}
+      CHATBOT_API_KEY: ${CHATBOT_API_KEY:-}
+      CHATBOT_MODEL: ${CHATBOT_MODEL:-}
+    # Cho phép container gọi dịch vụ chạy trên máy host (vd. AI proxy) qua host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "${SERVER_PORT:-8085}:8085"
 

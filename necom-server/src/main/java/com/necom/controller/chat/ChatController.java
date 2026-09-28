@@ -1,50 +1,49 @@
 package com.necom.controller.chat;
 
-import com.necom.constant.AppConstants;
-import com.necom.dto.ListResponse;
-import com.necom.dto.chat.MessageRequest;
-import com.necom.dto.chat.MessageResponse;
-import com.necom.service.chat.MessageService;
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
+import com.necom.dto.chat.ChatSendRequest;
+import com.necom.entity.chat.SenderType;
+import com.necom.service.chat.ChatService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 
-@RestController
-@RequestMapping("/api")
-@AllArgsConstructor
-@CrossOrigin(AppConstants.FRONTEND_HOST)
+import java.security.Principal;
+import java.util.Map;
+
+@Controller
+@RequiredArgsConstructor
+@Slf4j
 public class ChatController {
 
-    private SimpMessagingTemplate simpMessagingTemplate;
-    private MessageService messageService;
+    private final ChatService chatService;
 
+    // Người gửi lấy từ Principal (JWT ở frame CONNECT), phòng lấy từ destination — không tin payload
     @MessageMapping("/{roomId}")
-    public void sendMessage(@DestinationVariable String roomId, @Payload MessageRequest message) {
-        MessageResponse messageResponse = messageService.save(message);
-        simpMessagingTemplate.convertAndSend("/chat/receive/" + roomId, messageResponse);
+    public void sendMessage(@DestinationVariable Long roomId, @Payload ChatSendRequest request, Principal principal) {
+        chatService.send((Authentication) principal, roomId, request);
     }
 
-    @GetMapping("/messages")
-    public ResponseEntity<ListResponse<MessageResponse>> getAllMessages(
-            @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-            @RequestParam(name = "size", defaultValue = "20") int size,
-            @RequestParam(name = "sort", defaultValue = AppConstants.DEFAULT_SORT) String sort,
-            @RequestParam(name = "filter", required = false) @Nullable String filter,
-            @RequestParam(name = "search", required = false) @Nullable String search,
-            @RequestParam(name = "all", required = false) boolean all
-    ) {
-        ListResponse<MessageResponse> messageResponses = messageService.findAll(page, size, sort, filter, search, all);
-        return ResponseEntity.status(HttpStatus.OK).body(messageResponses);
+    @MessageMapping("/{roomId}/typing")
+    public void typing(@DestinationVariable Long roomId, @Payload Map<String, Object> body, Principal principal) {
+        Authentication authentication = (Authentication) principal;
+        if (!chatService.canAccessRoom(authentication, roomId)) {
+            return;
+        }
+        boolean active = Boolean.TRUE.equals(body.get("active"));
+        boolean staff = ChatService.isStaff(authentication);
+        // Khách gõ: chỉ báo cho nhân viên; nhân viên gõ: báo cho khách
+        chatService.publishTyping(roomId, staff ? SenderType.AGENT : SenderType.CUSTOMER,
+                authentication.getName(), active, staff);
+    }
+
+    @MessageExceptionHandler
+    public void handleException(Exception e) {
+        log.warn("Chat STOMP error: {}", e.getMessage());
     }
 
 }

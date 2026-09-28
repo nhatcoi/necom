@@ -1,53 +1,29 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { ActionIcon, Affix, Anchor, Button, Card, Group, Tooltip, useMantineColorScheme } from '@mantine/core';
+import { ActionIcon, Affix, Anchor, Button, Card, Group, useMantineColorScheme } from '@mantine/core';
 import { ClientFooter, ClientHeader, LoadingMiddleware } from 'components';
-import { Messages, MoonStars, Sun } from 'tabler-icons-react';
+import { MoonStars, Sun } from 'tabler-icons-react';
 import { useDisclosure, useHotkeys } from '@mantine/hooks';
 import { useIsFetching } from 'react-query';
 import useAuthStore from 'stores/use-auth-store';
+import ChatProvider from 'components/ChatWidget/ChatProvider';
+import ChatLauncher from 'components/ChatWidget/ChatLauncher';
 
 function Client() {
   const isLoading = useIsFetching();
 
-  const { user } = useAuthStore();
-
   return (
     <>
-      <LoadingMiddleware isLoading={!!isLoading}>
-        <ClientHeader/>
-        <Outlet/>
-        <ClientFooter/>
-      </LoadingMiddleware>
-      {user && <ChatButton/>}
+      <ChatProvider>
+        <LoadingMiddleware isLoading={!!isLoading}>
+          <ClientHeader/>
+          <Outlet/>
+          <ClientFooter/>
+        </LoadingMiddleware>
+        <ChatLauncher/>
+      </ChatProvider>
       <Shortcut/>
     </>
-  );
-}
-
-function ChatButton() {
-  return (
-    <Affix position={{ bottom: 20, right: 20 }}>
-      <Card shadow="sm" p="xs" radius="xl">
-        <Tooltip
-          label="Yêu cầu tư vấn mua hàng"
-          position="left"
-          placement="center"
-          withArrow
-        >
-          <ActionIcon
-            component={Link}
-            to="/user/chat"
-            color="teal"
-            size="xl"
-            radius="xl"
-            variant="light"
-          >
-            <Messages/>
-          </ActionIcon>
-        </Tooltip>
-      </Card>
-    </Affix>
   );
 }
 

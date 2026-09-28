@@ -67,6 +67,8 @@ class ResourceURL {
 
   static ROOM = apiPath + '/rooms';
   static MESSAGE = apiPath + '/messages';
+  static ADMIN_CHAT_ROOMS = apiPath + '/chat/rooms';
+  static ADMIN_CHAT_ROOM = (roomId: number) => apiPath + `/chat/rooms/${roomId}`;
 
   static STATISTIC = apiPath + '/stats';
 
@@ -94,6 +96,10 @@ class ResourceURL {
   static CLIENT_CHAT = clientApiPath + '/chat';
   static CLIENT_CHAT_GET_ROOM = ResourceURL.CLIENT_CHAT + '/get-room';
   static CLIENT_CHAT_CREATE_ROOM = ResourceURL.CLIENT_CHAT + '/create-room';
+  static CLIENT_CHAT_MESSAGES = ResourceURL.CLIENT_CHAT + '/messages';
+  static CLIENT_CHAT_REQUEST_AGENT = ResourceURL.CLIENT_CHAT + '/request-agent';
+  static CLIENT_CHAT_READ = (roomId: number) => ResourceURL.CLIENT_CHAT + `/read?roomId=${roomId}`;
+  static CLIENT_CHAT_RESOLVE = (roomId: number) => ResourceURL.CLIENT_CHAT + `/resolve?roomId=${roomId}`;
   static CLIENT_REWARD = clientApiPath + '/rewards';
 
   // AUTHENTICATION

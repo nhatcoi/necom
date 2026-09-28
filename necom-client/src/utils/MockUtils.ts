@@ -176,6 +176,11 @@ class MockUtils {
         fullname: 'Admin',
         email: '',
       },
+      roomId: 1,
+      type: 'TEXT',
+      senderType: 'AGENT',
+      payload: null,
+      clientMsgId: null,
     },
     {
       id: 1,
@@ -189,6 +194,11 @@ class MockUtils {
         fullname: 'Daniel',
         email: '',
       },
+      roomId: 1,
+      type: 'TEXT',
+      senderType: 'CUSTOMER',
+      payload: null,
+      clientMsgId: null,
     },
   ];
 }

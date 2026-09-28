@@ -75,8 +75,6 @@ import WaybillManage, { WaybillCreate, WaybillUpdate } from 'pages/waybill';
 import ClientOrder from 'pages/client-order';
 import ClientOrderDetail from 'pages/client-order-detail';
 import ClientChat from 'pages/client-chat';
-import { StompSessionProvider } from 'react-stomp-hooks';
-import ApplicationConstants from 'constants/ApplicationConstants';
 import ChatDashboard from 'pages/chat';
 import ClientSupport from 'pages/client-support/ClientSupport';
 import ClientAbout from 'pages/client-about/ClientAbout';
@@ -211,9 +209,7 @@ function App() {
                   )}/>
                   <Route path="/user/chat" element={(
                     <ProtectedRoute>
-                      <StompSessionProvider url={ApplicationConstants.WEBSOCKET_PATH}>
-                        <ClientChat/>
-                      </StompSessionProvider>
+                      <ClientChat/>
                     </ProtectedRoute>
                   )}/>
                   <Route path="/user/reward" element={(
@@ -390,11 +386,7 @@ function App() {
                   <Route path={ManagerPath.PROMOTION + '/create'} element={<PromotionCreate/>}/>
                   <Route path={ManagerPath.PROMOTION + '/update/:id'} element={<PromotionUpdate/>}/>
                   {/* CHAT */}
-                  <Route path={ManagerPath.CHAT} element={
-                    <StompSessionProvider url={ApplicationConstants.WEBSOCKET_PATH}>
-                      <ChatDashboard/>
-                    </StompSessionProvider>
-                  }/>
+                  <Route path={ManagerPath.CHAT} element={<ChatDashboard/>}/>
                   {/* NOTIFICATION */}
                   <Route path={ManagerPath.NOTIFICATION} element={<AdminNotification/>}/>
                   {/* ACCOUNT */}

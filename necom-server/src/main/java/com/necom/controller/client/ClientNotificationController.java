@@ -85,23 +85,19 @@ public class ClientNotificationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long id,
+    public ResponseEntity<NotificationResponse> updateNotification(Authentication authentication,
+                                                                   @PathVariable Long id,
                                                                    @RequestBody NotificationRequest request) {
+        // Chỉ sửa được thông báo của chính mình
         NotificationResponse notificationResponse = notificationRepository
                 .findById(id)
-                .map(existingEntity -> notificationMapper.partialUpdate(existingEntity, request))
+                .filter(notification -> notification.getUser().getUsername().equals(authentication.getName()))
+                // Khách chỉ được đổi trạng thái đã đọc, không được đổi người nhận hay nội dung
+                .map(existingEntity -> existingEntity.setStatus(request.getStatus()))
                 .map(notificationRepository::save)
                 .map(notificationMapper::entityToResponse)
                 .orElseThrow(() -> new ResourceNotFoundException(ResourceName.NOTIFICATION, FieldName.ID, id));
         return ResponseEntity.status(HttpStatus.OK).body(notificationResponse);
-    }
-
-    @PostMapping("/push-events")
-    public ResponseEntity<NotificationResponse> pushNotification(@RequestBody NotificationRequest request) {
-        Notification notification = notificationRepository.save(notificationMapper.requestToEntity(request));
-        NotificationResponse notificationResponse = notificationMapper.entityToResponse(notification);
-        notificationService.pushNotification(notification.getUser().getUsername(), notificationResponse);
-        return ResponseEntity.status(HttpStatus.CREATED).body(notificationResponse);
     }
 
 }

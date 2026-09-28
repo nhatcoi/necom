@@ -17,4 +17,8 @@ public interface MessageMapper extends GenericMapper<Message, MessageRequest, Me
     @Mapping(source = "roomId", target = "room")
     Message requestToEntity(MessageRequest request);
 
+    @Override
+    @Mapping(source = "room.id", target = "roomId")
+    MessageResponse entityToResponse(Message entity);
+
 }
