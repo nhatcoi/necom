@@ -1,4 +1,5 @@
 import {
+  Anchor,
   Badge,
   Button,
   Center,
@@ -246,20 +247,24 @@ function ClientHeader() {
               >
                 <CategoryMenu setOpenedCategoryMenu={setOpenedCategoryMenu}/>
               </Popover>
-              <Button variant="subtle" radius="md">
+              <Button component={Link} to="/search?sort=newest" variant="subtle" radius="md">
                 Sản phẩm mới
               </Button>
-              <Button variant="subtle" color="green" radius="md">
+              <Button component={Link} to="/search?sort=trending" variant="subtle" color="green" radius="md">
                 Sản phẩm xu hướng
               </Button>
-              <Button variant="subtle" color="pink" radius="md">
+              <Button component={Link} to="/search?saleable=true" variant="subtle" color="pink" radius="md">
                 Khuyến mại
               </Button>
             </Group>
-            <Group spacing="xs">
-              <Badge color="pink" size="xs" variant="filled">Hot</Badge>
-              <Text size="sm" color="dimmed">Miễn phí giao hàng cho đơn hàng trên 1 triệu đồng</Text>
-            </Group>
+            <Tooltip label="Xem chi tiết chính sách miễn phí vận chuyển" withArrow radius="md">
+              <Anchor component={Link} to="/support/shipping" sx={{ textDecoration: 'none' }}>
+                <Group spacing="xs" sx={{ cursor: 'pointer' }}>
+                  <Badge color="pink" size="xs" variant="filled">Hot</Badge>
+                  <Text size="sm" color="dimmed">Miễn phí giao hàng cho đơn hàng trên 1 triệu đồng</Text>
+                </Group>
+              </Anchor>
+            </Tooltip>
           </Group>
         </Stack>
       </Container>

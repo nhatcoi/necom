@@ -78,6 +78,11 @@ import ClientChat from 'pages/client-chat';
 import { StompSessionProvider } from 'react-stomp-hooks';
 import ApplicationConstants from 'constants/ApplicationConstants';
 import ChatDashboard from 'pages/chat';
+import ClientSupport from 'pages/client-support/ClientSupport';
+import ClientAbout from 'pages/client-about/ClientAbout';
+import ClientCareers from 'pages/client-careers/ClientCareers';
+import ClientPartners from 'pages/client-partners/ClientPartners';
+import ClientContact from 'pages/client-contact/ClientContact';
 import ClientPaymentSuccess from 'pages/client-payment-success';
 import ClientPaymentCancel from 'pages/client-payment-cancel';
 import AdminNotification from 'pages/admin-notification';
@@ -131,6 +136,12 @@ function App() {
                   <Route path="/all-categories" element={<ClientAllCategories/>}/>
                   <Route path="/category/:slug" element={<ClientCategory/>}/>
                   <Route path="/search" element={<ClientSearch/>}/>
+                  <Route path="/support/:slug" element={<ClientSupport/>}/>
+                  <Route path="/support" element={<Navigate to="/support/faq" replace/>}/>
+                  <Route path="/about" element={<ClientAbout/>}/>
+                  <Route path="/careers" element={<ClientCareers/>}/>
+                  <Route path="/partners" element={<ClientPartners/>}/>
+                  <Route path="/contact" element={<ClientContact/>}/>
                   <Route path="/signin" element={<ClientSignin/>}/>
                   <Route path="/user" element={(
                     <ProtectedRoute>

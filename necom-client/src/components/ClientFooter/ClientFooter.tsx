@@ -70,12 +70,12 @@ function ClientFooter() {
                 <Headset size={52} color={theme.colors[theme.primaryColor][6]} strokeWidth={1.25}/>
                 <Stack spacing={theme.spacing.xs / 4}>
                   <Text size="sm" color="dimmed">Tổng đài hỗ trợ</Text>
-                  <Text size="xl">(024) 3535 7272, (028) 35 111 222</Text>
+                  <Text size="xl">1900 6868, (024) 7300 8899</Text>
                 </Stack>
               </Group>
               <Stack spacing={theme.spacing.xs / 2}>
                 <Text weight={500}>Địa chỉ liên hệ</Text>
-                <Text>Tòa nhà Bitexco, Quận 1, Thành phố Hồ Chí Minh</Text>
+                <Text>Số 68 Đường Quang Trung, Phường Vạn Phúc, Quận Hà Đông, Hà Nội</Text>
               </Stack>
               <Group spacing="sm">
                 <ActionIcon color="blue" size="xl" radius="xl" variant="light">
@@ -99,13 +99,13 @@ function ClientFooter() {
                 <Stack>
                   <Text weight={500}>Hỗ trợ khách hàng</Text>
                   <Stack spacing={theme.spacing.xs}>
-                    <Anchor component={Link} to="/">Câu hỏi thường gặp</Anchor>
-                    <Anchor component={Link} to="/">Hướng dẫn đặt hàng</Anchor>
-                    <Anchor component={Link} to="/">Phương thức vận chuyển</Anchor>
-                    <Anchor component={Link} to="/">Chính sách đổi trả</Anchor>
-                    <Anchor component={Link} to="/">Chính sách thanh toán</Anchor>
-                    <Anchor component={Link} to="/">Giải quyết khiếu nại</Anchor>
-                    <Anchor component={Link} to="/">Chính sách bảo mật</Anchor>
+                    <Anchor component={Link} to="/support/faq">Câu hỏi thường gặp</Anchor>
+                    <Anchor component={Link} to="/support/order-guide">Hướng dẫn đặt hàng</Anchor>
+                    <Anchor component={Link} to="/support/shipping">Phương thức vận chuyển</Anchor>
+                    <Anchor component={Link} to="/support/return-policy">Chính sách đổi trả</Anchor>
+                    <Anchor component={Link} to="/support/payment-policy">Chính sách thanh toán</Anchor>
+                    <Anchor component={Link} to="/support/complaint">Giải quyết khiếu nại</Anchor>
+                    <Anchor component={Link} to="/support/privacy">Chính sách bảo mật</Anchor>
                   </Stack>
                 </Stack>
               </Grid.Col>
@@ -114,10 +114,10 @@ function ClientFooter() {
                   <Stack>
                     <Text weight={500}>Giới thiệu</Text>
                     <Stack spacing={theme.spacing.xs}>
-                      <Anchor component={Link} to="/">Về Công ty</Anchor>
-                      <Anchor component={Link} to="/">Tuyển dụng</Anchor>
-                      <Anchor component={Link} to="/">Hợp tác</Anchor>
-                      <Anchor component={Link} to="/">Liên hệ mua hàng</Anchor>
+                      <Anchor component={Link} to="/about">Về Công ty</Anchor>
+                      <Anchor component={Link} to="/careers">Tuyển dụng</Anchor>
+                      <Anchor component={Link} to="/partners">Hợp tác</Anchor>
+                      <Anchor component={Link} to="/contact">Liên hệ mua hàng</Anchor>
                     </Stack>
                   </Stack>
                   <Group>
