@@ -28,12 +28,34 @@ import useTitle from 'hooks/use-title';
 function ClientSearch() {
   const theme = useMantineTheme();
 
-  const searchQuery = new URLSearchParams(useLocation().search).get('q');
-  useTitle(`Kết quả tìm kiếm cho "${searchQuery}"`);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('q');
+  const sortParam = searchParams.get('sort');
+  const saleableParam = searchParams.get('saleable');
 
   const [activePage, setActivePage] = useState(1);
-  const [activeSort, setActiveSort] = useState<string | null>(null);
-  const [activeSaleable, setActiveSaleable] = useState(false);
+  const [activeSort, setActiveSort] = useState<string | null>(sortParam);
+  const [activeSaleable, setActiveSaleable] = useState(saleableParam === 'true');
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setActiveSort(params.get('sort'));
+    setActiveSaleable(params.get('saleable') === 'true');
+    setActivePage(1);
+  }, [location.search]);
+
+  let pageTitle = 'Tất cả sản phẩm';
+  if (searchQuery) {
+    pageTitle = `Kết quả tìm kiếm cho "${searchQuery}"`;
+  } else if (activeSort === 'newest') {
+    pageTitle = 'Sản phẩm mới nhất';
+  } else if (activeSort === 'trending') {
+    pageTitle = 'Sản phẩm xu hướng & bán chạy';
+  } else if (activeSaleable) {
+    pageTitle = 'Sản phẩm khuyến mại & ưu đãi';
+  }
+  useTitle(`${pageTitle} | Necom`);
 
   const requestParams = {
     page: activePage,
@@ -122,7 +144,13 @@ function ClientSearch() {
         <Stack spacing={theme.spacing.xl * 1.5}>
           <Card radius="md" shadow="sm" p="lg">
             <Title order={2}>
-              Kết quả tìm kiếm cho &quot;<Text component="span" color="yellow" inherit>{searchQuery}</Text>&quot;
+              {searchQuery ? (
+                <>
+                  Kết quả tìm kiếm cho &quot;<Text component="span" color="yellow" inherit>{searchQuery}</Text>&quot;
+                </>
+              ) : (
+                pageTitle
+              )}
             </Title>
           </Card>
 
@@ -133,9 +161,11 @@ function ClientSearch() {
                 <Text weight={500} mr={theme.spacing.xs}>Sắp xếp theo</Text>
                 <RadioGroup
                   value={activeSort || ''}
-                  onChange={(value) => setActiveSort((value as '' | 'lowest-price' | 'highest-price') || null)}
+                  onChange={(value) => setActiveSort((value as '' | 'newest' | 'trending' | 'lowest-price' | 'highest-price') || null)}
                 >
-                  <Radio value="" label="Mới nhất"/>
+                  <Radio value="" label="Mặc định"/>
+                  <Radio value="newest" label="Mới nhất"/>
+                  <Radio value="trending" label="Xu hướng"/>
                   <Radio value="lowest-price" label="Giá thấp → cao"/>
                   <Radio value="highest-price" label="Giá cao → thấp"/>
                 </RadioGroup>
