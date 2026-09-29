@@ -1,180 +1,25 @@
 import React from 'react';
-import {
-  ActionIcon,
-  Anchor,
-  Box,
-  Center,
-  Container,
-  createStyles,
-  Grid,
-  Group,
-  SegmentedControl,
-  Stack,
-  Text,
-  ThemeIcon,
-  useMantineColorScheme,
-  useMantineTheme
-} from '@mantine/core';
-import { NecomLogo } from 'components';
-import {
-  BrandFacebook,
-  BrandInstagram,
-  BrandMastercard,
-  BrandTiktok,
-  BrandVisa,
-  BrandYoutube,
-  BuildingBank,
-  CurrencyDong,
-  Headset,
-  Moon,
-  Sun
-} from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
-
-const useStyles = createStyles((theme) => ({
-  footer: {
-    marginTop: theme.spacing.xl * 2,
-    paddingTop: theme.spacing.xl * 2,
-    paddingBottom: theme.spacing.xl * 2,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-  },
-
-  footerLinks: {
-    [theme.fn.smallerThan('md')]: {
-      marginTop: theme.spacing.xl,
-    },
-  },
-
-  afterFooter: {
-    marginTop: theme.spacing.xl * 2,
-    paddingTop: theme.spacing.xl,
-    borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]}`,
-  },
-}));
+import { ArrowUpRight } from 'tabler-icons-react';
 
 function ClientFooter() {
-  const theme = useMantineTheme();
-  const { classes } = useStyles();
-
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-
   return (
-    <footer className={classes.footer}>
-      <Container size="xl">
-        <Grid>
-          <Grid.Col md={6}>
-            <Stack spacing={theme.spacing.lg * 1.75}>
-              <NecomLogo width={135}/>
-              <Group>
-                <Headset size={52} color={theme.colors[theme.primaryColor][6]} strokeWidth={1.25}/>
-                <Stack spacing={theme.spacing.xs / 4}>
-                  <Text size="sm" color="dimmed">Tổng đài hỗ trợ</Text>
-                  <Text size="xl">1900 6868, (024) 7300 8899</Text>
-                </Stack>
-              </Group>
-              <Stack spacing={theme.spacing.xs / 2}>
-                <Text weight={500}>Địa chỉ liên hệ</Text>
-                <Text>Số 68 Đường Quang Trung, Phường Vạn Phúc, Quận Hà Đông, Hà Nội</Text>
-              </Stack>
-              <Group spacing="sm">
-                <ActionIcon color="blue" size="xl" radius="xl" variant="light">
-                  <BrandFacebook strokeWidth={1.5}/>
-                </ActionIcon>
-                <ActionIcon color="blue" size="xl" radius="xl" variant="light">
-                  <BrandYoutube strokeWidth={1.5}/>
-                </ActionIcon>
-                <ActionIcon color="blue" size="xl" radius="xl" variant="light">
-                  <BrandInstagram strokeWidth={1.5}/>
-                </ActionIcon>
-                <ActionIcon color="blue" size="xl" radius="xl" variant="light">
-                  <BrandTiktok strokeWidth={1.5}/>
-                </ActionIcon>
-              </Group>
-            </Stack>
-          </Grid.Col>
-          <Grid.Col md={6}>
-            <Grid>
-              <Grid.Col xs={6} className={classes.footerLinks}>
-                <Stack>
-                  <Text weight={500}>Hỗ trợ khách hàng</Text>
-                  <Stack spacing={theme.spacing.xs}>
-                    <Anchor component={Link} to="/support/faq">Câu hỏi thường gặp</Anchor>
-                    <Anchor component={Link} to="/support/order-guide">Hướng dẫn đặt hàng</Anchor>
-                    <Anchor component={Link} to="/support/shipping">Phương thức vận chuyển</Anchor>
-                    <Anchor component={Link} to="/support/return-policy">Chính sách đổi trả</Anchor>
-                    <Anchor component={Link} to="/support/payment-policy">Chính sách thanh toán</Anchor>
-                    <Anchor component={Link} to="/support/complaint">Giải quyết khiếu nại</Anchor>
-                    <Anchor component={Link} to="/support/privacy">Chính sách bảo mật</Anchor>
-                  </Stack>
-                </Stack>
-              </Grid.Col>
-              <Grid.Col xs={6} className={classes.footerLinks}>
-                <Stack justify="space-between" sx={{ height: '100%' }}>
-                  <Stack>
-                    <Text weight={500}>Giới thiệu</Text>
-                    <Stack spacing={theme.spacing.xs}>
-                      <Anchor component={Link} to="/about">Về Công ty</Anchor>
-                      <Anchor component={Link} to="/careers">Tuyển dụng</Anchor>
-                      <Anchor component={Link} to="/partners">Hợp tác</Anchor>
-                      <Anchor component={Link} to="/contact">Liên hệ mua hàng</Anchor>
-                      <Anchor component={Link} to="/documentation">Tài liệu dự án</Anchor>
-                    </Stack>
-                  </Stack>
-                  <Group>
-                    <SegmentedControl
-                      size="xs"
-                      value={colorScheme}
-                      onChange={(value: 'light' | 'dark') => toggleColorScheme(value)}
-                      data={[
-                        {
-                          value: 'light',
-                          label: (
-                            <Center>
-                              <Sun size={14} strokeWidth={1.5}/>
-                              <Box ml={10}>Sáng</Box>
-                            </Center>
-                          ),
-                        },
-                        {
-                          value: 'dark',
-                          label: (
-                            <Center>
-                              <Moon size={14} strokeWidth={1.5}/>
-                              <Box ml={10}>Tối</Box>
-                            </Center>
-                          ),
-                        },
-                      ]}
-                    />
-                  </Group>
-                </Stack>
-              </Grid.Col>
-            </Grid>
-          </Grid.Col>
-        </Grid>
-        <Group className={classes.afterFooter} position="apart">
-          <Text color="dimmed" size="sm">
-            © 2026 NECOM — Nest Commerce. Everything for your space. Mọi thứ cho không gian sống.
-          </Text>
-          <Group spacing="xs">
-            <ThemeIcon variant="outline" color="gray" sx={{ width: 50, height: 30 }}>
-              <BrandVisa strokeWidth={1.5}/>
-            </ThemeIcon>
-            <ThemeIcon variant="outline" color="gray" sx={{ width: 50, height: 30 }}>
-              <BrandMastercard strokeWidth={1.5}/>
-            </ThemeIcon>
-            <ThemeIcon variant="outline" color="gray" sx={{ width: 50, height: 30 }}>
-              <BuildingBank strokeWidth={1.5}/>
-            </ThemeIcon>
-            <ThemeIcon variant="outline" color="gray" sx={{ width: 50, height: 30 }}>
-              <CurrencyDong strokeWidth={1.5}/>
-            </ThemeIcon>
-          </Group>
-        </Group>
-      </Container>
+    <footer className="nest-footer">
+      <div className="nest-container">
+        <div className="nest-footer-grid">
+          <div className="nest-footer-brand">
+            <Link to="/" className="nest-logo" aria-label="Nest — Trang chủ">nest.</Link>
+            <p>Nội thất cho những tổ ấm thật.</p>
+            <p>Cùng bạn kiến tạo một không gian<br/>ấm áp, tinh tế và mang dấu ấn riêng.</p>
+            <Link className="nest-text-link" to="/about">Câu chuyện Nest <ArrowUpRight size={16}/></Link>
+          </div>
+          <div><h2>Khám phá</h2><Link to="/search">Tất cả sản phẩm</Link><Link to="/#spaces">Theo không gian</Link><Link to="/#collections">Bộ sưu tập</Link><Link to="/#journal">Nhật ký Nest</Link><Link to="/about">Về chúng tôi</Link></div>
+          <div><h2>Luôn bên bạn</h2><Link to="/support/order-guide">Hướng dẫn mua hàng</Link><Link to="/support/shipping">Giao hàng</Link><Link to="/support/return-policy">Chính sách đổi trả</Link><Link to="/support/payment-policy">Thanh toán</Link><Link to="/support/faq">Câu hỏi thường gặp</Link><Link to="/support/complaint">Giải quyết khiếu nại</Link></div>
+          <div><h2>Kết nối với Nest</h2><a href="tel:19006868">1900 6868</a><a href="tel:02473008899">(024) 7300 8899</a><p>Số 68 Đường Quang Trung,<br/>Phường Vạn Phúc, Quận Hà Đông,<br/>Hà Nội</p><Link className="nest-text-link" to="/contact">Gửi lời nhắn <ArrowUpRight size={16}/></Link></div>
+        </div>
+        <div className="nest-footer-bottom"><span>© {new Date().getFullYear()} NECOM · Nest Commerce</span><div><Link to="/support/privacy">Bảo mật</Link><Link to="/partners">Hợp tác</Link><Link to="/careers">Tuyển dụng</Link><Link to="/documentation">Tài liệu dự án</Link></div><span>Nhà, theo cách bạn yêu.</span></div>
+      </div>
     </footer>
   );
 }
-
 export default React.memo(ClientFooter);

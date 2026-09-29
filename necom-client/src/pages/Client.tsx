@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { ActionIcon, Affix, Anchor, Button, Card, Group, useMantineColorScheme } from '@mantine/core';
+import { ActionIcon, Affix, Anchor, Button, Card, Group, MantineProvider, useMantineColorScheme } from '@mantine/core';
 import { ClientFooter, ClientHeader, LoadingMiddleware } from 'components';
 import { MoonStars, Sun } from 'tabler-icons-react';
 import { useDisclosure, useHotkeys } from '@mantine/hooks';
@@ -8,22 +8,25 @@ import { useIsFetching } from 'react-query';
 import useAuthStore from 'stores/use-auth-store';
 import ChatProvider from 'components/ChatWidget/ChatProvider';
 import ChatLauncher from 'components/ChatWidget/ChatLauncher';
+import 'components/Nest/nest.css';
 
 function Client() {
   const isLoading = useIsFetching();
 
   return (
-    <>
-      <ChatProvider>
-        <LoadingMiddleware isLoading={!!isLoading}>
-          <ClientHeader/>
-          <Outlet/>
-          <ClientFooter/>
-        </LoadingMiddleware>
-        <ChatLauncher/>
-      </ChatProvider>
-      <Shortcut/>
-    </>
+    <MantineProvider theme={{ primaryColor: 'nest', colors: { nest: ['#f4f5ed', '#e8eadb', '#d7dac3', '#bcc3a0', '#9da67d', '#7d8961', '#626b50', '#515a41', '#414934', '#323a28'] } }}>
+      <div className="nest-storefront">
+        <ChatProvider>
+          <LoadingMiddleware isLoading={!!isLoading}>
+            <ClientHeader/>
+            <div id="main-content" tabIndex={-1}><Outlet/></div>
+            <ClientFooter/>
+          </LoadingMiddleware>
+          <ChatLauncher/>
+        </ChatProvider>
+        <Shortcut/>
+      </div>
+    </MantineProvider>
   );
 }
 

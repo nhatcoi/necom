@@ -1,295 +1,118 @@
-import {
-  Anchor,
-  Badge,
-  Button,
-  Center,
-  Container,
-  createStyles,
-  Group,
-  Indicator,
-  Menu,
-  Popover,
-  Stack,
-  Text,
-  TextInput,
-  Tooltip,
-  UnstyledButton,
-  useMantineTheme
-} from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { NecomLogo } from 'components';
-import {
-  Alarm,
-  Award,
-  Bell,
-  FileBarcode,
-  Fingerprint,
-  Heart,
-  List,
-  Login,
-  Logout,
-  MessageCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Star,
-  User,
-  UserCircle
-} from 'tabler-icons-react';
-import { Link, useNavigate } from 'react-router-dom';
-import CategoryMenu from 'components/ClientHeader/CategoryMenu';
-import { useElementSize } from '@mantine/hooks';
-import useAuthStore from 'stores/use-auth-store';
-import NotifyUtils from 'utils/NotifyUtils';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Bell, ChevronDown, Heart, Leaf, Menu2, Search, ShoppingCart, UserCircle } from 'tabler-icons-react';
 import { useQuery } from 'react-query';
-import FetchUtils, { ErrorMessage } from 'utils/FetchUtils';
-import ResourceURL from 'constants/ResourceURL';
-import { EventInitiationResponse, NotificationResponse } from 'models/Notification';
-import MiscUtils from 'utils/MiscUtils';
+import useAuthStore from 'stores/use-auth-store';
 import useClientSiteStore from 'stores/use-client-site-store';
 import useWishlist from 'hooks/use-wishlist';
-
-const useStyles = createStyles((theme) => ({
-  header: {
-    boxShadow: theme.shadows.sm,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-    marginBottom: theme.spacing.md * 2,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
-  },
-
-  iconGroup: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    borderRadius: theme.radius.md,
-    cursor: 'pointer',
-    userSelect: 'none',
-
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
-    },
-
-    '&:active': {
-      color: theme.white,
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.blue[8] : theme.colors.blue[6],
-    },
-  },
-}));
+import FetchUtils, { ErrorMessage } from 'utils/FetchUtils';
+import ResourceURL from 'constants/ResourceURL';
+import NotifyUtils from 'utils/NotifyUtils';
+import MiscUtils from 'utils/MiscUtils';
+import { ClientCategoryResponse, CollectionWrapper } from 'types';
+import { EventInitiationResponse, NotificationResponse } from 'models/Notification';
 
 function ClientHeader() {
-  const theme = useMantineTheme();
-  const { classes } = useStyles();
-
-  const [openedCategoryMenu, setOpenedCategoryMenu] = useState(false);
-
-  const { ref: refHeaderStack, width: widthHeaderStack } = useElementSize();
-
   const { user, resetAuthState, currentTotalCartItems } = useAuthStore();
   const { totalWishes } = useWishlist();
-
-  // Search state & function
-  const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-
-  useNotificationEvents();
-
   const { newNotifications } = useClientSiteStore();
-
-  const [disabledNotificationIndicator, setDisabledNotificationIndicator] = useState(true);
+  const [search, setSearch] = useState('');
+  const [seenNotifications, setSeenNotifications] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const headerRef = useRef<HTMLElement>(null);
+  useNotificationEvents();
+  const { data: categories } = useQuery<CollectionWrapper<ClientCategoryResponse>, ErrorMessage>(
+    ['client-api', 'categories', 'getAllCategories'],
+    () => FetchUtils.get(ResourceURL.CLIENT_CATEGORY),
+    { staleTime: 300000, refetchOnWindowFocus: false }
+  );
 
   useEffect(() => {
-    if (newNotifications.length > 0) {
-      setDisabledNotificationIndicator(false);
-    }
-  }, [newNotifications.length]);
+    headerRef.current?.querySelectorAll('details[open]').forEach((item) => item.removeAttribute('open'));
+  }, [location.pathname, location.search, location.hash]);
 
-  const handleSearchInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && search.trim() !== '') {
-      navigate('/search?q=' + search.trim());
-    }
-  };
+  useEffect(() => {
+    const close = (event: MouseEvent) => {
+      headerRef.current?.querySelectorAll('details[open]').forEach((item) => {
+        if (!item.contains(event.target as Node)) item.removeAttribute('open');
+      });
+    };
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
 
-  const handleSignoutMenu = () => {
-    if (user) {
-      resetAuthState();
-      NotifyUtils.simpleSuccess('Đăng xuất thành công');
-    }
+  const submitSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (search.trim()) navigate(`/search?q=${encodeURIComponent(search.trim())}`);
   };
-
-  const handleNotificationButton = () => {
-    if (user) {
-      setDisabledNotificationIndicator(true);
-      navigate('/user/notification');
-    } else {
-      NotifyUtils.simple('Vui lòng đăng nhập để sử dụng chức năng');
-    }
+  const closeOnEscape = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Escape') return;
+    const activeMenu = (event.target as HTMLElement).closest('details');
+    headerRef.current?.querySelectorAll('details[open]').forEach((item) => item.removeAttribute('open'));
+    activeMenu?.querySelector('summary')?.focus();
   };
+  const categoryLinks = categories?.content.map((category) => (
+    <Link key={category.categorySlug} to={`/category/${category.categorySlug}`}>{category.categoryName}</Link>
+  ));
 
   return (
-    <header className={classes.header}>
-      <Container size="xl">
-        <Stack spacing={0} ref={refHeaderStack}>
-          <Group position="apart" py={theme.spacing.md}>
-            <Center component={Link} to="/">
-              <NecomLogo/>
-            </Center>
-            <TextInput
-              placeholder="Tìm bàn, ghế, đèn, đồ decor..."
-              variant="filled"
-              size="md"
-              radius="md"
-              icon={<Search size={16}/>}
-              sx={{ width: 600 }}
-              value={search}
-              onChange={(event) => setSearch(event.currentTarget.value)}
-              onKeyDown={handleSearchInput}
-            />
-            <Group spacing="xs">
-              {user && (
-                <>
-                  <Tooltip label="Giỏ hàng" position="bottom">
-                    <UnstyledButton onClick={() => navigate('/cart')}>
-                      <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
-                        <ShoppingCart strokeWidth={1}/>
-                        <Text weight={500} size="sm">{currentTotalCartItems}</Text>
-                      </Group>
-                    </UnstyledButton>
-                  </Tooltip>
-
-                  <Tooltip label="Sản phẩm yêu thích" position="bottom">
-                    <UnstyledButton onClick={() => navigate('/user/wishlist')}>
-                      <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
-                        <Heart
-                          strokeWidth={1}
-                          size={20}
-                          color={totalWishes > 0 ? theme.colors.pink[6] : 'currentColor'}
-                          fill={totalWishes > 0 ? theme.colors.pink[6] : 'none'}
-                        />
-                        {totalWishes > 0 && (
-                          <Text weight={500} size="sm" color={theme.colors.pink[6]}>
-                            {totalWishes}
-                          </Text>
-                        )}
-                      </Group>
-                    </UnstyledButton>
-                  </Tooltip>
-
-                  <Tooltip label="Đơn hàng" position="bottom">
-                    <UnstyledButton onClick={() => navigate('/order')}>
-                      <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
-                        <FileBarcode strokeWidth={1}/>
-                      </Group>
-                    </UnstyledButton>
-                  </Tooltip>
-                </>
-              )}
-
-              <Tooltip label="Thông báo" position="bottom">
-                <UnstyledButton onClick={handleNotificationButton}>
-                  <Indicator size={14} color="pink" withBorder disabled={disabledNotificationIndicator}>
-                    <Group spacing="xs" px={theme.spacing.sm} py={theme.spacing.xs} className={classes.iconGroup}>
-                      <Bell strokeWidth={1}/>
-                    </Group>
-                  </Indicator>
-                </UnstyledButton>
-              </Tooltip>
-
-              <Menu
-                placement="end"
-                control={(
-                  <Tooltip label="Tài khoản" position="bottom">
-                    <UnstyledButton>
-                      <Group
-                        spacing="xs"
-                        px={theme.spacing.sm}
-                        py={theme.spacing.xs}
-                        className={classes.iconGroup}
-                        sx={{ color: user ? theme.colors.blue[theme.colorScheme === 'dark' ? 4 : 7] : 'inherit' }}
-                      >
-                        <UserCircle strokeWidth={1}/>
-                      </Group>
-                    </UnstyledButton>
-                  </Tooltip>
-                )}
-              >
-                {user && (
-                  <>
-                    <Menu.Item icon={<User size={14}/>} component={Link} to="/user">
-                      Tài khoản
-                    </Menu.Item>
-                    <Menu.Item icon={<Settings size={14}/>} component={Link} to="/user/setting">
-                      Thiết đặt
-                    </Menu.Item>
-                    <Menu.Item icon={<Star size={14}/>} component={Link} to="/user/review">
-                      Đánh giá sản phẩm
-                    </Menu.Item>
-                    <Menu.Item icon={<Heart size={14}/>} component={Link} to="/user/wishlist">
-                      Sản phẩm yêu thích
-                    </Menu.Item>
-                    <Menu.Item icon={<Award size={14}/>} component={Link} to="/user/reward">
-                      Điểm thưởng
-                    </Menu.Item>
-                    <Menu.Item icon={<Alarm size={14}/>} component={Link} to="/user/preorder">
-                      Đặt trước sản phẩm
-                    </Menu.Item>
-                    <Menu.Item icon={<MessageCircle size={14}/>} component={Link} to="/user/chat">
-                      Yêu cầu tư vấn
-                    </Menu.Item>
-                    <Menu.Item color="pink" icon={<Logout size={14}/>} onClick={handleSignoutMenu}>
-                      Đăng xuất
-                    </Menu.Item>
-                  </>
-                )}
-                {!user && (
-                  <>
-                    <Menu.Item icon={<Login size={14}/>} component={Link} to="/signin">
-                      Đăng nhập
-                    </Menu.Item>
-                    <Menu.Item icon={<Fingerprint size={14}/>} component={Link} to="/signup">
-                      Đăng ký
-                    </Menu.Item>
-                  </>
-                )}
-              </Menu>
-            </Group>
-          </Group>
-          <Group position="apart" mb="md">
-            <Group spacing={theme.spacing.xs / 2}>
-              <Popover
-                opened={openedCategoryMenu}
-                onClose={() => setOpenedCategoryMenu(false)}
-                target={(
-                  <Button onClick={() => setOpenedCategoryMenu((o) => !o)} leftIcon={<List size={16}/>} radius="md">
-                    Danh mục sản phẩm
-                  </Button>
-                )}
-                width={widthHeaderStack}
-                position="bottom"
-                placement="start"
-                radius="md"
-                shadow="md"
-              >
-                <CategoryMenu setOpenedCategoryMenu={setOpenedCategoryMenu}/>
-              </Popover>
-              <Button component={Link} to="/search?sort=newest" variant="subtle" radius="md">
-                Sản phẩm mới
-              </Button>
-              <Button component={Link} to="/search?sort=trending" variant="subtle" color="green" radius="md">
-                Sản phẩm xu hướng
-              </Button>
-              <Button component={Link} to="/search?saleable=true" variant="subtle" color="pink" radius="md">
-                Khuyến mại
-              </Button>
-            </Group>
-            <Tooltip label="Xem chi tiết chính sách miễn phí vận chuyển" withArrow radius="md">
-              <Anchor component={Link} to="/support/shipping" sx={{ textDecoration: 'none' }}>
-                <Group spacing="xs" sx={{ cursor: 'pointer' }}>
-                  <Badge color="pink" size="xs" variant="filled">Hot</Badge>
-                  <Text size="sm" color="dimmed">Miễn phí giao hàng cho đơn hàng trên 1 triệu đồng</Text>
-                </Group>
-              </Anchor>
-            </Tooltip>
-          </Group>
-        </Stack>
-      </Container>
+    <header className="nest-header" ref={headerRef} onKeyDown={closeOnEscape}>
+      <a className="nest-skip" href="#main-content">Đến nội dung chính</a>
+      <div className="nest-announcement">
+        <Link to="/support/shipping"><Leaf size={13}/> Miễn phí giao hàng cho đơn từ 1.000.000₫ <span>→</span></Link>
+        <Link to="/contact" className="nest-announcement-contact">Cùng bạn chăm chút tổ ấm</Link>
+      </div>
+      <div className="nest-nav nest-container">
+        <Link to="/" className="nest-logo" aria-label="Nest — Trang chủ">nest<span>.</span></Link>
+        <nav className="nest-desktop-nav" aria-label="Điều hướng chính">
+          <details className="nest-dropdown nest-categories-menu">
+            <summary>Sản phẩm <ChevronDown size={13}/></summary>
+            <div className="nest-dropdown-panel nest-mega-menu">
+              <div><p className="nest-eyebrow">CHO MỘT TỔ ẤM TRỌN VẸN</p><h2>Những điều bạn yêu,<br/>trong chính ngôi nhà mình.</h2><Link className="nest-text-link" to="/search">Tất cả sản phẩm ↗</Link></div>
+              <div className="nest-category-links">{categoryLinks || <Link to="/all-categories">Khám phá danh mục</Link>}</div>
+            </div>
+          </details>
+          <Link to="/#spaces">Không gian</Link>
+          <Link to="/#collections">Bộ sưu tập</Link>
+          <Link to="/#journal">Cảm hứng</Link>
+        </nav>
+        <form className="nest-search" role="search" onSubmit={submitSearch}>
+          <button type="submit" aria-label="Tìm kiếm"><Search size={17} strokeWidth={1.5}/></button>
+          <input aria-label="Tìm sản phẩm" placeholder="Tìm điều bạn yêu cho tổ ấm…" value={search} onChange={(event) => setSearch(event.target.value)}/>
+        </form>
+        <div className="nest-nav-actions">
+          {user && <button type="button" className="nest-icon nest-notification" aria-label="Thông báo" onClick={() => { setSeenNotifications(newNotifications.length); navigate('/user/notification'); }}>
+            <Bell size={20} strokeWidth={1.4}/>{newNotifications.length > seenNotifications && <i className="nest-notification-dot"/>}
+          </button>}
+          <Link className="nest-icon nest-wishlist-link" to="/user/wishlist" aria-label={`Danh sách yêu thích, ${totalWishes} sản phẩm`}><Heart size={20} strokeWidth={1.4}/></Link>
+          <details className="nest-dropdown nest-account-menu">
+            <summary className="nest-icon" aria-label="Tài khoản"><UserCircle size={22} strokeWidth={1.4}/></summary>
+            <div className="nest-dropdown-panel nest-account-links">
+              {user ? <>
+                <Link to="/user">Tài khoản của tôi</Link><Link to="/order">Đơn hàng</Link>
+                <Link to="/user/wishlist">Sản phẩm yêu thích ({totalWishes})</Link>
+                <Link to="/user/notification">Thông báo</Link><Link to="/user/setting">Thiết đặt</Link>
+                <Link to="/user/review">Đánh giá sản phẩm</Link><Link to="/user/reward">Điểm thưởng</Link>
+                <Link to="/user/preorder">Đặt trước sản phẩm</Link><Link to="/user/chat">Yêu cầu tư vấn</Link>
+                <button type="button" onClick={() => { resetAuthState(); NotifyUtils.simpleSuccess('Đăng xuất thành công'); headerRef.current?.querySelectorAll('details').forEach((item) => item.removeAttribute('open')); }}>Đăng xuất</button>
+              </> : <><Link to="/signin">Đăng nhập</Link><Link to="/signup">Tạo tài khoản</Link></>}
+            </div>
+          </details>
+          <Link className="nest-icon nest-cart-link" to="/cart" aria-label={`Giỏ hàng, ${user ? currentTotalCartItems : 0} sản phẩm`}>
+            <ShoppingCart size={21} strokeWidth={1.4}/><span>{user ? currentTotalCartItems : 0}</span>
+          </Link>
+          <details className="nest-dropdown nest-mobile-menu">
+            <summary className="nest-icon" aria-label="Mở menu"><Menu2 size={22}/></summary>
+            <nav className="nest-dropdown-panel" aria-label="Điều hướng di động">
+              <Link to="/search">Tất cả sản phẩm</Link><Link to="/#spaces">Theo không gian</Link>
+              <Link to="/#collections">Bộ sưu tập</Link><Link to="/#journal">Cảm hứng</Link>
+              <hr/>{categoryLinks || <Link to="/all-categories">Danh mục sản phẩm</Link>}
+              <hr/><Link to="/contact">Liên hệ tư vấn</Link>
+            </nav>
+          </details>
+        </div>
+      </div>
     </header>
   );
 }
