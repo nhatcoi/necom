@@ -62,105 +62,140 @@ function ClientDocumentation() {
   const activeId = useActiveSection(DOC_SECTIONS.map(section => section.id));
 
   return (
-    <main>
-      <Container size="xl" pb="xl">
-        <Hero/>
+    <Box sx={{ minHeight: '100vh', backgroundColor: palette.cream, color: palette.text }}>
+      <DocsTopBar/>
+      <main>
+        <Container size="xl" pb="xl">
+          <Hero/>
 
-        <Grid gutter="xl" mt="lg">
-          <Grid.Col md={3} sx={theme => ({ [theme.fn.smallerThan('md')]: { display: 'none' } })}>
-            <Box sx={{ position: 'sticky', top: 90 }}>
-              <Text size="xs" weight={700} mb="xs" sx={{ color: palette.wood, letterSpacing: 0.6 }}>MỤC LỤC</Text>
-              <Stack spacing={2}>
-                {DOC_SECTIONS.map(section => (
-                  <UnstyledButton
-                    key={section.id}
-                    component="a"
-                    href={'#' + section.id}
-                    sx={theme => ({
-                      padding: '6px 12px',
-                      borderRadius: theme.radius.sm,
-                      fontSize: theme.fontSizes.sm,
-                      borderLeft: `2px solid ${activeId === section.id ? palette.forest : 'transparent'}`,
-                      color: activeId === section.id ? palette.forest : palette.text,
-                      fontWeight: activeId === section.id ? 600 : 400,
-                      backgroundColor: activeId === section.id ? palette.forestSoft : 'transparent',
-                      '&:hover': { backgroundColor: palette.sand },
-                    })}
-                  >
-                    {section.label}
-                  </UnstyledButton>
-                ))}
+          <Grid gutter="xl" mt="lg">
+            <Grid.Col md={3} sx={theme => ({ [theme.fn.smallerThan('md')]: { display: 'none' } })}>
+              <Box sx={{ position: 'sticky', top: 84 }}>
+                <Text size="xs" weight={700} mb="xs" sx={{ color: palette.wood, letterSpacing: 0.6 }}>MỤC LỤC</Text>
+                <Stack spacing={2}>
+                  {DOC_SECTIONS.map(section => (
+                    <UnstyledButton
+                      key={section.id}
+                      component="a"
+                      href={'#' + section.id}
+                      sx={theme => ({
+                        padding: '6px 12px',
+                        borderRadius: theme.radius.sm,
+                        fontSize: theme.fontSizes.sm,
+                        borderLeft: `2px solid ${activeId === section.id ? palette.forest : 'transparent'}`,
+                        color: activeId === section.id ? palette.forest : palette.text,
+                        fontWeight: activeId === section.id ? 600 : 400,
+                        backgroundColor: activeId === section.id ? palette.forestSoft : 'transparent',
+                        '&:hover': { backgroundColor: palette.sand },
+                      })}
+                    >
+                      {section.label}
+                    </UnstyledButton>
+                  ))}
+                </Stack>
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col md={9}>
+              <Stack spacing={56}>
+                <OverviewSection/>
+                <AccountsSection/>
+                <Section id="architecture" title="Kiến trúc hệ thống" lead="Mô hình 3 tầng: SPA React giao tiếp với Spring Boot qua REST (JSON), STOMP và SSE; dữ liệu lưu ở MySQL; tích hợp các dịch vụ vận chuyển, thanh toán, AI và email.">
+                  <ArchitectureDiagram/>
+                  <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} mt="md">
+                    <Callout title="Backend phân lớp">
+                      Controller nhận request và kiểm tra quyền, Service chứa nghiệp vụ, Repository (Spring Data JPA) truy cập dữ liệu,
+                      MapStruct chuyển Entity ↔ DTO. CRUD quản trị dùng controller generic <Code>/api/{'{resource}'}</Code> với lọc RSQL.
+                    </Callout>
+                    <Callout title="Realtime">
+                      Chat dùng STOMP qua SockJS tại <Code>/ws</Code>, xác thực JWT ở frame CONNECT. Thông báo đơn hàng, đặt trước, đánh giá
+                      đẩy qua Server-Sent Events.
+                    </Callout>
+                  </SimpleGrid>
+                </Section>
+
+                <Section id="deployment" title="Triển khai" lead="Bốn container Docker trên một VPS (web, backend, CSDL, embedding), phía trước là Nginx host và Cloudflare.">
+                  <DeploymentDiagram/>
+                </Section>
+
+                <Section id="actors" title="Tác nhân" lead="Khách hàng chia thành vãng lai và đã đăng ký; người quản trị kế thừa toàn bộ quyền của nhân viên.">
+                  <ActorsDiagram/>
+                  <PermissionTable/>
+                </Section>
+
+                <Section id="usecases" title="Use case" lead="Chức năng theo từng nhóm người dùng.">
+                  <ClientUseCaseDiagram/>
+                  <Box mt="md"><AdminUseCaseDiagram/></Box>
+                </Section>
+
+                <Section id="order-flow" title="Đặt hàng & vận đơn" lead="Đơn hàng đi qua 5 trạng thái; vận đơn Giao Hàng Nhanh cập nhật trạng thái đơn tự động.">
+                  <OrderLifecycleDiagram/>
+                  <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} mt="md">
+                    <Callout title="Tồn kho có thể bán">
+                      Số lượng bán được tính từ phiếu nhập/xuất kho (Docket) đã hoàn tất trừ đi hàng đang chờ giao. Sản phẩm hết hàng
+                      chỉ cho phép đặt trước.
+                    </Callout>
+                    <Callout title="Phí vận chuyển">
+                      Đơn từ 1.000.000đ được miễn phí giao hàng tiêu chuẩn. Đơn nhỏ hơn tính phí theo biểu phí GHN; thuế mặc định 10%.
+                    </Callout>
+                  </SimpleGrid>
+                </Section>
+
+                <Section id="checkout" title="Luồng thanh toán" lead="COD ghi nhận thanh toán khi giao thành công; PayPal được capture ngay sau khi khách phê duyệt.">
+                  <CheckoutSequenceDiagram/>
+                </Section>
+
+                <ChatSection/>
+
+                <Section id="reward" title="Điểm thưởng" lead="Điểm được cộng tự động theo chiến lược cấu hình trong trang quản trị (công thức SpEL).">
+                  <DocTable
+                    head={['Mã', 'Sự kiện', 'Công thức', 'Ví dụ']}
+                    rows={REWARD_STRATEGIES.map(r => [<Code key="c">{r.code}</Code>, r.label, r.formula, r.example])}
+                  />
+                </Section>
+
+                <DomainSection/>
+                <StatusSection/>
+                <ApiSection/>
+                <OperationsSection/>
               </Stack>
-            </Box>
-          </Grid.Col>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </main>
+    </Box>
+  );
+}
 
-          <Grid.Col md={9}>
-            <Stack spacing={56}>
-              <OverviewSection/>
-              <AccountsSection/>
-              <Section id="architecture" title="Kiến trúc hệ thống" lead="Mô hình 3 tầng: SPA React giao tiếp với Spring Boot qua REST (JSON), STOMP và SSE; dữ liệu lưu ở MySQL; tích hợp các dịch vụ vận chuyển, thanh toán, AI và email.">
-                <ArchitectureDiagram/>
-                <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} mt="md">
-                  <Callout title="Backend phân lớp">
-                    Controller nhận request và kiểm tra quyền, Service chứa nghiệp vụ, Repository (Spring Data JPA) truy cập dữ liệu,
-                    MapStruct chuyển Entity ↔ DTO. CRUD quản trị dùng controller generic <Code>/api/{'{resource}'}</Code> với lọc RSQL.
-                  </Callout>
-                  <Callout title="Realtime">
-                    Chat dùng STOMP qua SockJS tại <Code>/ws</Code>, xác thực JWT ở frame CONNECT. Thông báo đơn hàng, đặt trước, đánh giá
-                    đẩy qua Server-Sent Events.
-                  </Callout>
-                </SimpleGrid>
-              </Section>
-
-              <Section id="deployment" title="Triển khai" lead="Bốn container Docker trên một VPS (web, backend, CSDL, embedding), phía trước là Nginx host và Cloudflare.">
-                <DeploymentDiagram/>
-              </Section>
-
-              <Section id="actors" title="Tác nhân" lead="Khách hàng chia thành vãng lai và đã đăng ký; người quản trị kế thừa toàn bộ quyền của nhân viên.">
-                <ActorsDiagram/>
-                <PermissionTable/>
-              </Section>
-
-              <Section id="usecases" title="Use case" lead="Chức năng theo từng nhóm người dùng.">
-                <ClientUseCaseDiagram/>
-                <Box mt="md"><AdminUseCaseDiagram/></Box>
-              </Section>
-
-              <Section id="order-flow" title="Đặt hàng & vận đơn" lead="Đơn hàng đi qua 5 trạng thái; vận đơn Giao Hàng Nhanh cập nhật trạng thái đơn tự động.">
-                <OrderLifecycleDiagram/>
-                <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} mt="md">
-                  <Callout title="Tồn kho có thể bán">
-                    Số lượng bán được tính từ phiếu nhập/xuất kho (Docket) đã hoàn tất trừ đi hàng đang chờ giao. Sản phẩm hết hàng
-                    chỉ cho phép đặt trước.
-                  </Callout>
-                  <Callout title="Phí vận chuyển">
-                    Đơn từ 1.000.000đ được miễn phí giao hàng tiêu chuẩn. Đơn nhỏ hơn tính phí theo biểu phí GHN; thuế mặc định 10%.
-                  </Callout>
-                </SimpleGrid>
-              </Section>
-
-              <Section id="checkout" title="Luồng thanh toán" lead="COD ghi nhận thanh toán khi giao thành công; PayPal được capture ngay sau khi khách phê duyệt.">
-                <CheckoutSequenceDiagram/>
-              </Section>
-
-              <ChatSection/>
-
-              <Section id="reward" title="Điểm thưởng" lead="Điểm được cộng tự động theo chiến lược cấu hình trong trang quản trị (công thức SpEL).">
-                <DocTable
-                  head={['Mã', 'Sự kiện', 'Công thức', 'Ví dụ']}
-                  rows={REWARD_STRATEGIES.map(r => [<Code key="c">{r.code}</Code>, r.label, r.formula, r.example])}
-                />
-              </Section>
-
-              <DomainSection/>
-              <StatusSection/>
-              <ApiSection/>
-              <OperationsSection/>
-            </Stack>
-          </Grid.Col>
-        </Grid>
+/** Thanh điều hướng riêng của trang tài liệu (thay cho header/footer storefront). */
+function DocsTopBar() {
+  const palette = useChatPalette();
+  return (
+    <Box
+      component="header"
+      sx={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 20,
+        backgroundColor: palette.cream,
+        borderBottom: `1px solid ${palette.sandBorder}`,
+      }}
+    >
+      <Container size="xl">
+        <Group position="apart" sx={{ height: 60 }}>
+          <Anchor component={Link} to="/documentation" underline={false}>
+            <Group spacing={10}>
+              <Text weight={700} sx={{ fontSize: 22, color: palette.forest, letterSpacing: -0.5 }}>necom.</Text>
+              <Text size="sm" sx={{ color: palette.wood }}>Tài liệu dự án</Text>
+            </Group>
+          </Anchor>
+          <Group spacing="lg">
+            <Anchor component={Link} to="/" size="sm" sx={{ color: palette.text }}>Cửa hàng</Anchor>
+            <Anchor component={Link} to="/admin" size="sm" sx={{ color: palette.text }}>Trang quản trị</Anchor>
+          </Group>
+        </Group>
       </Container>
-    </main>
+    </Box>
   );
 }
 

@@ -138,7 +138,6 @@ function App() {
                   <Route path="/support/:slug" element={<ClientSupport/>}/>
                   <Route path="/support" element={<Navigate to="/support/faq" replace/>}/>
                   <Route path="/about" element={<ClientAbout/>}/>
-                  <Route path="/documentation" element={<ClientDocumentation/>}/>
                   <Route path="/careers" element={<ClientCareers/>}/>
                   <Route path="/partners" element={<ClientPartners/>}/>
                   <Route path="/contact" element={<ClientContact/>}/>
@@ -396,6 +395,8 @@ function App() {
                   {/* REWARD */}
                   <Route path={ManagerPath.REWARD_STRATEGY} element={<RewardManage/>}/>
                 </Route>
+                {/* Trang tài liệu độc lập: không dùng header/footer của storefront */}
+                <Route path="/documentation" element={<ClientDocumentation/>}/>
                 <Route path="/payment/success" element={<ClientPaymentSuccess/>}/>
                 <Route path="/payment/cancel" element={<ClientPaymentCancel/>}/>
               </Routes>
