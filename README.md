@@ -143,7 +143,8 @@ Cấu hình bí mật (khóa API, mật khẩu DB) chỉ nằm trong `.env` trê
 |---|---|
 | `main` | Spring Boot 3 + giao diện Nest (đang chạy trên necom.vnhat.dev) |
 | `ui-v1` | Giao diện cửa hàng cũ (necom-v1.vnhat.dev) |
-| `legacy/spring-boot-2` | Bản backend Spring Boot 2 trước khi nâng cấp |
+| `legacy` | Bản Spring Boot 2 trước khi nâng cấp |
+| `inception` | Lịch sử phát triển ban đầu của dự án |
 
 ## Tác giả
 
