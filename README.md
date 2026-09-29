@@ -1,121 +1,150 @@
-# NECOM - Needs eCommerce Platform
+# Necom · Nest Commerce
 
-## Overview
-**NECOM** (**Needs eCommerce**) is a full-stack e-commerce platform built with Spring Boot backend and React frontend. It provides comprehensive features for managing products, orders, inventory, customers, and business operations.
+Website thương mại điện tử nội thất & đời sống: cửa hàng cho khách, trang quản trị cho nhân viên, kho vận, giao hàng GHN, thanh toán PayPal/COD, điểm thưởng và chat chăm sóc khách hàng có trợ lý AI.
 
-## Tech Stack
+**Web:** [necom.vnhat.dev](https://necom.vnhat.dev) · **Tài liệu:** [necom.vnhat.dev/documentation](https://necom.vnhat.dev/documentation) · **Quản trị:** [necom.vnhat.dev/admin](https://necom.vnhat.dev/admin)
 
-### Backend
-- **Framework**: Spring Boot
-- **Language**: Java
-- **Database**: MySQL
-- **Security**: Spring Security with JWT authentication
-- **API Documentation**: SpringDoc OpenAPI
-- **Real-time**: WebSocket for chat and notifications
-- **Mapping**: MapStruct
-- **Query**: RSQL for dynamic filtering
+![Trang chủ Nest](docs/design/nest-desktop.png)
 
-### Frontend
-- **Framework**: React 17 with TypeScript
-- **UI Library**: Mantine UI
-- **State Management**: Zustand, React Query
-- **Routing**: React Router DOM
-- **Build Tool**: Create React App
+## Dự án là gì
 
-## Features
+Necom mô phỏng một cửa hàng nội thất trực tuyến hoàn chỉnh, từ lúc khách tìm sản phẩm đến khi hàng được giao:
 
-### Product Management
-- Product catalog with variants, specifications, and properties
-- Category, brand, supplier, and tag management
-- Product images and media handling
-- Inventory tracking and limits
+- **Khách hàng** duyệt ~300 sản phẩm theo danh mục, không gian, bộ sưu tập; lọc theo giá, thương hiệu; thêm giỏ hàng, đặt hàng với địa chỉ 34 tỉnh/thành sau sáp nhập, thanh toán COD hoặc PayPal, theo dõi đơn, đánh giá, tích điểm.
+- **Trợ lý AI** trả lời câu hỏi về sản phẩm, chính sách và đơn hàng của chính khách (tìm kiếm lai BM25 + vector), chuyển sang tư vấn viên khi khách cần người thật.
+- **Nhân viên** xử lý đơn, tạo vận đơn GHN, quản lý tồn kho (nhập/xuất/chuyển/kiểm kê), duyệt đánh giá, trả lời khách trong hộp thư CSKH.
+- **Quản trị viên** có thêm quyền quản lý sản phẩm, nhân sự, khuyến mãi, chiến lược điểm thưởng.
 
-### Inventory Management
-- Warehouse management
-- Purchase orders and variants
-- Stock dockets (in/out)
-- Inventory transfers between warehouses
-- Stock counting and adjustments
-- Storage location tracking
+Chi tiết nghiệp vụ, sơ đồ use case, mô hình dữ liệu, API và vận hành nằm ở trang [/documentation](https://necom.vnhat.dev/documentation).
 
-### Order Management
-- Order processing and fulfillment
-- Order variants tracking
-- Order cancellation reasons
-- Waybill and shipping management
-- Order resources tracking
+## Kiến trúc
 
-### Customer & User Management
-- User authentication and authorization
-- Role-based access control (RBAC)
-- Customer groups, status, and resources
-- Employee management with offices, departments, job titles
-- Address management (provinces, districts, wards)
+```mermaid
+flowchart LR
+  user([Trình duyệt]) --> cf[Cloudflare] --> nginx[Nginx trên VPS]
+  nginx -- necom.vnhat.dev --> web[necom-client-v2<br/>React · giao diện Nest]
+  nginx -- necom-v1.vnhat.dev --> webv1[necom-client<br/>giao diện cũ]
+  web & webv1 -- "/api · /client-api · /ws" --> api[necom-server<br/>Spring Boot 3 · Java 17]
+  api --> db[(MySQL 8)]
+  api --> emb[necom-embedding<br/>multilingual-e5]
+  api --> ghn[GHN]
+  api --> paypal[PayPal]
+  api --> llm[LLM tương thích OpenAI]
+  api --> smtp[SMTP]
+```
 
-### E-commerce Features
-- Shopping cart
-- Wishlist
-- Product reviews and ratings
-- Preorders
-- Promotions and vouchers
-- Payment methods
-- Reward system and loyalty points
+- **REST + realtime:** CRUD quản trị qua `/api/{resource}` (lọc RSQL), API cửa hàng qua `/client-api`, chat qua STOMP/SockJS `/ws`, thông báo qua SSE.
+- **Bảo mật:** JWT (Spring Security 6), phân quyền `ADMIN` / `EMPLOYEE` / `CUSTOMER`.
+- **Hai giao diện, một backend:** giao diện Nest (nhánh `main`) là bản chính; giao diện cũ giữ ở nhánh `ui-v1`.
 
-### Communication
-- Real-time chat with WebSocket
-- Notification system
-- Email integration
+### Trợ lý AI trả lời như thế nào
 
-### Administration
-- Admin dashboard for managing all entities
-- Statistics and reporting
-- Image upload and management
+```mermaid
+sequenceDiagram
+  participant K as Khách
+  participant S as necom-server
+  participant L as LLM
+  participant I as Chỉ mục tìm kiếm
+  K->>S: Tin nhắn (STOMP)
+  S->>L: Hội thoại + danh sách công cụ
+  L->>S: Gọi công cụ (tìm sản phẩm, xem đơn, chính sách…)
+  S->>I: BM25 + vector (e5), trộn RRF, lọc giá/danh mục/còn hàng
+  I-->>S: Sản phẩm phù hợp
+  S->>L: Kết quả công cụ
+  L-->>S: Câu trả lời
+  S-->>K: Tin nhắn + thẻ sản phẩm / đơn hàng
+  Note over S,K: Khiếu nại, hoàn tiền, đổi trả → chuyển tư vấn viên
+```
 
-## Project Structure
-- `necom-server/` - Spring Boot backend application
-- `necom-client/` - React frontend application
-- `docker-compose.yml` - Docker containerization setup
-- `run.sh` - Automated sequential orchestration script
+### Vòng đời đơn hàng
 
-## Khởi Chạy Nhanh (Quick Start)
+```mermaid
+stateDiagram-v2
+  [*] --> Moi: Khách đặt hàng
+  Moi --> DangXuLy: Tạo vận đơn GHN
+  DangXuLy --> DangGiao: GHN lấy hàng
+  DangGiao --> DaGiao: Giao thành công (cộng điểm, COD → đã thanh toán)
+  Moi --> Huy
+  DangXuLy --> Huy
+  DangGiao --> Huy: Giao thất bại / hoàn hàng
+  DaGiao --> [*]
+  Huy --> [*]
+```
 
-Dự án cung cấp script điều phối tuần tự `run.sh` tự động chuẩn bị môi trường, kiểm tra Docker và khởi chạy hệ thống theo đúng thứ tự phụ thuộc:
+## Công nghệ
+
+| Phần | Công nghệ |
+|---|---|
+| Frontend | React 17, TypeScript, Mantine 4, React Query, Zustand, React Router 6 |
+| Backend | Spring Boot 3.5, Java 17, Spring Security 6 + JWT, Spring Data JPA (Hibernate 6), MapStruct, RSQL, springdoc |
+| Dữ liệu | MySQL 8; schema, dữ liệu mẫu và migration dạng file SQL (`necom-server/src/main/resources`) |
+| AI | LLM qua API tương thích OpenAI (function calling), embedding `multilingual-e5-small` (ONNX, FastAPI) |
+| Tích hợp | Giao Hàng Nhanh, PayPal Sandbox, SMTP |
+| Hạ tầng | Docker Compose, Nginx, Cloudflare, VPS |
+
+## Cấu trúc repo
+
+```
+necom-client/      React SPA (cửa hàng + trang quản trị)
+necom-server/      Spring Boot API, SQL seed và migration trong src/main/resources
+necom-embedding/   Dịch vụ embedding ONNX cho tìm kiếm ngữ nghĩa
+docs/design/       Thiết kế giao diện Nest (ảnh, ghi chú)
+docker-compose.yml Toàn bộ dịch vụ
+run.sh             Chạy local theo đúng thứ tự phụ thuộc
+deploy-vps.sh      Build và deploy lên VPS
+```
+
+## Chạy local
+
+Yêu cầu: Docker, Java 17, Node 18+.
 
 ```bash
-# 1. Khởi chạy tuần tự toàn bộ hệ thống
-./run.sh
-
-# 2. Hoặc build lại mã nguồn và khởi chạy
-./run.sh start --build
-
-# 3. Kiểm tra trạng thái và sức khỏe các dịch vụ
-./run.sh status
-
-# 4. Xem logs thời gian thực
-./run.sh logs        # Xem tất cả
-./run.sh logs server # Xem riêng backend Spring Boot
-./run.sh logs client # Xem riêng frontend
-./run.sh logs db     # Xem riêng MySQL
-
-# 5. Dừng hệ thống
+cp .env.example .env    # điền khóa GHN, PayPal, LLM nếu cần (không commit)
+./run.sh                # dựng MySQL → server → client
+./run.sh status         # kiểm tra sức khỏe
+./run.sh logs server    # xem log backend
 ./run.sh stop
 ```
 
-### Các Địa Chỉ Truy Cập (Access URLs)
+| Dịch vụ | Địa chỉ |
+|---|---|
+| Cửa hàng | http://localhost |
+| Quản trị | http://localhost/admin |
+| API | http://localhost:8085/api |
+| Swagger | http://localhost:8085/swagger-ui/index.html |
 
-| Dịch vụ | URL | Mô tả |
+Phát triển frontend riêng: `cd necom-client && npm install && npm start` (cổng 3000, gọi API ở 8085).
+
+## Tài khoản demo
+
+Mật khẩu chung: `admin123`
+
+| Tài khoản | Vai trò | Vào từ |
 |---|---|---|
-| **Storefront** | [http://localhost](http://localhost) | Giao diện mua sắm khách hàng (React) |
-| **Admin Portal** | [http://localhost/admin](http://localhost/admin) | Trang quản trị hệ thống |
-| **Admin Login** | [http://localhost/admin/signin](http://localhost/admin/signin) | Đăng nhập tài khoản quản trị |
-| **Backend API** | [http://localhost:8085/api](http://localhost:8085/api) | Spring Boot REST API |
-| **Swagger UI** | [http://localhost:8085/swagger-ui/index.html](http://localhost:8085/swagger-ui/index.html) | Tài liệu OpenAPI tương tác |
-| **MySQL DB** | `localhost:3306` | Database (User: `necom`, Pass: `necom`, DB: `necom`) |
+| `admin` | Quản trị viên | `/admin` |
+| `employee` | Nhân viên | `/admin` |
+| `customer` | Khách hàng | `/signin` |
 
-### Tài Khoản Mẫu (Default Credentials)
+## Deploy
 
-- **Quản trị viên (Admin):** `admin` / `admin123`
-- **Khách hàng (Customer):** `customer` / `admin123`
+```bash
+./deploy-vps.sh              # build + deploy toàn bộ (backend, hai giao diện)
+./deploy-vps.sh --only-be    # chỉ backend
+./deploy-vps.sh --only-fe    # giao diện Nest → necom.vnhat.dev
+./deploy-vps.sh --only-fe-v1 # giao diện cũ (nhánh ui-v1) → necom-v1.vnhat.dev
+./deploy-vps.sh --status
+```
 
-## Author
-- [nhatcoi aka jackie](https://github.com/nhatcoi)
+Cấu hình bí mật (khóa API, mật khẩu DB) chỉ nằm trong `.env` trên máy và trên VPS, không commit vào repo.
+
+## Nhánh
+
+| Nhánh | Nội dung |
+|---|---|
+| `main` | Spring Boot 3 + giao diện Nest (đang chạy trên necom.vnhat.dev) |
+| `ui-v1` | Giao diện cửa hàng cũ (necom-v1.vnhat.dev) |
+| `legacy/spring-boot-2` | Bản backend Spring Boot 2 trước khi nâng cấp |
+
+## Tác giả
+
+[Nhật Côi](https://github.com/nhatcoi)
