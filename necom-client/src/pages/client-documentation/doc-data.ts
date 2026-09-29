@@ -36,10 +36,10 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const SEED_FACTS = [
-  { label: 'Sản phẩm', value: '16', hint: '26 phiên bản (variant)' },
-  { label: 'Danh mục có hàng', value: '9', hint: 'Bàn ghế, Sofa, Tủ kệ, Đèn…' },
-  { label: 'Thương hiệu', value: '7', hint: 'Muji, IKEA, JYSK, Nhà Xinh…' },
-  { label: 'Tỉnh / thành', value: '63', hint: 'Dữ liệu địa chỉ GHN' },
+  { label: 'Sản phẩm', value: '294', hint: '630 phiên bản (variant)' },
+  { label: 'Danh mục', value: '14', hint: 'Bàn ghế, Sofa, Phòng ngủ, Rèm & thảm…' },
+  { label: 'Thương hiệu', value: '8', hint: 'Muji, IKEA, JYSK, Nhà Xinh…' },
+  { label: 'Đánh giá mẫu', value: '339', hint: 'Từ các tài khoản khách hàng seed' },
 ];
 
 export const PERMISSIONS: { feature: string, guest: boolean, customer: boolean, employee: boolean, admin: boolean }[] = [
