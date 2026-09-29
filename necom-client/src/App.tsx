@@ -90,8 +90,21 @@ import RewardManage from 'pages/reward-strategy';
 import ClientReward from 'pages/client-reward';
 import ClientSignup from 'pages/client-signup';
 import ClientForgotPassword, { ClientChangePassword } from 'pages/client-forgot-password';
+import { purgeExpiredSessions } from 'utils/AuthSession';
 
-const queryClient = new QueryClient();
+// Lỗi 4xx (hết phiên, không có quyền, không tồn tại) lặp lại cũng không khác: chỉ retry lỗi mạng/5xx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        const statusCode = (error as { statusCode?: number } | null)?.statusCode;
+        return !(statusCode && statusCode >= 400 && statusCode < 500) && failureCount < 3;
+      },
+    },
+  },
+});
+
+purgeExpiredSessions();
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
