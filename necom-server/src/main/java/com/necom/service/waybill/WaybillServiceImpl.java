@@ -22,6 +22,7 @@ import com.necom.entity.waybill.WaybillLog;
 import com.necom.exception.ResourceNotFoundException;
 import com.necom.mapper.general.NotificationMapper;
 import com.necom.mapper.waybill.WaybillMapper;
+import com.necom.repository.address.WardRepository;
 import com.necom.repository.general.NotificationRepository;
 import com.necom.repository.order.OrderRepository;
 import com.necom.repository.waybill.WaybillLogRepository;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +41,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.transaction.Transactional;
@@ -55,6 +59,7 @@ import java.util.StringJoiner;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class WaybillServiceImpl implements WaybillService {
 
     @Value("${necom.app.shipping.ghnToken}")
@@ -72,6 +77,8 @@ public class WaybillServiceImpl implements WaybillService {
     private final NotificationMapper notificationMapper;
     private final WaybillLogRepository waybillLogRepository;
     private final RewardUtils rewardUtils;
+    private final WardRepository wardRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     public ListResponse<WaybillResponse> findAll(int page, int size, String sort, String filter, String search, boolean all) {
@@ -106,8 +113,23 @@ public class WaybillServiceImpl implements WaybillService {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            var request = new HttpEntity<>(buildGhnCreateOrderRequest(waybillRequest, order), headers);
-            var response = restTemplate.postForEntity(createGhnOrderApiPath, request, GhnCreateOrderResponse.class);
+            GhnCreateOrderRequest ghnRequest = buildGhnCreateOrderRequest(waybillRequest, order);
+            ResponseEntity<GhnCreateOrderResponse> response;
+            try {
+                response = restTemplate.postForEntity(createGhnOrderApiPath, new HttpEntity<>(ghnRequest, headers), GhnCreateOrderResponse.class);
+            } catch (HttpClientErrorException e) {
+                // GHN chưa nhận địa chỉ mới (2 cấp) của một số phường: thử lại bằng địa chỉ cũ 3 cấp tương ứng
+                GhnCreateOrderRequest legacyRequest = withLegacyAddress(ghnRequest, order);
+                if (legacyRequest == null) {
+                    throw new RuntimeException("GHN từ chối tạo vận đơn: " + e.getResponseBodyAsString());
+                }
+                log.warn("GHN rejected new address for order {} ({}), retrying with legacy address", order.getCode(), e.getResponseBodyAsString());
+                try {
+                    response = restTemplate.postForEntity(createGhnOrderApiPath, new HttpEntity<>(legacyRequest, headers), GhnCreateOrderResponse.class);
+                } catch (HttpClientErrorException retryError) {
+                    throw new RuntimeException("GHN từ chối tạo vận đơn (cả địa chỉ mới và địa chỉ cũ): " + retryError.getResponseBodyAsString());
+                }
+            }
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RuntimeException("Error when calling Create Order GHN API");
@@ -219,6 +241,28 @@ public class WaybillServiceImpl implements WaybillService {
     @Override
     public void delete(List<Long> ids) {
         waybillRepository.deleteAllById(ids);
+    }
+
+    /**
+     * Bản sao request dùng địa chỉ 3 cấp cũ của phường (nếu có). Trả null khi không áp dụng được.
+     */
+    @Nullable
+    private GhnCreateOrderRequest withLegacyAddress(GhnCreateOrderRequest request, Order order) {
+        if (!Boolean.TRUE.equals(request.getIsNewToAddress())) {
+            return null;
+        }
+        return wardRepository.findByNameAndProvinceName(order.getToWardName(), order.getToProvinceName()).stream()
+                .filter(w -> w.getLegacyWardName() != null)
+                .findFirst()
+                .map(w -> {
+                    GhnCreateOrderRequest legacy = objectMapper.convertValue(request, GhnCreateOrderRequest.class);
+                    legacy.setToWardName(w.getLegacyWardName());
+                    legacy.setToDistrictName(w.getLegacyDistrictName());
+                    legacy.setToProvinceName(w.getLegacyProvinceName());
+                    legacy.setIsNewToAddress(null);
+                    return legacy;
+                })
+                .orElse(null);
     }
 
     private GhnCreateOrderRequest buildGhnCreateOrderRequest(WaybillRequest waybillRequest, Order order) {

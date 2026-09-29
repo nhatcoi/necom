@@ -1,5 +1,8 @@
 package com.necom.config;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.web.servlet.function.support.RouterFunctionMapping;
+
 import com.necom.controller.GenericController;
 import org.springdoc.core.fn.builders.operation.Builder;
 import org.springdoc.webmvc.core.fn.SpringdocRouteBuilder;
@@ -18,6 +21,24 @@ import java.util.function.Consumer;
 public class GenericControllerDocumentationConfig {
 
     HandlerFunction<ServerResponse> handler = request -> ServerResponse.ok().build();
+
+    /**
+     * Spring 6 xét RouterFunctionMapping trước RequestMappingHandlerMapping (Spring 5 thì ngược lại).
+     * Các route bên dưới chỉ để Springdoc sinh tài liệu và luôn trả 200 rỗng, nên phải xếp sau các mapping thật
+     * do GenericMappingRegister đăng ký; nếu không, mọi API CRUD /api/{resource} sẽ trả body rỗng.
+     */
+    @Bean
+    public static BeanPostProcessor routerFunctionMappingAfterAnnotatedMappings() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof RouterFunctionMapping mapping) {
+                    mapping.setOrder(3);
+                }
+                return bean;
+            }
+        };
+    }
 
     @Bean
     public RouterFunction<ServerResponse> route() {

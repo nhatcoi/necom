@@ -44,6 +44,17 @@ public class Ward extends BaseEntity {
     @JsonBackReference
     private Province province;
 
+    // Địa chỉ 3 cấp cũ (trước sáp nhập 1/7/2025) đại diện cho phường này. GHN vẫn nhận địa chỉ cũ,
+    // nên dùng làm phương án dự phòng khi GHN chưa nhận địa chỉ mới.
+    @Column(name = "legacy_ward_name")
+    private String legacyWardName;
+
+    @Column(name = "legacy_district_name")
+    private String legacyDistrictName;
+
+    @Column(name = "legacy_province_name")
+    private String legacyProvinceName;
+
     @OneToMany(mappedBy = "ward", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
