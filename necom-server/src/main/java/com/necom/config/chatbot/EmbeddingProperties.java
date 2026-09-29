@@ -17,7 +17,8 @@ import org.springframework.util.StringUtils;
 public class EmbeddingProperties {
     private String baseUrl;
     private String model = "intfloat/multilingual-e5-small";
-    private int batchSize = 32;
+    // Lô nhỏ để service embedding (giới hạn 400MB) không hết RAM với đoạn văn dài
+    private int batchSize = 8;
     private int timeoutSeconds = 30;
 
     public boolean isActive() {

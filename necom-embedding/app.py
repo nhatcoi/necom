@@ -12,7 +12,7 @@ import sentencepiece as spm
 
 MODEL_DIR = os.environ.get('MODEL_DIR', '/model')
 MAX_LENGTH = int(os.environ.get('MAX_LENGTH', '512'))
-MAX_BATCH = int(os.environ.get('MAX_BATCH', '32'))
+MAX_BATCH = int(os.environ.get('MAX_BATCH', '8'))
 
 options = ort.SessionOptions()
 options.intra_op_num_threads = int(os.environ.get('THREADS', '1'))

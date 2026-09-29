@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <title>Necom – ảnh sản phẩm đang cập nhật</title>
+  <rect width="800" height="800" fill="#F5F0E8"/>
+  <rect x="40" y="40" width="720" height="720" rx="32" fill="none" stroke="#E4D9C7" stroke-width="4"/>
+  <!-- Ghế bành tối giản (nét gỗ) -->
+  <g fill="none" stroke="#A67C52" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M270 330 v-60 a50 50 0 0 1 50 -50 h160 a50 50 0 0 1 50 50 v60"/>
+    <path d="M230 330 a40 40 0 0 1 80 0 v70 h180 v-70 a40 40 0 0 1 80 0 v110 a30 30 0 0 1 -30 30 h-280 a30 30 0 0 1 -30 -30 z"/>
+    <path d="M270 470 v60 M530 470 v60"/>
+  </g>
+  <text x="400" y="620" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#0B4F3C">necom.</text>
+  <text x="400" y="664" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#8A7B68">Ảnh sản phẩm đang cập nhật</text>
+</svg>

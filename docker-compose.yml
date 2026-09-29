@@ -85,7 +85,7 @@ services:
     build:
       context: ./necom-embedding
     image: necom-embedding:latest
-    mem_limit: 400m
+    mem_limit: 480m
     networks:
       - backend
     restart: always

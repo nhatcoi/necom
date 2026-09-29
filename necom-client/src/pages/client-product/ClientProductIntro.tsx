@@ -137,7 +137,7 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
                   </ClientCarousel>
                   {/* Ảnh từ Unsplash/Pexels: ghi nguồn tác giả theo điều khoản sử dụng */}
                   {product.productImages[0]?.name?.startsWith('Ảnh:') && (
-                    <Text size="xs" color="dimmed" mt={4}>{product.productImages[0].name}</Text>
+                    <Text size="xs" color="dimmed" mt={4}>{product.productImages[0].name.replace(/ #\d+$/, '')}</Text>
                   )}
                 </>
               )
