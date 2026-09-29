@@ -4,7 +4,9 @@
 # ==============================================================================
 # Target VPS : 103.195.237.112 (root)
 # Remote Path: /var/www/necom
-# Domain     : https://necom.vnhat.dev (Reverse Proxy -> 127.0.0.1:8080)
+# Domain     : https://necom.vnhat.dev    (UI v1, nhánh ui-v1 -> 127.0.0.1:8080)
+#              https://necom-v2.vnhat.dev (UI v2, nhánh hiện tại -> 127.0.0.1:8081)
+#              Hai giao diện dùng chung necom-server.
 # Direct Port: http://103.195.237.112:8080
 # ==============================================================================
 
@@ -29,6 +31,9 @@ VPS_HOST="${VPS_HOST:-103.195.237.112}"
 VPS_USER="${VPS_USER:-root}"
 REMOTE_DIR="${REMOTE_DIR:-/var/www/necom}"
 DOMAIN="${DOMAIN:-necom.vnhat.dev}"
+DOMAIN_V2="${DOMAIN_V2:-necom-v2.vnhat.dev}"
+# Nhánh chứa giao diện cũ, deploy cho ${DOMAIN}
+UI_V1_REF="${UI_V1_REF:-ui-v1}"
 CLIENT_PORT="${CLIENT_PORT:-8080}"
 SERVER_PORT="${SERVER_PORT:-8085}"
 
@@ -104,22 +109,47 @@ build_backend() {
     log_success "Đã build thành công necom-server/target/necom-0.0.1-SNAPSHOT.jar!"
 }
 
-# Build React CRA Frontend locally
-build_frontend() {
-    log_info "2/2. Biên dịch React frontend bundle..."
-    cd "$ROOT_DIR/necom-client"
-    if [ ! -d "node_modules" ]; then
+# Cài dependencies npm của client nếu chưa có
+ensure_client_deps() {
+    if [ ! -d "$ROOT_DIR/necom-client/node_modules" ]; then
         log_info "Cài đặt dependencies npm..."
-        npm install --legacy-peer-deps
+        (cd "$ROOT_DIR/necom-client" && npm install --legacy-peer-deps)
     fi
-    npm run build
-    cd "$ROOT_DIR"
+}
+
+# Build UI v1 (nhánh ${UI_V1_REF}) -> necom-client/build, phục vụ ${DOMAIN}
+build_frontend() {
+    log_info "Biên dịch React frontend UI v1 (nhánh ${UI_V1_REF}) cho ${DOMAIN}..."
+    ensure_client_deps
+    local worktree="${TMPDIR:-/tmp}/necom-ui-v1"
+    git -C "$ROOT_DIR" worktree remove --force "$worktree" >/dev/null 2>&1 || rm -rf "$worktree"
+    git -C "$ROOT_DIR" worktree add --detach "$worktree" "$UI_V1_REF" >/dev/null
+    ln -s "$ROOT_DIR/necom-client/node_modules" "$worktree/necom-client/node_modules"
+    (cd "$worktree/necom-client" && BUILD_PATH="$ROOT_DIR/necom-client/build" npm run build) || {
+        git -C "$ROOT_DIR" worktree remove --force "$worktree"
+        log_error "Build UI v1 thất bại!"
+        exit 1
+    }
+    git -C "$ROOT_DIR" worktree remove --force "$worktree"
 
     if [ ! -f "$ROOT_DIR/necom-client/build/index.html" ]; then
         log_error "Không tìm thấy file index.html sau khi build frontend!"
         exit 1
     fi
-    log_success "Đã build thành công necom-client/build!"
+    log_success "Đã build thành công necom-client/build (UI v1)!"
+}
+
+# Build UI v2 (mã nguồn hiện tại) -> necom-client/build-v2, phục vụ ${DOMAIN_V2}
+build_frontend_v2() {
+    log_info "Biên dịch React frontend UI v2 (mã nguồn hiện tại) cho ${DOMAIN_V2}..."
+    ensure_client_deps
+    (cd "$ROOT_DIR/necom-client" && BUILD_PATH=build-v2 npm run build)
+
+    if [ ! -f "$ROOT_DIR/necom-client/build-v2/index.html" ]; then
+        log_error "Không tìm thấy file index.html sau khi build frontend v2!"
+        exit 1
+    fi
+    log_success "Đã build thành công necom-client/build-v2 (UI v2)!"
 }
 
 # Synchronize files to VPS
@@ -127,13 +157,14 @@ sync_to_vps() {
     log_info "Đồng bộ mã nguồn và artifacts lên VPS (${VPS_USER}@${VPS_HOST}:${REMOTE_DIR})..."
 
     # Tạo thư mục từ xa nếu chưa có
-    ssh "${VPS_USER}@${VPS_HOST}" "mkdir -p ${REMOTE_DIR}/necom-server/target ${REMOTE_DIR}/necom-server/src/main/resources ${REMOTE_DIR}/necom-client/build"
+    ssh "${VPS_USER}@${VPS_HOST}" "mkdir -p ${REMOTE_DIR}/necom-server/target ${REMOTE_DIR}/necom-server/src/main/resources ${REMOTE_DIR}/necom-client/build ${REMOTE_DIR}/necom-client/build-v2"
 
     # 1. Đồng bộ cấu hình gốc
     rsync -avz --progress \
         "$ROOT_DIR/docker-compose.yml" \
         "$ROOT_DIR/run.sh" \
         "$ROOT_DIR/nginx-vps.conf" \
+        "$ROOT_DIR/nginx-vps-v2.conf" \
         "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/"
 
     # 2. Xử lý file .env trên VPS (không ghi đè nếu đã có trên VPS)
@@ -159,6 +190,7 @@ sync_to_vps() {
     log_info "Đồng bộ Frontend static build, Dockerfile và nginx.conf..."
     rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
     rsync -avz --delete "$ROOT_DIR/necom-client/build/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build/"
+    rsync -avz --delete "$ROOT_DIR/necom-client/build-v2/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build-v2/"
 
     log_success "Đã đồng bộ toàn bộ file lên VPS thành công!"
 }
@@ -191,6 +223,28 @@ if [ -f /var/www/necom/nginx-vps.conf ]; then
         echo "CẢNH BÁO: Kiểm tra cú pháp Nginx thất bại, bỏ qua reload."
     fi
 fi
+
+# 3. Site necom-v2.vnhat.dev (UI v2): lần đầu xin chứng chỉ qua webroot bằng cấu hình tạm chỉ có HTTP
+if [ -f /var/www/necom/nginx-vps-v2.conf ]; then
+    if [ ! -f /etc/letsencrypt/live/necom-v2.vnhat.dev/fullchain.pem ] && command -v certbot >/dev/null 2>&1; then
+        sed '/^# 2\. HTTPS Server/,$d' /var/www/necom/nginx-vps-v2.conf > /etc/nginx/sites-available/necom-v2.vnhat.dev.conf
+        ln -sf /etc/nginx/sites-available/necom-v2.vnhat.dev.conf /etc/nginx/sites-enabled/necom-v2.vnhat.dev.conf
+        nginx -t >/dev/null 2>&1 && systemctl reload nginx
+        mkdir -p /var/www/html
+        certbot certonly --webroot -w /var/www/html -d necom-v2.vnhat.dev --non-interactive --agree-tos --register-unsafely-without-email \
+            || echo "CẢNH BÁO: Chưa cấp được chứng chỉ cho necom-v2.vnhat.dev (kiểm tra DNS)."
+    fi
+    if [ -f /etc/letsencrypt/live/necom-v2.vnhat.dev/fullchain.pem ]; then
+        cp /var/www/necom/nginx-vps-v2.conf /etc/nginx/sites-available/necom-v2.vnhat.dev.conf
+        ln -sf /etc/nginx/sites-available/necom-v2.vnhat.dev.conf /etc/nginx/sites-enabled/necom-v2.vnhat.dev.conf
+        if nginx -t >/dev/null 2>&1; then
+            systemctl reload nginx
+            echo "Nginx reverse proxy cho necom-v2.vnhat.dev đã được nạp thành công!"
+        else
+            echo "CẢNH BÁO: Kiểm tra cú pháp Nginx thất bại, bỏ qua reload."
+        fi
+    fi
+fi
 EOF
     log_success "Đã cấu hình host Nginx và Firewall trên VPS!"
 }
@@ -207,6 +261,7 @@ echo "Đang build Docker images trên VPS..."
 docker compose build necom-embedding
 docker compose build necom-server
 docker compose build --no-cache necom-client
+docker compose build --no-cache necom-client-v2
 
 echo "1/3. Khởi động [necom-database] (MySQL 8.0)..."
 docker compose up -d necom-database
@@ -238,8 +293,8 @@ for i in {1..40}; do
     echo -n "."
 done
 
-echo "3/3. Khởi động [necom-client] (Nginx + React)..."
-docker compose up -d necom-client
+echo "3/3. Khởi động [necom-client] (UI v1) và [necom-client-v2] (UI v2)..."
+docker compose up -d necom-client necom-client-v2
 
 echo "Kiểm tra trạng thái container:"
 docker compose ps
@@ -351,7 +406,8 @@ show_help() {
     echo -e "  ${GREEN}(không tham số)${NC}      Biên dịch đầy đủ (BE + FE), đồng bộ và triển khai lên VPS"
     echo -e "  ${GREEN}--skip-build${NC}         Bỏ qua bước biên dịch cục bộ, deploy ngay các artifact hiện có"
     echo -e "  ${GREEN}--only-be${NC}            Chỉ biên dịch và deploy riêng Backend"
-    echo -e "  ${GREEN}--only-fe${NC}            Chỉ biên dịch và deploy riêng Frontend"
+    echo -e "  ${GREEN}--only-fe${NC}            Chỉ deploy Frontend UI v1 (nhánh ${UI_V1_REF}) cho ${DOMAIN}"
+    echo -e "  ${GREEN}--only-fe-v2${NC}         Chỉ deploy Frontend UI v2 (mã nguồn hiện tại) cho ${DOMAIN_V2}"
     echo -e "  ${GREEN}--ssl${NC}                Cấp phát chứng chỉ SSL Let's Encrypt cho ${DOMAIN}"
     echo -e "  ${GREEN}--status${NC}             Kiểm tra tình trạng container và health check trên VPS"
     echo -e "  ${GREEN}--logs [target]${NC}      Theo dõi log trực tiếp từ VPS (server / client / db / all)"
@@ -375,6 +431,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --only-fe)
             MAIN_ACTION="only-fe"
+            shift
+            ;;
+        --only-fe-v2)
+            MAIN_ACTION="only-fe-v2"
             shift
             ;;
         --ssl)
@@ -416,6 +476,7 @@ case "$MAIN_ACTION" in
     full)
         build_backend
         build_frontend
+        build_frontend_v2
         sync_to_vps
         configure_vps_nginx
         start_vps_services
@@ -438,9 +499,20 @@ case "$MAIN_ACTION" in
         build_frontend
         log_info "Đồng bộ Frontend lên VPS..."
         rsync -avz --delete "$ROOT_DIR/necom-client/build/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build/"
-        rsync -av "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
+        rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
         ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client && docker compose up -d necom-client"
         log_success "Đã cập nhật Frontend thành công!"
+        ;;
+    only-fe-v2)
+        build_frontend_v2
+        log_info "Đồng bộ Frontend UI v2 lên VPS..."
+        ssh "${VPS_USER}@${VPS_HOST}" "mkdir -p ${REMOTE_DIR}/necom-client/build-v2"
+        rsync -av "$ROOT_DIR/docker-compose.yml" "$ROOT_DIR/nginx-vps-v2.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/"
+        rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
+        rsync -avz --delete "$ROOT_DIR/necom-client/build-v2/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build-v2/"
+        ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client-v2 && docker compose up -d necom-client-v2"
+        configure_vps_nginx
+        log_success "Đã cập nhật Frontend UI v2 (${DOMAIN_V2}) thành công!"
         ;;
     ssl)
         setup_ssl

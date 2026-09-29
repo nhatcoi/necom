@@ -106,6 +106,23 @@ services:
       - backend
     restart: always
 
+  # Giao diện Nest (UI v2, nhánh main) cho necom-v2.vnhat.dev; dùng chung necom-server với necom-client (UI v1)
+  necom-client-v2:
+    container_name: necom-client-v2
+    build:
+      context: ./necom-client
+      dockerfile: Dockerfile
+      args:
+        BUILD_DIR: build-v2
+    image: necom-client-v2:latest
+    ports:
+      - "${CLIENT_V2_PORT:-8081}:80"
+    depends_on:
+      - necom-server
+    networks:
+      - backend
+    restart: always
+
 volumes:
   mysql-data:
     driver: local
