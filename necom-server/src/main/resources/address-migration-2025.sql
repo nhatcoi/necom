@@ -99,3 +99,21 @@ DELETE FROM district;
 DELETE FROM province WHERE id <= 1000;
 DROP TABLE IF EXISTS tmp_address_map_ward;
 DROP TABLE IF EXISTS tmp_address_map_province;
+
+-- 7. Tài khoản mẫu (data.sql): họ tên/SĐT/email tiếng Việt, địa chỉ Hà Nội đủ phường để đặt hàng / tạo vận đơn demo.
+--    Chỉ áp dụng cho tài khoản seed (khớp theo username), không đụng người dùng thật.
+DROP TABLE IF EXISTS tmp_seed_user;
+CREATE TABLE tmp_seed_user (username VARCHAR(255) NOT NULL PRIMARY KEY, fullname VARCHAR(255), gender CHAR(1), phone VARCHAR(20), line VARCHAR(255), ward VARCHAR(255));
+INSERT INTO tmp_seed_user VALUES ('dnucator0', 'Nguyễn Đức Nam', 'M', '0912000001', '12 Phố Đội Cấn', 'Phường Ngọc Hà'), ('jgratten1', 'Trần Thu Hà', 'F', '0912000002', '45 Phố Hàng Bạc', 'Phường Hoàn Kiếm'), ('ethuillier2', 'Lê Minh Tuấn', 'M', '0912000003', '175 Đường Xuân Thủy', 'Phường Cầu Giấy'), ('dtreat3', 'Phạm Thị Lan', 'F', '0912000004', '12 Phố Phạm Ngọc Thạch', 'Phường Kim Liên'), ('tkorting4', 'Hoàng Mai Anh', 'F', '0912000005', '120 Đường Lạc Long Quân', 'Phường Tây Hồ'), ('admin', 'Quản trị viên', 'M', '0901234567', '1 Phố Tràng Tiền', 'Phường Hoàn Kiếm'), ('customer', 'Nguyễn Văn Khách', 'M', '0901234568', '15 Phố Hào Nam', 'Phường Ô Chợ Dừa'), ('employee', 'Đỗ Quang Huy', 'M', '0901234569', '30 Đường Trung Kính', 'Phường Yên Hòa');
+UPDATE user u JOIN tmp_seed_user s ON s.username = u.username
+    JOIN address a ON a.id = u.address_id
+    JOIN province p ON p.name = 'Thành phố Hà Nội'
+    JOIN ward nw ON nw.province_id = p.id AND nw.name = s.ward
+SET u.fullname = s.fullname, u.gender = s.gender, u.phone = s.phone, u.email = CONCAT(u.username, '@necom.local'), u.avatar = NULL,
+    a.line = s.line, a.province_id = p.id, a.ward_id = nw.id, a.district_id = NULL;
+-- Đơn hàng mẫu của data.sql: giao tới địa chỉ hiện tại của khách
+UPDATE `order` o JOIN user u ON u.id = o.user_id JOIN tmp_seed_user s ON s.username = u.username
+    JOIN address a ON a.id = u.address_id JOIN ward nw ON nw.id = a.ward_id JOIN province p ON p.id = a.province_id
+SET o.to_name = u.fullname, o.to_phone = u.phone, o.to_address = a.line, o.to_ward_name = nw.name, o.to_district_name = '', o.to_province_name = p.name
+WHERE o.code IN ('68400-107', '36987-166');
+DROP TABLE IF EXISTS tmp_seed_user;

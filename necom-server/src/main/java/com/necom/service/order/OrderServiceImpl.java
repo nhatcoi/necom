@@ -146,6 +146,11 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CART, FieldName.USERNAME, username));
 
+        // Địa chỉ 2 cấp sau sáp nhập: GHN cần tỉnh + phường/xã để tạo vận đơn
+        if (user.getAddress() == null || user.getAddress().getProvince() == null || user.getAddress().getWard() == null) {
+            throw new IllegalArgumentException("Địa chỉ giao hàng chưa có phường/xã. Vui lòng cập nhật địa chỉ trong Tài khoản > Thông tin cá nhân rồi đặt lại.");
+        }
+
         // (1) Tạo đơn hàng
         Order order = new Order();
 

@@ -2,22 +2,22 @@ SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET CHARACTER SET utf8mb4;
 
 -- address TABLE: 30 records
-INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
-VALUES ('2021-09-29 21:58:33', '2021-07-30 14:27:56', '140 Commercial Way', 7, 28, 1);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
-VALUES ('2021-08-22 21:08:28', '2021-08-31 07:42:14', '9121 Calypso Street', 7, 26, 2);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
-VALUES ('2021-08-15 21:35:21', '2022-04-08 22:22:57', '59 Del Sol Road', 10, 2, 3);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
-VALUES ('2022-03-20 14:32:29', '2021-08-27 23:10:58', '3918 Bashford Junction', 29, 1, 8937);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id, ward_id)
-VALUES ('2021-11-01 05:12:07', '2021-06-21 06:36:16', '18726 Delaware Parkway', 1, 26, 4);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id)
-VALUES ('2021-11-26 06:31:10', '2021-07-01 07:54:22', '83027 Ludington Center', 6, 25);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id)
-VALUES ('2022-05-13 06:41:51', '2021-12-19 08:19:18', '85044 Troy Place', 2, 28);
-INSERT INTO address (created_at, updated_at, line, province_id, district_id)
-VALUES ('2022-03-28 17:20:12', '2022-01-22 14:17:25', '72 Thackeray Plaza', 4, 23);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2021-09-29 21:58:33', '2021-07-30 14:27:56', '12 Phố Đội Cấn', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2021-08-22 21:08:28', '2021-08-31 07:42:14', '45 Phố Hàng Bạc', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2021-08-15 21:35:21', '2022-04-08 22:22:57', '175 Đường Xuân Thủy', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2022-03-20 14:32:29', '2021-08-27 23:10:58', '12 Phố Phạm Ngọc Thạch', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2021-11-01 05:12:07', '2021-06-21 06:36:16', '120 Đường Lạc Long Quân', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2021-11-26 06:31:10', '2021-07-01 07:54:22', '1 Phố Tràng Tiền', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2022-05-13 06:41:51', '2021-12-19 08:19:18', '15 Phố Hào Nam', 1);
+INSERT INTO address (created_at, updated_at, line, province_id)
+VALUES ('2022-03-28 17:20:12', '2022-01-22 14:17:25', '30 Đường Trung Kính', 1);
 INSERT INTO address (created_at, updated_at, line, province_id, district_id)
 VALUES ('2021-09-23 15:51:19', '2022-02-15 17:31:00', '92473 Russell Drive', 4, 17);
 INSERT INTO address (created_at, updated_at, line, province_id, district_id)
@@ -65,21 +65,21 @@ VALUES ('2021-10-06 19:21:11', '2022-05-03 08:50:28', '02 Moland Court', 9, 10);
 
 -- user TABLE: 8 records (All sample users have default password: admin123)
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2021-10-05 07:30:07', '2021-06-03 16:38:23', 'dnucator0', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Dolly Nucator', 'dnucator0@prweb.com', '0919944705', 'M', 1, 'http://dummyimage.com/138x100.png/dddddd/000000', 1);
+VALUES ('2021-10-05 07:30:07', '2021-06-03 16:38:23', 'dnucator0', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Nguyễn Đức Nam', 'dnucator0@necom.local', '0912000001', 'M', 1, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-07 17:51:29', '2022-02-24 10:37:18', 'jgratten1', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Jose Gratten', 'jgratten1@google.co.jp', '0919944709', 'F', 2, 'http://dummyimage.com/222x100.png/ff4444/ffffff', 1);
+VALUES ('2022-01-07 17:51:29', '2022-02-24 10:37:18', 'jgratten1', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Trần Thu Hà', 'jgratten1@necom.local', '0912000002', 'F', 2, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2021-11-30 21:45:42', '2022-03-05 17:40:25', 'ethuillier2', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Ermin Thuillier', 'ethuillier2@jimdo.com', '0919944305', 'M', 3, null, 1);
+VALUES ('2021-11-30 21:45:42', '2022-03-05 17:40:25', 'ethuillier2', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Lê Minh Tuấn', 'ethuillier2@necom.local', '0912000003', 'M', 3, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-27 04:22:37', '2022-05-04 02:25:59', 'dtreat3', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Danila Treat', 'dtreat3@nymag.com', '0919944735', 'F', 4, null, 1);
+VALUES ('2022-01-27 04:22:37', '2022-05-04 02:25:59', 'dtreat3', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Phạm Thị Lan', 'dtreat3@necom.local', '0912000004', 'F', 4, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-03-27 11:16:32', '2021-10-03 12:04:10', 'tkorting4', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Tanya Korting', 'tkorting4@livejournal.com', '0919944735', 'F', 5, null, 1);
+VALUES ('2022-03-27 11:16:32', '2021-10-03 12:04:10', 'tkorting4', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Hoàng Mai Anh', 'tkorting4@necom.local', '0912000005', 'F', 5, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
 VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'admin', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Quản trị viên', 'admin@necom.local', '0901234567', 'M', 6, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'customer', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Khách hàng', 'customer@necom.local', '0901234568', 'M', 7, null, 1);
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'customer', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Nguyễn Văn Khách', 'customer@necom.local', '0901234568', 'M', 7, null, 1);
 INSERT INTO user (created_at, updated_at, username, password, fullname, email, phone, gender, address_id, avatar, status)
-VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'employee', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Nhân viên', 'employee@necom.local', '0901234569', 'M', 8, null, 1);
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 'employee', '$2a$10$irWdQWUH9jHj6TdfX.tF7u1iz5BJiNnr3/QvC/bExHQhwrHZZUrh2', 'Đỗ Quang Huy', 'employee@necom.local', '0901234569', 'M', 8, null, 1);
 
 -- role TABLE: 3 records
 INSERT INTO `role` (created_at, updated_at, code, name, status)
@@ -162,6 +162,8 @@ VALUES ('2022-03-29 23:30:36', '2022-01-15 11:44:18', 'Compensation Analyst', 3)
 -- employee: 5 records
 INSERT INTO employee (created_at, updated_at, user_id, office_id, department_id, job_type_id, job_level_id, job_title_id)
 VALUES ('2021-09-04 07:46:15', '2021-11-10 11:49:52', 3, 4, 5, 2, 3, 4);
+INSERT INTO employee (created_at, updated_at, user_id, office_id, department_id, job_type_id, job_level_id, job_title_id)
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 8, 1, 1, 1, 1, 1);
 
 -- customer_group TABLE: 5 records
 INSERT INTO customer_group (created_at, updated_at, code, name, description, color, status)
@@ -200,6 +202,8 @@ INSERT INTO customer (created_at, updated_at, user_id, customer_group_id, custom
 VALUES ('2022-05-01 13:27:06', '2022-02-02 16:18:00', 4, 4, 5, 3);
 INSERT INTO customer (created_at, updated_at, user_id, customer_group_id, customer_resource_id, customer_status_id)
 VALUES ('2021-08-22 12:52:55', '2022-03-05 09:30:21', 5, 2, 4, 2);
+INSERT INTO customer (created_at, updated_at, user_id, customer_group_id, customer_resource_id, customer_status_id)
+VALUES ('2022-01-01 00:00:00', '2022-01-01 00:00:00', 7, 5, 4, 1);
 
 -- property TABLE: 2 records
 INSERT INTO property (created_at, updated_at, name, code, description, status)
@@ -2098,9 +2102,9 @@ VALUES ('2021-08-26 05:18:38', '2022-02-02 14:58:07', 'Nhân viên làm sai', nu
 
 -- order TABLE: 2 records
 INSERT INTO `order` (created_at, updated_at, to_name, to_phone, to_address, to_ward_name, to_district_name, to_province_name, code, status, order_resource_id, order_cancellation_reason_id, note, user_id, total_amount, tax, shipping_cost, total_pay, payment_method_type, payment_status)
-VALUES ('2022-06-30 08:32:41', '2021-08-17 03:28:55', 'thang', '0909998877', 'Streaming house', 'Phường 14', 'Quận 10', 'TP Hồ Chí Minh', '68400-107', 1, 5, null, null, 4, 500000, 0.1, 50000, 600000, 'CASH', 1);
+VALUES ('2022-06-30 08:32:41', '2021-08-17 03:28:55', 'Phạm Thị Lan', '0912000004', '12 Phố Phạm Ngọc Thạch', 'Phường Kim Liên', '', 'Thành phố Hà Nội', '68400-107', 1, 5, null, null, 4, 500000, 0.1, 50000, 600000, 'CASH', 1);
 INSERT INTO `order` (created_at, updated_at, to_name, to_phone, to_address, to_ward_name, to_district_name, to_province_name, code, status, order_resource_id, order_cancellation_reason_id, note, user_id, total_amount, tax, shipping_cost, total_pay, payment_method_type, payment_status)
-VALUES ('2022-05-02 23:20:36', '2022-07-02 09:02:05', 'do mixi', '0909998877', 'Streaming house', 'Phường 14', 'Quận 10', 'TP Hồ Chí Minh', '36987-166', 4, 1, null, 'Insertion of Other Device into Left Upper Leg, Perc Approach', 4, 600000, 0.1, 40000, 700000, 'CASH', 2);
+VALUES ('2022-05-02 23:20:36', '2022-07-02 09:02:05', 'Phạm Thị Lan', '0912000004', '12 Phố Phạm Ngọc Thạch', 'Phường Kim Liên', '', 'Thành phố Hà Nội', '36987-166', 4, 1, null, 'Insertion of Other Device into Left Upper Leg, Perc Approach', 4, 600000, 0.1, 40000, 700000, 'CASH', 2);
 
 -- order_variant TABLE: 3 records
 INSERT INTO order_variant (order_id, variant_id, price, quantity, amount)

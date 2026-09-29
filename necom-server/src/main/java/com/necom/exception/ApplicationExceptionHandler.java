@@ -43,6 +43,17 @@ public class ApplicationExceptionHandler {
                 request.getDescription(false));
     }
 
+    // Dữ liệu đầu vào không hợp lệ (vd. địa chỉ thiếu phường/xã): trả thông báo cho người dùng thay vì lỗi 500
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage badRequestException(IllegalArgumentException ex, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                Instant.now(),
+                ex.getMessage(),
+                request.getDescription(false));
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage globalExceptionHandler(Exception ex, WebRequest request) {

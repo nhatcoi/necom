@@ -28,8 +28,8 @@ export const TECH_STACK = [
 
 export const DEMO_ACCOUNTS = [
   { username: 'admin', password: 'admin123', role: 'ADMIN', name: 'Quản trị viên', entry: '/admin', note: 'Toàn quyền quản trị, gồm nhân sự, điểm thưởng, sổ quỹ' },
-  { username: 'employee', password: 'admin123', role: 'EMPLOYEE', name: 'Nhân viên', entry: '/admin', note: 'Đơn hàng, vận đơn, tồn kho, đánh giá, inbox CSKH; không vào được sản phẩm, nhân sự, điểm thưởng, sổ quỹ' },
-  { username: 'customer', password: 'admin123', role: 'CUSTOMER', name: 'Khách hàng', entry: '/signin', note: 'Mua hàng, theo dõi đơn, chat với trợ lý AI và tư vấn viên' },
+  { username: 'employee', password: 'admin123', role: 'EMPLOYEE', name: 'Đỗ Quang Huy', entry: '/admin', note: 'Đơn hàng, vận đơn, tồn kho, đánh giá, inbox CSKH; không vào được sản phẩm, nhân sự, điểm thưởng, sổ quỹ' },
+  { username: 'customer', password: 'admin123', role: 'CUSTOMER', name: 'Nguyễn Văn Khách', entry: '/signin', note: 'Mua hàng, theo dõi đơn, chat với trợ lý AI và tư vấn viên' },
   { username: 'dnucator0 · jgratten1', password: 'admin123', role: 'ADMIN', name: 'Dữ liệu mẫu', entry: '/admin', note: 'Tài khoản seed bổ sung' },
   { username: 'ethuillier2', password: 'admin123', role: 'EMPLOYEE', name: 'Dữ liệu mẫu', entry: '/admin', note: 'Tài khoản seed bổ sung' },
   { username: 'dtreat3 · tkorting4', password: 'admin123', role: 'CUSTOMER', name: 'Dữ liệu mẫu', entry: '/signin', note: 'Tài khoản seed bổ sung' },

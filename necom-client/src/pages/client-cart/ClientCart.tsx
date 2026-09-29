@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Alert,
   Anchor,
   Badge,
   Button,
@@ -214,6 +215,14 @@ function ClientCart() {
                       .filter(Boolean)
                       .join(', ')}
                   </Text>
+                  {!user?.address?.ward && (
+                    <Alert color="orange" p="xs" mt={4}>
+                      <Text size="xs">
+                        Địa chỉ chưa có phường/xã nên chưa thể giao hàng.{' '}
+                        <Anchor component={Link} to="/user/setting/personal" size="xs">Cập nhật địa chỉ</Anchor>
+                      </Text>
+                    </Alert>
+                  )}
                 </Stack>
               </Stack>
             </Card>
@@ -291,7 +300,7 @@ function ClientCart() {
               size="lg"
               leftIcon={<ShoppingCart/>}
               onClick={handleOrderButton}
-              disabled={cart.cartItems.length === 0}
+              disabled={cart.cartItems.length === 0 || !user?.address?.ward}
             >
               Đặt mua
             </Button>
@@ -487,6 +496,7 @@ function ConfirmedOrder() {
     data: clientConfirmedOrderResponse,
     isLoading,
     isError,
+    error,
   } = useCreateClientOrderApi();
 
   const [checkoutPaypalStatus, setCheckoutPaypalStatus] = useState<'none' | 'success' | 'cancel'>('none');
@@ -528,6 +538,8 @@ function ConfirmedOrder() {
         <Stack align="center" sx={{ alignItems: 'center', color: theme.colors.pink[6] }}>
           <AlertTriangle size={100} strokeWidth={1}/>
           <Text weight={500}>Đã có lỗi xảy ra</Text>
+          {/* Lỗi nghiệp vụ (400) có thông báo cụ thể cho khách, lỗi hệ thống thì giữ thông báo chung */}
+          {error?.statusCode === 400 && <Text size="sm" align="center" color="dimmed">{error.message}</Text>}
         </Stack>
         <Button fullWidth variant="default" onClick={modals.closeAll} mt="md">
           Đóng
