@@ -2,7 +2,6 @@ import {
   Anchor,
   Breadcrumbs,
   Button,
-  Card,
   Checkbox,
   Chip,
   Chips,
@@ -14,14 +13,13 @@ import {
   Stack,
   Text,
   TextInput,
-  Title,
   useMantineTheme
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import MiscUtils from 'utils/MiscUtils';
 import { ClientError } from 'components';
-import { ArrowsDownUp, ChartCandle, ChevronRight, Search, X } from 'tabler-icons-react';
+import { Adjustments, ArrowsDownUp, Search, X } from 'tabler-icons-react';
 import useTitle from 'hooks/use-title';
 import { useQuery } from 'react-query';
 import FetchUtils, { ErrorMessage } from 'utils/FetchUtils';
@@ -138,69 +136,58 @@ function ClientCategory() {
       <Container size="xl">
         <Stack spacing={theme.spacing.xl * 2}>
 
-          <Card radius="md" shadow="sm" p="lg">
-            <Stack>
-              <Breadcrumbs>
-                <Anchor component={Link} to="/">
-                  Trang chủ
+          <header className="nest-page-head">
+            <Breadcrumbs>
+              <Anchor component={Link} to="/">
+                Trang chủ
+              </Anchor>
+              {MiscUtils.makeCategoryBreadcrumbs(category).slice(0, -1).map(c => (
+                <Anchor key={c.categorySlug} component={Link} to={'/category/' + c.categorySlug}>
+                  {c.categoryName}
                 </Anchor>
-                {MiscUtils.makeCategoryBreadcrumbs(category).slice(0, -1).map(c => (
-                  <Anchor key={c.categorySlug} component={Link} to={'/category/' + c.categorySlug}>
-                    {c.categoryName}
-                  </Anchor>
-                ))}
-                <Text color="dimmed">
-                  {category.categoryName}
-                </Text>
-              </Breadcrumbs>
+              ))}
+              <Text color="dimmed">
+                {category.categoryName}
+              </Text>
+            </Breadcrumbs>
 
-              <Group spacing="xs" sx={{ alignItems: 'baseline' }}>
-                <Title order={2}>{category.categoryName}</Title>
-                {category.categoryChildren.length > 0 && (
-                  <>
-                    <Text color="dimmed">
-                      <ChevronRight size={14}/>
-                    </Text>
-                    <Breadcrumbs separator="·">
-                      {category.categoryChildren.map(c => (
-                        <Anchor key={c.categorySlug} component={Link} to={'/category/' + c.categorySlug} size="sm">
-                          {c.categoryName}
-                        </Anchor>
-                      ))}
-                    </Breadcrumbs>
-                  </>
-                )}
-              </Group>
-            </Stack>
-          </Card>
+            <h1>{category.categoryName}</h1>
+            {totalProducts > 0 && <p className="nest-muted">{totalProducts} sản phẩm</p>}
+
+            {category.categoryChildren.length > 0 && (
+              <nav className="nest-subcategories" aria-label="Danh mục con">
+                {category.categoryChildren.map(c => (
+                  <Link key={c.categorySlug} to={'/category/' + c.categorySlug}>{c.categoryName}</Link>
+                ))}
+              </nav>
+            )}
+          </header>
 
           <Grid gutter="xl">
             <Grid.Col md={3} mb={theme.spacing.xl}>
               <Stack spacing="lg">
                 <Group position="apart">
                   <Group spacing="xs">
-                    <ChartCandle/>
+                    <Adjustments size={18} strokeWidth={1.5}/>
                     <Text weight={500}>Bộ lọc</Text>
                   </Group>
                   <Button
-                    variant="light"
-                    color="pink"
-                    radius="md"
+                    variant="subtle"
+                    color="gray"
                     size="xs"
                     compact
-                    leftIcon={<X size={10}/>}
-                    styles={{ leftIcon: { marginRight: 6 } }}
+                    leftIcon={<X size={12}/>}
+                    styles={{ leftIcon: { marginRight: 4 } }}
                     onClick={handleResetButton}
                     disabled={disabledResetButton}
                   >
-                    Đặt mặc định
+                    Xóa bộ lọc
                   </Button>
                 </Group>
 
                 <Stack>
                   <Text weight={500}>Tìm kiếm</Text>
                   <TextInput
-                    radius="md"
                     placeholder={'Tìm kiếm trong ' + category.categoryName}
                     icon={<Search size={16}/>}
                     value={searchQuery || ''}
@@ -244,10 +231,10 @@ function ClientCategory() {
 
             <Grid.Col md={9}>
               <Stack spacing="lg">
-                <Group position="apart">
+                <Group position="apart" className="nest-listing-toolbar">
                   <Group spacing="xs">
-                    <ArrowsDownUp size={20}/>
-                    <Text weight={500} mr={theme.spacing.xs}>Sắp xếp theo</Text>
+                    <ArrowsDownUp size={18} strokeWidth={1.5}/>
+                    <Text weight={500} mr={theme.spacing.xs}>Sắp xếp</Text>
                     <RadioGroup
                       value={activeSort || ''}
                       onChange={(value) => updateActiveSort((value as '' | 'lowest-price' | 'highest-price') || null)}
@@ -257,7 +244,6 @@ function ClientCategory() {
                       <Radio value="highest-price" label="Giá cao → thấp"/>
                     </RadioGroup>
                   </Group>
-                  <Text>{totalProducts} sản phẩm</Text>
                 </Group>
 
                 <ClientCategoryProducts categorySlug={category.categorySlug}/>

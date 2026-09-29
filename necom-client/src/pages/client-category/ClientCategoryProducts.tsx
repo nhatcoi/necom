@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid, Group, Pagination, Skeleton, Stack, Text, useMantineTheme } from '@mantine/core';
-import { ClientProductCard } from 'components';
+import { Group, Pagination, Skeleton, Stack, Text, useMantineTheme } from '@mantine/core';
+import NestProductCard from 'components/Nest/NestProductCard';
 import ApplicationConstants from 'constants/ApplicationConstants';
 import { useQuery } from 'react-query';
 import FetchUtils, { ErrorMessage, ListResponse } from 'utils/FetchUtils';
@@ -17,7 +17,7 @@ interface ClientCategoryProductsProps {
 function ClientCategoryProducts({ categorySlug }: ClientCategoryProductsProps) {
   const theme = useMantineTheme();
 
-  const { activePage, activeSearch, updateActivePage } = useClientCategoryStore();
+  const { activePage, updateActivePage } = useClientCategoryStore();
 
   const {
     productResponses,
@@ -47,7 +47,7 @@ function ClientCategoryProducts({ categorySlug }: ClientCategoryProductsProps) {
 
   if (products.totalElements === 0) {
     return (
-      <Stack my={theme.spacing.xl} sx={{ alignItems: 'center', color: theme.colors.blue[6] }}>
+      <Stack my={theme.spacing.xl} sx={{ alignItems: 'center', color: theme.colors.gray[6] }}>
         <Marquee size={125} strokeWidth={1}/>
         <Text size="xl" weight={500}>Không có sản phẩm</Text>
       </Stack>
@@ -56,13 +56,9 @@ function ClientCategoryProducts({ categorySlug }: ClientCategoryProductsProps) {
 
   return (
     <>
-      <Grid>
-        {products.content.map((product, index) => (
-          <Grid.Col key={index} span={6} sm={4}>
-            <ClientProductCard product={product} search={activeSearch || ''}/>
-          </Grid.Col>
-        ))}
-      </Grid>
+      <div className="nest-product-grid nest-product-grid--listing">
+        {products.content.map(product => <NestProductCard key={product.productId} product={product}/>)}
+      </div>
 
       <Group position="apart" mt={theme.spacing.lg}>
         <Pagination

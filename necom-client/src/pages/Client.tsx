@@ -9,12 +9,13 @@ import useAuthStore from 'stores/use-auth-store';
 import ChatProvider from 'components/ChatWidget/ChatProvider';
 import ChatLauncher from 'components/ChatWidget/ChatLauncher';
 import 'components/Nest/nest.css';
+import { nestStyles, nestTheme } from 'components/Nest/nest-theme';
 
 function Client() {
   const isLoading = useIsFetching();
 
   return (
-    <MantineProvider theme={{ primaryColor: 'nest', colors: { nest: ['#f4f5ed', '#e8eadb', '#d7dac3', '#bcc3a0', '#9da67d', '#7d8961', '#626b50', '#515a41', '#414934', '#323a28'] } }}>
+    <MantineProvider theme={nestTheme} styles={nestStyles}>
       <div className="nest-storefront">
         <ChatProvider>
           <LoadingMiddleware isLoading={!!isLoading}>

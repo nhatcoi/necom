@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Card,
   Checkbox,
   Container,
-  Grid,
   Group,
   Pagination,
   Radio,
@@ -11,12 +9,11 @@ import {
   Skeleton,
   Stack,
   Text,
-  Title,
   useMantineTheme
 } from '@mantine/core';
 import { useLocation } from 'react-router-dom';
 import { AlertTriangle, ArrowsDownUp, ChartCandle, Marquee } from 'tabler-icons-react';
-import { ClientProductCard } from 'components';
+import NestProductCard from 'components/Nest/NestProductCard';
 import ApplicationConstants from 'constants/ApplicationConstants';
 import { useQuery } from 'react-query';
 import FetchUtils, { ErrorMessage, ListResponse } from 'utils/FetchUtils';
@@ -115,13 +112,9 @@ function ClientSearch() {
   if (products && products.totalElements > 0) {
     resultFragment = (
       <>
-        <Grid mt={theme.spacing.xs}>
-          {products.content.map((product, index) => (
-            <Grid.Col key={index} span={6} sm={4} md={3}>
-              <ClientProductCard product={product} search={searchQuery || ''}/>
-            </Grid.Col>
-          ))}
-        </Grid>
+        <div className="nest-product-grid">
+          {products.content.map(product => <NestProductCard key={product.productId} product={product}/>)}
+        </div>
 
         <Group position="apart" mt={theme.spacing.lg}>
           <Pagination
@@ -142,23 +135,16 @@ function ClientSearch() {
     <main>
       <Container size="xl">
         <Stack spacing={theme.spacing.xl * 1.5}>
-          <Card radius="md" shadow="sm" p="lg">
-            <Title order={2}>
-              {searchQuery ? (
-                <>
-                  Kết quả tìm kiếm cho &quot;<Text component="span" color="yellow" inherit>{searchQuery}</Text>&quot;
-                </>
-              ) : (
-                pageTitle
-              )}
-            </Title>
-          </Card>
+          <header className="nest-page-head">
+            <p className="nest-muted">{searchQuery ? 'Kết quả tìm kiếm' : 'Tất cả sản phẩm'}</p>
+            <h1>{searchQuery ? `“${searchQuery}”` : pageTitle}</h1>
+          </header>
 
           <Stack spacing="lg">
-            <Group position="apart">
+            <Group position="apart" className="nest-listing-toolbar">
               <Group spacing="xs">
-                <ArrowsDownUp size={20}/>
-                <Text weight={500} mr={theme.spacing.xs}>Sắp xếp theo</Text>
+                <ArrowsDownUp size={18} strokeWidth={1.5}/>
+                <Text weight={500} mr={theme.spacing.xs}>Sắp xếp</Text>
                 <RadioGroup
                   value={activeSort || ''}
                   onChange={(value) => setActiveSort((value as '' | 'newest' | 'trending' | 'lowest-price' | 'highest-price') || null)}

@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
     minHeight: 600,
     backgroundSize: 'cover',
     backgroundImage:
-      'url(https://images.unsplash.com/photo-1487875961445-47a00398c267?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80)',
+      'url(/images/nest/living.webp)',
     backgroundPosition: 'bottom',
 
     [theme.fn.smallerThan('sm')]: {

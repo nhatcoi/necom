@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  Title,
   UnstyledButton,
   useMantineTheme
 } from '@mantine/core';
@@ -102,7 +103,7 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
   };
 
   return (
-    <Card radius="md" shadow="sm" p="lg">
+    <Card p="lg">
       <Stack>
         <Breadcrumbs>
           <Anchor component={Link} to="/">
@@ -170,9 +171,9 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
                     </Anchor>
                   </Group>
                 )}
-                <Text sx={{ fontSize: 26 }} weight={500}>
+                <Title order={1} sx={{ fontSize: 30 }}>
                   {product.productName}
-                </Text>
+                </Title>
                 <Group mt={7.5} spacing="lg">
                   <Group spacing="xs">
                     <ReviewStarGroup ratingScore={product.productAverageRatingScore}/>
@@ -301,9 +302,8 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
                 {!product.productSaleable
                   ? (
                     <Button
-                      radius="md"
                       size="lg"
-                      color="teal"
+                      variant="outline"
                       leftIcon={<BellPlus/>}
                       onClick={handleCreatePreorderButton}
                     >
@@ -312,17 +312,14 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
                   )
                   : (
                     <Button
-                      radius="md"
                       size="lg"
-                      color="pink"
-                      leftIcon={<ShoppingCart/>}
+                      leftIcon={<ShoppingCart size={20} strokeWidth={1.5}/>}
                       onClick={handleAddToCartButton}
                     >
                       Chọn mua
                     </Button>
                   )}
                 <Button
-                  radius="md"
                   size="lg"
                   color="pink"
                   variant={wished ? 'filled' : 'outline'}

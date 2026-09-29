@@ -346,3 +346,20 @@
 @media (prefers-reduced-motion: reduce) {
   .nest-storefront *, .nest-storefront *::before, .nest-storefront *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Trang cũ dùng Mantine (danh mục, tìm kiếm, sản phẩm, giỏ hàng, tài khoản) trong khung Nest */
+.nest-storefront #main-content > main:not(.nest-home) { padding-block: 40px 88px; }
+.nest-page-head { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding-bottom: 28px; border-bottom: 1px solid var(--nest-line); }
+.nest-page-head h1 { font-family: var(--nest-serif); font-weight: 400; font-size: clamp(34px, 3.6vw, 52px); line-height: 1.15; letter-spacing: -1.4px; margin: 14px 0 0; }
+.nest-page-head > p { margin: 0; font-size: 13px; }
+.nest-subcategories { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.nest-subcategories a { padding: 6px 14px; border: 1px solid var(--nest-line); border-radius: 999px; font-size: 12px; text-decoration: none; transition: border-color .2s, color .2s; }
+.nest-subcategories a:hover { border-color: var(--nest-olive); color: var(--nest-olive); }
+.nest-listing-toolbar { padding-bottom: 14px; border-bottom: 1px solid var(--nest-line); }
+.nest-product-grid--listing { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px 22px; }
+@media (max-width: 760px) {
+  .nest-storefront #main-content > main:not(.nest-home) { padding-block: 24px 56px; }
+  .nest-product-grid--listing { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 25px 14px; }
+}
+.nest-product a, .nest-subcategories a { text-decoration: none; }
+.nest-product h3 a:hover { color: var(--nest-olive); }
