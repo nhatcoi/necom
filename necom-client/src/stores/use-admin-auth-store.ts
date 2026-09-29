@@ -62,4 +62,7 @@ const withStorageDOMEvents = (store: typeof useAdminAuthStore) => {
 
 withStorageDOMEvents(useAdminAuthStore);
 
+// Store gốc (có getState) cho code ngoài React như FetchUtils
+export const adminAuthStore = useAdminAuthStore;
+
 export default createTrackedSelector(useAdminAuthStore);

@@ -4,7 +4,10 @@ import { ActionIcon, Affix, Anchor, Button, Card, Group, MantineProvider, useMan
 import { ClientFooter, ClientHeader, LoadingMiddleware } from 'components';
 import { MoonStars, Sun } from 'tabler-icons-react';
 import { useDisclosure, useHotkeys } from '@mantine/hooks';
-import { useIsFetching } from 'react-query';
+import { useIsFetching, useQuery } from 'react-query';
+import FetchUtils, { ErrorMessage } from 'utils/FetchUtils';
+import ResourceURL from 'constants/ResourceURL';
+import { UserResponse } from 'models/User';
 import useAuthStore from 'stores/use-auth-store';
 import ChatProvider from 'components/ChatWidget/ChatProvider';
 import ChatLauncher from 'components/ChatWidget/ChatLauncher';
@@ -13,6 +16,7 @@ import { nestStyles, nestTheme } from 'components/Nest/nest-theme';
 
 function Client() {
   const isLoading = useIsFetching();
+  useSyncUserProfile();
 
   return (
     <MantineProvider theme={nestTheme} styles={nestStyles}>
@@ -28,6 +32,23 @@ function Client() {
         <Shortcut/>
       </div>
     </MantineProvider>
+  );
+}
+
+/**
+ * Hồ sơ người dùng lưu trong localStorage từ lúc đăng nhập nên có thể cũ (đổi tên, địa chỉ từ thiết bị khác
+ * hoặc từ trang quản trị). Tải lại một lần mỗi khi mở storefront.
+ */
+function useSyncUserProfile() {
+  const { user, updateUser } = useAuthStore();
+  useQuery<UserResponse, ErrorMessage>(
+    ['client-api', 'users', 'getUserInfo', user?.id],
+    () => FetchUtils.getWithToken(ResourceURL.CLIENT_USER_INFO),
+    {
+      enabled: !!user,
+      refetchOnWindowFocus: false,
+      onSuccess: (userResponse) => updateUser(userResponse),
+    }
   );
 }
 

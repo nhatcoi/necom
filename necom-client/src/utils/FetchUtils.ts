@@ -1,6 +1,7 @@
 import ApplicationConstants from 'constants/ApplicationConstants';
 import { CollectionWrapper } from 'types';
 import { UploadedImageResponse } from 'models/Image';
+import { expireSession, isJwtExpired, sessionExpiredError } from 'utils/AuthSession';
 
 /**
  * RequestParams dùng để chứa các query param
@@ -39,6 +40,20 @@ export interface ErrorMessage {
 type BasicRequestParams = Record<string, string | number | null | boolean>;
 
 class FetchUtils {
+  /**
+   * Lấy JWT còn hạn của phiên client/admin. Token hết hạn thì xóa phiên và ném lỗi 401 ngay,
+   * không gửi request vô ích lên server.
+   */
+  private static getValidToken(resourceUrl: string, isAdmin?: boolean): string {
+    const token: string | undefined = JSON.parse(localStorage
+      .getItem(isAdmin ? 'necom-admin-auth-store' : 'necom-auth-store') || '{}').state?.jwtToken;
+    if (!token || isJwtExpired(token)) {
+      if (token) expireSession(isAdmin);
+      throw sessionExpiredError(resourceUrl);
+    }
+    return token;
+  }
+
   /**
    * Hàm get cho các trường hợp truy vấn dữ liệu bên client
    * @param resourceUrl
@@ -100,8 +115,7 @@ class FetchUtils {
    * @param isAdmin
    */
   static async getWithToken<O>(resourceUrl: string, requestParams?: BasicRequestParams, isAdmin?: boolean): Promise<O> {
-    const token = JSON.parse(localStorage
-      .getItem(isAdmin ? 'necom-admin-auth-store' : 'necom-auth-store') || '{}').state?.jwtToken;
+    const token = FetchUtils.getValidToken(resourceUrl, isAdmin);
 
     // Source: https://stackoverflow.com/a/70426220
     const response = await fetch(FetchUtils.concatParams(resourceUrl, requestParams), {
@@ -113,6 +127,7 @@ class FetchUtils {
     });
 
     if (!response.ok) {
+      if (response.status === 401) expireSession(isAdmin);
       throw await response.json();
     }
     return await response.json();
@@ -125,8 +140,7 @@ class FetchUtils {
    * @param isAdmin
    */
   static async postWithToken<I, O>(resourceUrl: string, requestBody: I, isAdmin?: boolean): Promise<O> {
-    const token = JSON.parse(localStorage
-      .getItem(isAdmin ? 'necom-admin-auth-store' : 'necom-auth-store') || '{}').state?.jwtToken;
+    const token = FetchUtils.getValidToken(resourceUrl, isAdmin);
 
     const response = await fetch(resourceUrl, {
       method: 'POST',
@@ -139,6 +153,7 @@ class FetchUtils {
     });
 
     if (!response.ok) {
+      if (response.status === 401) expireSession(isAdmin);
       throw await response.json();
     }
     return await response.json();
@@ -151,8 +166,7 @@ class FetchUtils {
    * @param isAdmin
    */
   static async putWithToken<I, O>(resourceUrl: string, requestBody: I, isAdmin?: boolean): Promise<O> {
-    const token = JSON.parse(localStorage
-      .getItem(isAdmin ? 'necom-admin-auth-store' : 'necom-auth-store') || '{}').state?.jwtToken;
+    const token = FetchUtils.getValidToken(resourceUrl, isAdmin);
 
     const response = await fetch(resourceUrl, {
       method: 'PUT',
@@ -165,6 +179,7 @@ class FetchUtils {
     });
 
     if (!response.ok) {
+      if (response.status === 401) expireSession(isAdmin);
       throw await response.json();
     }
     return await response.json();
@@ -177,8 +192,7 @@ class FetchUtils {
    * @param isAdmin
    */
   static async deleteWithToken<T>(resourceUrl: string, entityIds: T[], isAdmin?: boolean) {
-    const token = JSON.parse(localStorage
-      .getItem(isAdmin ? 'necom-admin-auth-store' : 'necom-auth-store') || '{}').state?.jwtToken;
+    const token = FetchUtils.getValidToken(resourceUrl, isAdmin);
 
     const response = await fetch(resourceUrl, {
       method: 'DELETE',
@@ -190,6 +204,7 @@ class FetchUtils {
     });
 
     if (!response.ok) {
+      if (response.status === 401) expireSession(isAdmin);
       throw await response.json();
     }
   }
