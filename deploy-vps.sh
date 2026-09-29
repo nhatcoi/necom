@@ -150,6 +150,11 @@ sync_to_vps() {
     rsync -av "$ROOT_DIR/necom-server/Dockerfile" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-server/"
     rsync -avz "$ROOT_DIR/necom-server/src/main/resources/"*.sql "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-server/src/main/resources/"
 
+    # 3b. Đồng bộ service embedding (tìm kiếm ngữ nghĩa cho chatbot)
+    log_info "Đồng bộ service embedding..."
+    ssh "${VPS_USER}@${VPS_HOST}" "mkdir -p ${REMOTE_DIR}/necom-embedding"
+    rsync -av "$ROOT_DIR/necom-embedding/Dockerfile" "$ROOT_DIR/necom-embedding/app.py" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-embedding/"
+
     # 4. Đồng bộ Frontend
     log_info "Đồng bộ Frontend static build, Dockerfile và nginx.conf..."
     rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
@@ -199,6 +204,7 @@ set -eo pipefail
 cd /var/www/necom
 
 echo "Đang build Docker images trên VPS..."
+docker compose build necom-embedding
 docker compose build necom-server
 docker compose build --no-cache necom-client
 
@@ -215,6 +221,9 @@ for i in {1..45}; do
     sleep 2
     echo -n "."
 done
+
+echo "Khởi động [necom-embedding] (multilingual-e5-small ONNX int8)..."
+docker compose up -d necom-embedding
 
 echo "2/3. Khởi động [necom-server] (Spring Boot)..."
 docker compose up -d necom-server

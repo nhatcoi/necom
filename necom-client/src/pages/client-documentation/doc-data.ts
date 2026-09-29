@@ -22,6 +22,7 @@ export const TECH_STACK = [
   { layer: 'Backend', items: ['Spring Boot 3.5', 'Java 17', 'Spring Security 6 + JWT', 'Spring Data JPA (Hibernate 6)', 'MapStruct', 'RSQL filter', 'WebSocket STOMP', 'SSE'] },
   { layer: 'Dữ liệu', items: ['MySQL 8.0', 'utf8mb4', '63 bảng'] },
   { layer: 'Hạ tầng', items: ['Docker Compose', 'Nginx', 'Cloudflare', 'VPS Ubuntu'] },
+  { layer: 'AI', items: ['Agent LLM + function calling', 'multilingual-e5-small (ONNX int8)', 'Hybrid search BM25 + vector'] },
   { layer: 'Tích hợp', items: ['Giao Hàng Nhanh (GHN)', 'PayPal Sandbox', 'LLM tương thích OpenAI', 'SMTP Gmail'] },
 ];
 

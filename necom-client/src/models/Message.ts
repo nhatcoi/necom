@@ -12,6 +12,8 @@ export interface ChatProductCard {
   thumbnail: string | null;
   minPrice?: number;
   maxPrice?: number;
+  // Số lượng còn bán được (bot v3); undefined với tin cũ
+  inStock?: number;
 }
 
 export interface ChatOrderCard {

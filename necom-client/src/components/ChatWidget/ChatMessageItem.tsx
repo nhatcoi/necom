@@ -289,6 +289,9 @@ function ProductCards({ products }: { products: ChatProductCard[] }) {
               {product.maxPrice != null && product.maxPrice !== product.minPrice && '+'}
             </Text>
           )}
+          {product.inStock === 0 && (
+            <Text size="xs" color="dimmed">Tạm hết hàng · có thể đặt trước</Text>
+          )}
         </Card>
       ))}
     </Box>

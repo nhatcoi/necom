@@ -423,7 +423,7 @@ function MessageList() {
           />
         ))}
 
-        {chat.typing && <TypingIndicator name={chat.typing.senderType === 'BOT' ? BOT_NAME : 'Tư vấn viên'}/>}
+        {chat.typing && <TypingIndicator name={chat.typing.senderType === 'BOT' ? (chat.typing.name || BOT_NAME) : 'Tư vấn viên'}/>}
       </Box>
     </ScrollArea>
   );
@@ -474,7 +474,8 @@ export function TypingIndicator({ name }: { name: string }) {
           />
         ))}
       </Box>
-      <Text size="xs" color="dimmed">{name} đang nhập…</Text>
+      {/* Bot gửi kèm bước đang làm ("… đang tìm sản phẩm phù hợp"), còn lại hiển thị "đang nhập" */}
+      <Text size="xs" color="dimmed">{name.includes(' đang ') ? name + '…' : name + ' đang nhập…'}</Text>
     </Group>
   );
 }

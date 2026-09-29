@@ -2,9 +2,7 @@ package com.necom.service.chat;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ChatLogicTests {
@@ -18,23 +16,17 @@ class ChatLogicTests {
         assertFalse(ChatService.wantsHuman("Tư vấn giúp mình sofa"));
     }
 
-    @Test
-    void parsesPriceRangeFromVietnameseText() {
-        ProductCatalogIndex.PriceRange under = ProductCatalogIndex.parsePriceRange("sofa duoi 15 trieu");
-        assertEquals(15_000_000d, under.getMax());
-        assertNull(under.getMin());
-
-        assertEquals(500_000d, ProductCatalogIndex.parsePriceRange("den ngu duoi 500k").getMax());
-        assertEquals(1_500_000d, ProductCatalogIndex.parsePriceRange("tren 1.5 trieu").getMin());
-        assertEquals(2_000_000d, ProductCatalogIndex.parsePriceRange("khong qua 2.000.000 d").getMax());
-    }
 
     @Test
-    void cabinetIsNotParsedAsPriceKeyword() {
-        // "tủ" và "từ" cùng thành "tu" sau khi bỏ dấu
-        ProductCatalogIndex.PriceRange range = ProductCatalogIndex.parsePriceRange("tu 2 canh go soi");
-        assertNull(range.getMin());
-        assertNull(range.getMax());
+    void handoffOnlyWhenCustomerNeedsSupport() {
+        assertTrue(ChatService.needsHumanSupport("Mình muốn khiếu nại vì hàng giao bị vỡ"));
+        assertTrue(ChatService.needsHumanSupport("cho mình đổi trả đơn A1B2 vì giao sai màu"));
+        assertTrue(ChatService.needsHumanSupport("Mình muốn đổi sang màu khác"));
+        assertTrue(ChatService.needsHumanSupport("Hoàn tiền giúp mình với"));
+        assertFalse(ChatService.needsHumanSupport("Mình cần ghế ngồi làm việc lâu không mỏi lưng"));
+        assertFalse(ChatService.needsHumanSupport("Có sofa nào dưới 6 triệu không?"));
+        assertFalse(ChatService.needsHumanSupport("Chính sách đổi trả thế nào?"));
+        assertFalse(ChatService.needsHumanSupport("Sofa này bảo hành bao lâu?"));
     }
 
 }

@@ -14,6 +14,7 @@ services:
       - ./necom-server/src/main/resources/data.sql:/docker-entrypoint-initdb.d/03-data.sql
       - ./necom-server/src/main/resources/home-living-seed.sql:/docker-entrypoint-initdb.d/04-home-living-seed.sql
       - ./necom-server/src/main/resources/chat-migration.sql:/docker-entrypoint-initdb.d/05-chat-migration.sql
+      - ./necom-server/src/main/resources/chatbot-migration.sql:/docker-entrypoint-initdb.d/06-chatbot-migration.sql
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     networks:
@@ -63,6 +64,8 @@ services:
       CHATBOT_BASE_URL: ${CHATBOT_BASE_URL:-}
       CHATBOT_API_KEY: ${CHATBOT_API_KEY:-}
       CHATBOT_MODEL: ${CHATBOT_MODEL:-}
+      # Embedding nội bộ cho tìm kiếm ngữ nghĩa (để trống để tắt)
+      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-http://necom-embedding:80}
     # Cho phép container gọi dịch vụ chạy trên máy host (vd. AI proxy) qua host.docker.internal
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -72,6 +75,17 @@ services:
     depends_on:
       necom-database:
         condition: service_healthy
+    networks:
+      - backend
+    restart: always
+
+  # Embedding đa ngôn ngữ (multilingual-e5-small ONNX int8, ~250MB RAM) cho tìm kiếm sản phẩm ngữ nghĩa, chỉ mở trong mạng nội bộ
+  necom-embedding:
+    container_name: necom-embedding
+    build:
+      context: ./necom-embedding
+    image: necom-embedding:latest
+    mem_limit: 400m
     networks:
       - backend
     restart: always

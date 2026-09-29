@@ -84,6 +84,12 @@ public class ChatService {
             "nguoi that", "gap nguoi", "noi chuyen voi nguoi", "cskh", "khieu nai", "gap admin", "gap quan ly"
     );
 
+    // Chỉ các cụm mô tả sự cố cụ thể; câu hỏi chung ("chính sách đổi trả thế nào") không tính
+    private static final List<String> SUPPORT_PHRASES = List.of(
+            "bi vo", "vo roi", "bi hong", "hu hong", "bi loi", "bi mop", "tray xuoc", "giao sai", "giao nham", "thieu hang",
+            "hoan tien", "boi thuong", "khong hai long", "lua dao", "muon doi", "muon tra", "can doi", "doi hang",
+            "tra lai hang", "tra hang lai", "chua nhan duoc hang"
+    );
     private final RoomRepository roomRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
@@ -407,9 +413,21 @@ public class ChatService {
 
     // ================= Nội bộ =================
 
-    static boolean wantsHuman(String content) {
+    public static boolean wantsHuman(String content) {
         String normalized = VietnameseTextUtils.normalize(content);
         return HANDOFF_PHRASES.stream().anyMatch(phrase -> VietnameseTextUtils.containsWord(normalized, phrase));
+    }
+
+    /**
+     * Tin có dấu hiệu cần người xử lý (khiếu nại, hàng lỗi, đổi trả, hoàn tiền…). Dùng để chặn bot tự chuyển
+     * tư vấn viên chỉ vì không tìm thấy sản phẩm.
+     */
+    public static boolean needsHumanSupport(String content) {
+        if (wantsHuman(content)) {
+            return true;
+        }
+        String normalized = VietnameseTextUtils.normalize(content);
+        return SUPPORT_PHRASES.stream().anyMatch(phrase -> VietnameseTextUtils.containsWord(normalized, phrase));
     }
 
     private void moveToWaitingAgent(Room room) {

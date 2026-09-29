@@ -50,6 +50,33 @@ public class ChatbotClient {
         return response.path("choices").path(0).path("message").path("content").asText("");
     }
 
+    /**
+     * Một lượt hội thoại có tool calling (chuẩn OpenAI). Trả về message của assistant: có content hoặc tool_calls.
+     */
+    public JsonNode chat(List<? extends Object> messages, JsonNode tools, double temperature) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", properties.getModel());
+        body.put("messages", messages);
+        body.put("temperature", temperature);
+        if (tools != null && tools.size() > 0) {
+            body.put("tools", tools);
+            body.put("tool_choice", "auto");
+        }
+        String baseUrl = properties.getBaseUrl().replaceAll("/+$", "");
+        JsonNode response = webClient.post()
+                .uri(baseUrl + "/chat/completions")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + properties.getApiKey())
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block(Duration.ofSeconds(properties.getTimeoutSeconds()));
+        if (response == null) {
+            throw new IllegalStateException("Chatbot API trả về rỗng");
+        }
+        return response.path("choices").path(0).path("message");
+    }
+
     public static Map<String, String> message(String role, String content) {
         Map<String, String> message = new HashMap<>();
         message.put("role", role);

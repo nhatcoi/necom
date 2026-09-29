@@ -245,6 +245,8 @@ export function DeploymentDiagram() {
       <Arrow x1={679} y1={150} x2={679} y2={172}/>
       <Label x={690} y={166} text="/api · /ws · /client-api"/>
       <Arrow x1={766} y1={204} x2={782} y2={204}/>
+      <Node x={786} y={92} w={154} h={56} title="necom-embedding" subtitle="e5-small ONNX · :80" variant="brand"/>
+      <Arrow x1={740} y1={174} x2={800} y2={152}/>
 
       <Node x={786} y={254} w={154} h={46} title="AI proxy (trên host)" subtitle=":20128 /v1" variant="ghost"/>
       <Arrow x1={700} y1={234} x2={782} y2={272} dashed/>
@@ -567,24 +569,40 @@ export function ChatStateDiagram() {
 
 export function ChatbotPipelineDiagram() {
   const c = useDiagramColors();
+  const tools = [
+    { title: 'search_products', sub: 'BM25 + vector e5 + lọc giá/danh mục/tồn' },
+    { title: 'get_product_detail', sub: 'Phân loại, giá, tồn kho, đánh giá' },
+    { title: 'search_store_policies', sub: 'Đoạn kiến thức liên quan (top 3)' },
+    { title: 'get_my_orders · track_order', sub: 'Đơn & hành trình GHN của chủ phòng' },
+    { title: 'account · wishlist · cart', sub: 'Điểm thưởng, yêu thích, giỏ hàng' },
+    { title: 'request_human_agent', sub: 'Chuyển tư vấn viên kèm lý do' },
+  ];
   return (
-    <DiagramFrame viewBox="0 0 980 300" title="Pipeline trả lời của trợ lý AI">
-      <Node x={10} y={110} w={140} h={70} title="Tin của khách" subtitle={['STOMP, lưu DB', 'trước khi xử lý']}/>
-      <Arrow x1={154} y1={145} x2={194} y2={145} label="gộp tin 1,2s" labelDy={-40}/>
-      <Node x={198} y={110} w={150} h={70} title="Dựng ngữ cảnh" subtitle={['12 tin gần nhất', 'chỉ khi phòng = BOT']} variant="brand"/>
+    <DiagramFrame viewBox="0 0 980 420" title="Kiến trúc trợ lý AI dạng agent">
+      <Node x={10} y={170} w={130} h={70} title="Tin của khách" subtitle={['STOMP, lưu DB', 'gộp tin 1,2s']}/>
+      <Arrow x1={144} y1={205} x2={186} y2={205}/>
+      <Node x={190} y={150} w={170} h={110} title="Agent LLM" subtitle={['Prompt: quy tắc + 12 tin', 'tự chọn tool', 'tối đa 5 bước']} variant="brand"/>
 
-      <Node x={400} y={16} w={210} h={62} title="Tri thức cửa hàng" subtitle="knowledge.md: ship, đổi trả…"/>
-      <Node x={400} y={114} w={210} h={62} title="Chỉ mục sản phẩm" subtitle="Từ khóa bỏ dấu + lọc giá"/>
-      <Node x={400} y={212} w={210} h={62} title="Dữ liệu cá nhân" subtitle="Đơn, điểm theo chủ phòng"/>
-      <Arrow x1={396} y1={47} x2={352} y2={128}/>
-      <Arrow x1={396} y1={145} x2={352} y2={145}/>
-      <Arrow x1={396} y1={243} x2={352} y2={162}/>
+      <rect x={420} y={16} width={290} height={388} rx={12} fill={c.sand} stroke={c.sandBorder}/>
+      <Label x={436} y={38} text="TOOL (OpenAI function calling)" size={12} weight={700} color={c.wood}/>
+      {tools.map((tool, i) => (
+        <Node key={tool.title} x={436} y={50 + i * 58} w={258} h={50} title={tool.title} subtitle={tool.sub}/>
+      ))}
+      <Arrow x1={364} y1={190} x2={416} y2={190} both label="gọi / kết quả" labelDy={-8}/>
 
-      <Arrow x1={614} y1={145} x2={654} y2={145} label="prompt"/>
-      <Node x={658} y={110} w={130} h={70} title="LLM" subtitle={['JSON: reply,', 'productIds, handoff']}/>
-      <Arrow x1={792} y1={145} x2={832} y2={145}/>
-      <Node x={836} y={100} w={136} h={90} title="Hydrate & gửi" subtitle={['Thẻ SP/đơn chỉ', 'từ ngữ cảnh đã cấp', 'handoff → chờ NV']} variant="brand"/>
-      <Label x={400} y={296} text="Prompt chặn prompt-injection; không bịa giá, tồn kho, mã giảm giá." size={12} color={c.muted}/>
+      <Node x={750} y={40} w={220} h={70} title="Chỉ mục sản phẩm" subtitle={['Trong bộ nhớ, làm mới 5 phút', 'hybrid RRF']} variant="ghost"/>
+      <Node x={750} y={126} w={220} h={62} title="necom-embedding" subtitle="multilingual-e5-small ONNX int8" variant="ghost"/>
+      <Arrow x1={698} y1={75} x2={746} y2={75}/>
+      <Arrow x1={860} y1={114} x2={860} y2={122}/>
+
+      <Arrow x1={275} y1={264} x2={275} y2={300}/>
+      <Node x={190} y={304} w={170} h={90} title="Hydrate & gửi" subtitle={['JSON: reply, productIds…', 'thẻ chỉ từ kết quả tool', 'handoff → chờ NV']} variant="brand"/>
+      <Label x={750} y={240} text="Dữ liệu cá nhân luôn lấy theo" size={12}/>
+      <Label x={750} y={258} text="chủ phòng chat đã xác thực," size={12}/>
+      <Label x={750} y={276} text="không theo tham số của LLM." size={12}/>
+      <Label x={750} y={310} text="Prompt không chứa catalog hay" size={12}/>
+      <Label x={750} y={328} text="đơn hàng, nên chi phí mỗi lượt" size={12}/>
+      <Label x={750} y={346} text="không tăng theo quy mô dữ liệu." size={12}/>
     </DiagramFrame>
   );
 }

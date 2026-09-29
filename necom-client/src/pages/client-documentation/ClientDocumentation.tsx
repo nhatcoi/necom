@@ -112,7 +112,7 @@ function ClientDocumentation() {
                 </SimpleGrid>
               </Section>
 
-              <Section id="deployment" title="Triển khai" lead="Ba container Docker trên một VPS, phía trước là Nginx host và Cloudflare.">
+              <Section id="deployment" title="Triển khai" lead="Bốn container Docker trên một VPS (web, backend, CSDL, embedding), phía trước là Nginx host và Cloudflare.">
                 <DeploymentDiagram/>
               </Section>
 
@@ -296,22 +296,24 @@ function ChatSection() {
     <Section
       id="chat"
       title="Chat CSKH & trợ lý AI"
-      lead="Khách chat qua nút nổi hoặc trang Yêu cầu tư vấn. Trợ lý AI trả lời trước; khách có thể gặp tư vấn viên bất cứ lúc nào."
+      lead="Khách chat qua nút nổi hoặc trang Yêu cầu tư vấn. Trợ lý AI (agent có tool) trả lời trước; khách có thể gặp tư vấn viên bất cứ lúc nào, nhân viên có gợi ý trả lời bằng AI."
     >
       <ChatStateDiagram/>
       <Box mt="md"><ChatbotPipelineDiagram/></Box>
       <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'md', cols: 1 }]} mt="md">
-        <Callout title="Chuyển tư vấn viên">
-          Khách bấm “Gặp tư vấn viên” hoặc gõ các cụm như “tư vấn viên”, “người thật”, “khiếu nại”. Bot cũng tự chuyển khi
-          khách cần xử lý đổi trả, hoàn tiền cho đơn cụ thể.
+        <Callout title="Agent gọi tool">
+          Bot không nhồi dữ liệu vào prompt. LLM tự gọi tool: tìm sản phẩm, xem chi tiết và tồn kho, tra chính sách, đơn
+          hàng, hành trình GHN, điểm thưởng, yêu thích, giỏ hàng. Tối đa 5 bước mỗi lượt, khách thấy trạng thái “đang tìm…”.
         </Callout>
-        <Callout title="Inbox nhân viên">
-          Ba cột: danh sách phòng theo trạng thái, hội thoại có ghi chú nội bộ và gợi ý trả lời bằng AI, hồ sơ khách kèm đơn
-          gần đây (gửi thẻ đơn vào chat bằng một nút).
+        <Callout title="Tìm kiếm hybrid, sẵn sàng scale">
+          Điểm từ khóa BM25 (bỏ dấu) + điểm ngữ nghĩa từ embedding multilingual-e5-small, gộp bằng Reciprocal Rank Fusion, lọc
+          cứng theo danh mục, giá, còn hàng. Vector lưu trong MySQL, chỉ tính lại khi sản phẩm đổi; chỉ mục trong bộ nhớ
+          phù hợp tới vài chục nghìn sản phẩm, lớn hơn thì thay bằng Qdrant.
         </Callout>
         <Callout title="An toàn dữ liệu">
-          Người gửi lấy từ JWT, không tin payload; khách chỉ subscribe được phòng của mình; thẻ sản phẩm/đơn hàng chỉ lấy từ
-          ngữ cảnh đã cấp cho bot; tin nhắn trùng bị chặn bằng clientMsgId.
+          Người gửi lấy từ JWT; khách chỉ subscribe được phòng của mình; tool dữ liệu cá nhân luôn theo chủ phòng; thẻ sản
+          phẩm/đơn hàng chỉ lấy từ kết quả tool; tin trùng bị chặn bằng clientMsgId; chuyển tư vấn viên khi khách yêu cầu
+          hoặc khiếu nại.
         </Callout>
       </SimpleGrid>
       <Box mt="md"><ChatErdDiagram/></Box>

@@ -122,17 +122,24 @@ function ClientProductIntro({ product }: ClientProductIntroProps) {
           <Grid.Col md={6}>
             {product.productImages.length > 0
               ? (
-                <ClientCarousel>
-                  {product.productImages.map(image => (
-                    <Image
-                      key={image.id}
-                      radius="md"
-                      src={image.path}
-                      styles={{ image: { aspectRatio: '1 / 1' } }}
-                      withPlaceholder
-                    />
-                  ))}
-                </ClientCarousel>
+                <>
+                  <ClientCarousel>
+                    {product.productImages.map(image => (
+                      <Image
+                        key={image.id}
+                        radius="md"
+                        src={image.path}
+                        alt={product.productName}
+                        styles={{ image: { aspectRatio: '1 / 1' } }}
+                        withPlaceholder
+                      />
+                    ))}
+                  </ClientCarousel>
+                  {/* Ảnh từ Unsplash/Pexels: ghi nguồn tác giả theo điều khoản sử dụng */}
+                  {product.productImages[0]?.name?.startsWith('Ảnh:') && (
+                    <Text size="xs" color="dimmed" mt={4}>{product.productImages[0].name}</Text>
+                  )}
+                </>
               )
               : (
                 <Box
