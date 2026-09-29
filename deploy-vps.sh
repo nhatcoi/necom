@@ -500,7 +500,7 @@ case "$MAIN_ACTION" in
         log_info "Đồng bộ Frontend lên VPS..."
         rsync -avz --delete "$ROOT_DIR/necom-client/build/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build/"
         rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
-        ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client && docker compose up -d necom-client"
+        ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client && docker compose up -d --no-deps necom-client"
         log_success "Đã cập nhật Frontend thành công!"
         ;;
     only-fe-v2)
@@ -510,7 +510,7 @@ case "$MAIN_ACTION" in
         rsync -av "$ROOT_DIR/docker-compose.yml" "$ROOT_DIR/nginx-vps-v2.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/"
         rsync -av "$ROOT_DIR/necom-client/Dockerfile" "$ROOT_DIR/necom-client/nginx.conf" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/"
         rsync -avz --delete "$ROOT_DIR/necom-client/build-v2/" "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/necom-client/build-v2/"
-        ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client-v2 && docker compose up -d necom-client-v2"
+        ssh "${VPS_USER}@${VPS_HOST}" "cd ${REMOTE_DIR} && docker compose build necom-client-v2 && docker compose up -d --no-deps necom-client-v2"
         configure_vps_nginx
         log_success "Đã cập nhật Frontend UI v2 (${DOMAIN_V2}) thành công!"
         ;;
